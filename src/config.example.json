@@ -1,0 +1,49 @@
+{
+    "interface": "0.0.0.0",
+    "port": 8009,
+    "title": "Webhook Manager UI",
+    "locale": "en",
+    "style": "dark",
+    "lastNestMigration": "2019-03-07T01:00:00Z",
+    "showFooter": true,
+    "db": {
+        "scanner": {
+            "host": "127.0.0.1",
+            "port": 3306,
+            "username": "user",
+            "password": "pass123!",
+            "database": "rdmdb",
+            "charset": "utf8mb4"
+        }
+    },
+    "discord": {
+        "enabled": false,
+        "botToken": "",
+        "clientId": "",
+        "clientSecret": "",
+        "redirectUri": "http://localhost:8080/api/discord/callback",
+        "guilds": [""],
+        "userIdWhitelist": []
+    },
+    "map": {
+        "tileserver": "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png;Â© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors Â© <a href='https://carto.com/attributions'>CARTO</a>",
+        "startLat": 48.861643,
+        "startLon": 2.338716,
+        "startZoom": 9,
+        "minZoom": 4,
+        "maxZoom": 18
+    },
+    "google": {
+        "maps": "https://maps.google.com/maps?q=%s,%s",
+        "analytics": "",
+        "adsense": ""
+    },
+    "urls": {
+        "images": {
+            "pokemon": "https://cdn.example.com/images/original/monsters/%s_%s.png",
+            "eggs": "../img/original/eggs/%s.png"
+        },
+        "map": "",
+        "paypal": ""
+    }
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Subscriptions}}</h1>
+        <br>
+        <div style="width:90%; margin-left:calc(5%);">
+            <div class="card text-center p-1 m-3">
+                <div class="card-header bg-dark text-light"><b>Overview</b></div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3 p-1">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/quests/1.png" width="64" height="64"/></h3>
+                                        <h4 class="list-group-item-heading active-pokemon">0</h4>
+                                        <p class="list-group-item-text">Active Pokemon</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 p-1">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/teams/neutral.png" width="64" height="64"/></h3>
+                                        <h4 class="list-group-item-heading gyms">0</h4>
+                                        <p class="list-group-item-text">Gyms</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 p-1">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/quests/1402.png" width="64" height="64"/></h3>
+                                        <h4 class="list-group-item-heading raids">0</h4>
+                                        <p class="list-group-item-text">Raids</p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 p-1">
+                                <div class="list-group">
+                                    <a class="list-group-item">
+                                        <h3 class="pull-right"><img src="./img/pokestop.png" width="64" height="64"/></h3>
+                                        <h4 class="list-group-item-heading pokestops">0</h4>
+                                        <p class="list-group-item-text">Pokestops</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+    </body>
+    {{> footer}}
+</html>
+
+<script type='text/javascript' src='./js/storage.js'></script>
+<script type='text/javascript' src='./js/utils.js'></script>
+<script type='text/javascript'>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+        $('.modal-content').css('background-color', 'rgb(33, 37, 41)');
+        $('.modal-content').css('color', 'rgb(255, 255, 255)');
+    }
+</script>

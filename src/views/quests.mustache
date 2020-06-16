@@ -1,0 +1,72 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Quests}}</h1>
+        <br>
+        <div style="width:90%; margin-left:calc(5%);">
+            <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="all">{{Reward}}</th>
+                        <th class="all">{{City}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <br>
+    </body>
+    {{> footer}}
+</html>
+
+<script type='text/javascript' src='./js/storage.js'></script>
+<script type='text/javascript' src='./js/utils.js'></script>
+<script type='text/javascript'>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+        $('.modal-content').css('background-color', 'rgb(33, 37, 41)');
+        $('.modal-content').css('color', 'rgb(255, 255, 255)');
+    }
+    const table = $('#table').DataTable( {
+        "ajax": {
+            "url": "/api/server/" + /*$('#server_selector').val()*/ "342025055510855680/user/{{user_id}}?type=quests",
+            "dataSrc": "data.quests",
+            "async": true,
+            "type": "POST"
+        },
+        //"dom": "Bfrtip",
+        // Reference: https://stackoverflow.com/a/43176143
+        /*
+        "dom": "<'row'<'col-sm-8'B><'col-sm-4'f>t>" +
+                "<'row'<'col-sm-4'li><'col-sm-8'p>>",
+        */
+        "dom": "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        "fixedHeader": {
+            "header": true,
+            "headerOffset": $('.navbar').height() + 15
+        },
+        "buttons": [
+            "colvis",
+            "pageLength"
+        ],
+        "colReorder": true,
+        "stateSave": true,
+        "paging":   true,
+        "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+        "pageLength": 100,
+        "columns": [
+            { "data": "reward" },
+            { "data": "city" }
+        ],
+        "info": true,
+        "order": [[ 0, "asc" ]],
+        "search.caseInsensitive": true,
+        "responsive": true
+    });
+</script>
