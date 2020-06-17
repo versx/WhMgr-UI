@@ -6,6 +6,8 @@
         <h1 align="center" id="header">{{Invasions}}</h1>
         <br>
         <div style="width:90%; margin-left:calc(5%);">
+            <a href="/invasion/new" role="button" style="float: right;" class="btn btn-success">{{New Invasion Subscription}}</a>
+            <br><br>
             <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                 <thead class="thead-dark">
                     <tr>
@@ -75,11 +77,6 @@
     });
 
     function refreshData() {
-        console.log('Refresh');
-        
         $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=invasions").load();
-
-        // Cache filter values
-        //set('gyms_filter_name', name);
     }
  </script>

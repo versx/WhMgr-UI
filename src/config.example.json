@@ -7,6 +7,14 @@
     "lastNestMigration": "2019-03-07T01:00:00Z",
     "showFooter": true,
     "db": {
+        "brock": {
+            "host": "127.0.0.1",
+            "port": 3306,
+            "username": "user",
+            "password": "pass123!",
+            "database": "brock3",
+            "charset": "utf8mb4"
+        },
         "scanner": {
             "host": "127.0.0.1",
             "port": 3306,
@@ -23,18 +31,10 @@
         "clientSecret": "",
         "redirectUri": "http://localhost:8080/api/discord/callback",
         "guilds": [
-            { "name": "Guild Name1", "id": "111111111111111111" },
-            { "name": "Guild Name2", "id": "222222222222222222" }
+            { "name": "Guild Name1", "id": "111111111111111111", "geofences": [] },
+            { "name": "Guild Name2", "id": "222222222222222222", "geofences": [] }
         ],
         "userIdWhitelist": []
-    },
-    "map": {
-        "tileserver": "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png;Â© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors Â© <a href='https://carto.com/attributions'>CARTO</a>",
-        "startLat": 48.861643,
-        "startLon": 2.338716,
-        "startZoom": 9,
-        "minZoom": 4,
-        "maxZoom": 18
     },
     "google": {
         "maps": "https://maps.google.com/maps?q=%s,%s",

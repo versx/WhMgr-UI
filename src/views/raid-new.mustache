@@ -1,0 +1,49 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{New Raid Subscription}}</h1>
+        <br>
+        <div class="w-75" style="float: none; margin: 0 auto;">
+            <form action="/api/raids/new" method="post">
+                <div class="form-group">
+                    {{Pokemon}}
+                    <select name="pokemon" class="custom-select" multiple required>
+                        <option value="" selected disabled hidden>{{Choose a Pokemon}}</option>
+                        <!--<option value="all" selected>All</option>-->
+                        {{#pokemon}}
+                        <option value="{{id}}">{{name}}</option>
+                        {{/pokemon}}
+                    </select>
+                </div>
+                <div class="form-group">
+                    {{Form}}
+                    <input type="text" class="form-control" name="form" value="" placeholder="Sunny">
+                </div>
+                <div class="form-group">
+                    {{City}}
+                    <select name="city" class="custom-select" multiple required>
+                        <option value="" selected disabled hidden>{{Choose a City}}</option>
+                        <option value="all">All</option>
+                        {{#cities}}
+                        <option value="{{name}}">{{name}}</option>
+                        {{/cities}}
+                    </select>
+                </div>
+                <br>
+                <input type="hidden" id="guild_id" name="guild_id">
+                <button type="submit" class="btn btn-primary">{{Create}}</button>
+                <br>
+            </form>
+        </div>
+    </body>
+</html>
+
+<script>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+    }
+    $('#guild_id').val(guildId);
+</script>

@@ -72,6 +72,7 @@
     const guildId = get("guild_id");
     console.log("Stored Guild Id:", guildId);
     $("#server_selector").val(guildId);
+    $('#guild_id').val(guildId);
     $(document).ready(function() {
         // Get current URL path and assign 'active' class
         var pathname = window.location.pathname;
@@ -93,7 +94,10 @@
         console.log("Guild:", guildId);
         if (guildId) {
             set('guild_id', guildId);
-            refreshData();
+            try {
+                $('#guild_id').val(guildId);
+                refreshData();
+            } catch { }
         }
     }
 </script>

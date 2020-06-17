@@ -17,8 +17,12 @@ const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');
 const utils = require('./services/utils.js');
 
-// TODO: New/Edit/Delete pages for subscription objects
+// TODO: Edit/Delete pages for subscription objects
 // TODO: Split Pokemon page for whole IV/individual IVs/pvp ranks (tabs, combobox, radiobuttons, w/e)
+// TODO: Link discord servers with geofences
+// TODO: Group quests and invasion cities when listing
+// TODO: Convert to typescript
+// TODO: PvP/multiple individual value subscriptions
 
 
 run();
