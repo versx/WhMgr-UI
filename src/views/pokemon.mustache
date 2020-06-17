@@ -23,6 +23,7 @@
                         <th class="min-desktop">{{Level}}</th>
                         <th class="all">{{Gender}}</th>
                         <th class="all">{{City}}</th>
+                        <th class="all" width="5%"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,7 +35,6 @@
     {{> footer}}
 </html>
 
-<script type='text/javascript' src='./js/utils.js'></script>
 <script type='text/javascript'>
     if ("{{style}}" === 'dark') {
         $('body').css('background-color', 'rgb(33, 37, 41)');
@@ -48,7 +48,7 @@
 
     const table = $('#table').DataTable({
         "ajax": {
-            "url": "/api/server/" + /*$('#server_selector').val()*/ "342025055510855680/user/{{user_id}}?type=pokemon",
+            "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pokemon",
             "dataSrc": "data.pokemon",
             "async": true,
             "type": "POST"
@@ -84,10 +84,19 @@
             { "data": "lvl" },
             { "data": "gender" },
             { "data": "city" },
+            { "data": "buttons" }
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
+        "columnDefs": [{
+            "targets": [8],
+            "orderable": false
+        }],
         "responsive": true
     });
+
+    function refreshData() {
+        $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pokemon").load();
+    }
 </script>

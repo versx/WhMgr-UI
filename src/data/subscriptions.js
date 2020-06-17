@@ -4,6 +4,45 @@ const query = require('../services/db.js');
 
 const pokedex = require('../../static/data/pokedex.json');
 
+async function getUserSubscriptionStats(guildId, userId) {
+    const sql = `
+    SELECT
+        (
+            SELECT COUNT(id)
+            FROM   pokemon
+            WHERE guild_id = ? AND userId = ?
+        ) AS pokemon,
+        (
+            SELECT COUNT(id)
+            FROM   raids
+            WHERE guild_id = ? AND userId = ?
+        ) AS raids,
+        (
+            SELECT COUNT(id)
+            FROM   quests
+            WHERE guild_id = ? AND userId = ?
+        ) AS quests,
+        (
+            SELECT COUNT(id)
+            FROM   invasions
+            WHERE guild_id = ? AND userId = ?
+        ) AS invasions
+    FROM subscriptions
+    LIMIT 1;
+    `;
+    const args = [
+        guildId, userId,
+        guildId, userId,
+        guildId, userId,
+        guildId, userId,
+    ];
+    const results = await query(sql, args);
+    if (results && results.length > 0) {
+        return results[0];
+    }
+    return results;
+}
+
 async function getPokemonSubscriptions(guildId, userId) {
     const sql = `
     SELECT id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender
@@ -68,6 +107,7 @@ async function getInvasionSubscriptions(guildId, userId) {
 }
 
 module.exports = {
+    getUserSubscriptionStats,
     getPokemonSubscriptions,
     getRaidSubscriptions,
     getQuestSubscriptions,

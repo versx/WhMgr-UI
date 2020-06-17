@@ -23,8 +23,6 @@
     {{> footer}}
 </html>
 
-<script type='text/javascript' src='./js/storage.js'></script>
-<script type='text/javascript' src='./js/utils.js'></script>
 <script type='text/javascript'>
     $("[data-toggle='datetimepicker']").flatpickr({
         altInput: true,
@@ -41,7 +39,7 @@
     }
     const table = $('#table').DataTable({
         "ajax": {
-            "url": "/api/server/" + /*$('#server_selector').val()*/ "342025055510855680/user/{{user_id}}?type=raids",
+            "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=raids",
             "dataSrc": "data.raids",
             "async": true,
             "type": "POST"
@@ -78,4 +76,12 @@
         "search.caseInsensitive": true,
         "responsive": true
     });
+
+    function refreshData() {
+        console.log('Refresh');
+        $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=raids").load();
+
+        // Cache filter values
+        //set('gyms_filter_name', name);
+    }
 </script>

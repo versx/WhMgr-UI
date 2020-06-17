@@ -11,6 +11,7 @@
                     <tr>
                         <th class="all">{{Reward}}</th>
                         <th class="all">{{City}}</th>
+                        <th class="all" width="5%"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -22,18 +23,16 @@
     {{> footer}}
 </html>
 
-<script type='text/javascript' src='./js/storage.js'></script>
-<script type='text/javascript' src='./js/utils.js'></script>
 <script type='text/javascript'>
-     if ("{{style}}" === 'dark') {
+    if ("{{style}}" === 'dark') {
         $('body').css('background-color', 'rgb(33, 37, 41)');
         $('body').css('color', 'rgb(255, 255, 255)');
         $('.modal-content').css('background-color', 'rgb(33, 37, 41)');
         $('.modal-content').css('color', 'rgb(255, 255, 255)');
     }
-    const table = $('#table').DataTable( {
+    const table = $('#table').DataTable({
         "ajax": {
-            "url": "/api/server/" + /*$('#server_selector').val()*/ "342025055510855680/user/{{user_id}}?type=invasions",
+            "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=invasions",
             "dataSrc": "data.invasions",
             "async": true,
             "type": "POST"
@@ -62,11 +61,25 @@
         "pageLength": 100,
         "columns": [
             { "data": "reward" },
-            { "data": "city" }
+            { "data": "city" },
+            { "data": "buttons" }
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
+        "columnDefs": [{
+            "targets": [2],
+            "orderable": false
+        }],
         "responsive": true
     });
+
+    function refreshData() {
+        console.log('Refresh');
+        
+        $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=invasions").load();
+
+        // Cache filter values
+        //set('gyms_filter_name', name);
+    }
  </script>

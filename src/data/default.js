@@ -9,11 +9,7 @@ data.home_page = true;
 data.pokemon_page = true;
 data.raids_page = true;
 data.copyright_footer = config.showFooter;
-data.servers = [
-    { name: 'versx' },
-    { name: 'SGV Scans' },
-    { name: 'Riviera Village Feeds' },
-    { name: 'OC Scans' }
-];
+// TODO: Only show guilds user is apart of
+data.servers = config.discord.guilds;
 
 module.exports = data;

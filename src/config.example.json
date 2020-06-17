@@ -22,7 +22,10 @@
         "clientId": "",
         "clientSecret": "",
         "redirectUri": "http://localhost:8080/api/discord/callback",
-        "guilds": [""],
+        "guilds": [
+            { "name": "Guild Name1", "id": "111111111111111111" },
+            { "name": "Guild Name2", "id": "222222222222222222" }
+        ],
         "userIdWhitelist": []
     },
     "map": {

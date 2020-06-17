@@ -36,7 +36,7 @@
                     <option value="" selected disabled hidden>Choose a Server</option>
                     <option value="all">All</option>
                     {{#servers}}
-                        <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
                     {{/servers}}
                 </select>
             </li>
@@ -61,6 +61,7 @@
             </li>
         {{/username}}
         </ul>
+        <input type="hidden" name="_csrf" value="{{csrf}}">
         {{/logged_in}}
     </div>
 </nav>
@@ -68,6 +69,9 @@
 <br>
 
 <script>
+    const guildId = get("guild_id");
+    console.log("Stored Guild Id:", guildId);
+    $("#server_selector").val(guildId);
     $(document).ready(function() {
         // Get current URL path and assign 'active' class
         var pathname = window.location.pathname;
@@ -87,6 +91,9 @@
     function onServerChanged() {
         const guildId = document.getElementById("server_selector").value;//$(".server_selector").val();
         console.log("Guild:", guildId);
-        // TODO: Set guild in session
+        if (guildId) {
+            set('guild_id', guildId);
+            refreshData();
+        }
     }
 </script>

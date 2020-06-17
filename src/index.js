@@ -1,6 +1,8 @@
 'use strict';
 
 const path = require('path');
+const csrf = require('csurf');
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const session = require('express-session');
 const app = express();
@@ -14,6 +16,9 @@ const apiRoutes = require('./routes/api.js');
 const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');
 const utils = require('./services/utils.js');
+
+// TODO: New/Edit/Delete pages for subscription objects
+// TODO: Split Pokemon page for whole IV/individual IVs/pvp ranks (tabs, combobox, radiobuttons, w/e)
 
 
 run();
@@ -42,7 +47,7 @@ async function run() {
     app.use(i18n.init);
     
     // Register helper as a locals function wrroutered as mustache expects
-    app.use(function(req, res, next) {
+    app.use((req, res, next) => {
         // Mustache helper
         res.locals.__ = function() {
             /* eslint-disable no-unused-vars */
@@ -69,7 +74,7 @@ async function run() {
 
         // Discord error middleware
         /* eslint-disable no-unused-vars */
-        app.use(function(err, req, res, next) {
+        app.use((err, req, res, next) => {
         /* eslint-enable no-unused-vars */
             switch (err.message) {
             case 'NoCodeProvided':
@@ -85,9 +90,9 @@ async function run() {
             }
         });
     }
-    
+
     // Login middleware
-    app.use(function(req, res, next) {
+    app.use((req, res, next) => {
         if (config.discord.enabled && (req.path === '/api/discord/login' || req.path === '/login')) {
             return next();
         }
@@ -95,8 +100,8 @@ async function run() {
             const data = defaultData;
             data.logged_in = true;
             data.username = req.session.username || 'root';
-            data.guild_id = '342025055510855680';
-            data.user_id = '266771160253988875';
+            // TODO: Pull user_id from req.session
+            data.user_id = '266771160253988875'; //req.session.user_id;
             return next();
         }
         res.redirect('/login');
@@ -104,6 +109,19 @@ async function run() {
 
     // API routes
     app.use('/api', apiRoutes);
+
+    // CSRF token middleware
+    app.use(cookieParser());
+    app.use(csrf({ cookie: true }));
+    app.use((req, res, next) => {
+        const csrf = req.csrfToken();
+        defaultData.csrf = csrf;
+        //console.log("CSRF Token:", csrf);
+        res.cookie('x-csrf-token', csrf);
+        res.cookie('TOKEN', csrf);
+        res.locals.csrftoken = csrf;
+        next();
+    });
 
     // UI routes
     app.use('/', uiRoutes);
