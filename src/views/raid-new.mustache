@@ -27,7 +27,7 @@
                         <option value="" selected disabled hidden>{{Choose a City}}</option>
                         <option value="all">All</option>
                         {{#cities}}
-                        <option value="{{name}}">{{name}}</option>
+                        <option value="{{name}}" id="g_{{guild}}" hidden>{{name}}</option>
                         {{/cities}}
                     </select>
                 </div>
@@ -46,4 +46,8 @@
         $('body').css('color', 'rgb(255, 255, 255)');
     }
     $('#guild_id').val(guildId);
+    const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
+    if (guilds) {
+        guilds.forEach(guild => guild.hidden = false);
+    }
 </script>

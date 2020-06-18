@@ -10,7 +10,6 @@ function getPokemonNameIdsList() {
 }
 
 function getGruntRewardIdsList() {
-    // TODO: Review
     const grunts = grunttypes;
     const rewards = [];
     const keys = Object.keys(grunts);

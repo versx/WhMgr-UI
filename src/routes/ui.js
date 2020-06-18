@@ -31,12 +31,6 @@ if (config.discord.enabled) {
 
 router.get('/subscriptions', async (req, res) => {
     const data = defaultData;
-    // TODO: Remove below
-    const stats = await subscriptions.getUserSubscriptionStats(data.guild_id, data.user_id);
-    data.pokemon_count = stats.pokemon || 0;
-    data.raids_count = stats.raids || 0;
-    data.quests_count = stats.quests || 0;
-    data.invasions_count = stats.invasions || 0;
     res.render('subscriptions', data);
 });
 
@@ -44,15 +38,27 @@ router.get('/subscriptions', async (req, res) => {
 // Pokemon Routes
 router.get('/pokemon', (req, res) => {
     const data = defaultData;
-    data.pokemon = map.getPokemonNameIdsList();
-    data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
     res.render('pokemon', data);
 });
 
 router.get('/pokemon/new', (req, res) => {
     const data = defaultData;
     data.pokemon = map.getPokemonNameIdsList();
-    data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
+    let cities = [];
+    for (let i = 0; i < svc.geofences.length; i++) {
+        const geofence = svc.geofences[i];
+        const configGuilds = config.discord.guilds;
+        for (let j = 0; j < configGuilds.length; j++) {
+            const guild = configGuilds[j];
+            if (req.session.guilds.includes(guild.id) && guild.geofences.includes(geofence.name)) {
+                cities.push({
+                    'name': geofence.name,
+                    'guild': guild.id
+                });
+            }
+        }
+    };
+    data.cities = cities;
     res.render('pokemon-new', data);
 });
 
@@ -66,14 +72,27 @@ router.get('/pokemon/delete/:id', (req, res) => {
 // Raid routes
 router.get('/raids', (req, res) => {
     const data = defaultData;
-    data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
     res.render('raids', data);
 });
 
 router.get('/raid/new', (req, res) => {
     const data = defaultData;
     data.pokemon = map.getPokemonNameIdsList();
-    data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
+    let cities = [];
+    for (let i = 0; i < svc.geofences.length; i++) {
+        const geofence = svc.geofences[i];
+        const configGuilds = config.discord.guilds;
+        for (let j = 0; j < configGuilds.length; j++) {
+            const guild = configGuilds[j];
+            if (req.session.guilds.includes(guild.id) && guild.geofences.includes(geofence.name)) {
+                cities.push({
+                    'name': geofence.name,
+                    'guild': guild.id
+                });
+            }
+        }
+    };
+    data.cities = cities;
     res.render('raid-new', data);
 });
 
@@ -87,13 +106,26 @@ router.get('/raid/delete/:id', (req, res) => {
 // Quest routes
 router.get('/quests', (req, res) => {
     const data = defaultData;
-    data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
     res.render('quests', data);
 });
 
 router.get('/quest/new', (req, res) => {
     const data = defaultData;
-    data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
+    let cities = [];
+    for (let i = 0; i < svc.geofences.length; i++) {
+        const geofence = svc.geofences[i];
+        const configGuilds = config.discord.guilds;
+        for (let j = 0; j < configGuilds.length; j++) {
+            const guild = configGuilds[j];
+            if (req.session.guilds.includes(guild.id) && guild.geofences.includes(geofence.name)) {
+                cities.push({
+                    'name': geofence.name,
+                    'guild': guild.id
+                });
+            }
+        }
+    };
+    data.cities = cities;
     res.render('quest-new', data);
 });
 
@@ -113,7 +145,21 @@ router.get('/invasions', (req, res) => {
 router.get('/invasion/new', (req, res) => {
     const data = defaultData;
     data.rewards = map.getGruntRewardIdsList();
-    data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
+    let cities = [];
+    for (let i = 0; i < svc.geofences.length; i++) {
+        const geofence = svc.geofences[i];
+        const configGuilds = config.discord.guilds;
+        for (let j = 0; j < configGuilds.length; j++) {
+            const guild = configGuilds[j];
+            if (req.session.guilds.includes(guild.id) && guild.geofences.includes(geofence.name)) {
+                cities.push({
+                    'name': geofence.name,
+                    'guild': guild.id
+                });
+            }
+        }
+    };
+    data.cities = cities;
     res.render('invasion-new', data);
 });
 

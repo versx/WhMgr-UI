@@ -13,7 +13,7 @@ function hasGuild(guilds) {
     }
     for (let i = 0; i < guilds.length; i++) {
         const guild = guilds[i];
-        if (config.discord.guilds.includes(guild)) {
+        if (config.discord.guilds.find(x => x.id === guild)) {
             return true;
         }
     }

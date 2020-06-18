@@ -17,12 +17,16 @@ const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');
 const utils = require('./services/utils.js');
 
-// TODO: Edit/Delete pages for subscription objects
+// TODO: Edit pages for subscription objects
 // TODO: Split Pokemon page for whole IV/individual IVs/pvp ranks (tabs, combobox, radiobuttons, w/e)
 // TODO: Link discord servers with geofences
+// TODO: Only show cities related to Discord servers
+// TODO: Only show discord servers user is in
 // TODO: Group quests and invasion cities when listing
 // TODO: Convert to typescript
 // TODO: PvP/multiple individual value subscriptions
+// TODO: Check guilds from req.session.guilds and only show guilds user is in (defaultData)
+// TODO: Refresh page upon discord server changed
 
 
 run();
@@ -104,8 +108,7 @@ async function run() {
             const data = defaultData;
             data.logged_in = true;
             data.username = req.session.username || 'root';
-            // TODO: Pull user_id from req.session
-            data.user_id = '266771160253988875'; //req.session.user_id;
+            data.user_id = '266771160253988875'; // TODO: req.session.user_id;
             return next();
         }
         res.redirect('/login');

@@ -98,10 +98,12 @@ router.post('/pokemon/new', async (req, res) => {
         city
     } = req.body;
     const user_id = defaultData.user_id;
-    if (Array.isArray(city)) {
-        // TODO: Add all cities
-    } else {
-        // TODO: Add single city
+    let cities = city;
+    if (!Array.isArray(city)) {
+        cities = [city];
+    }
+    for (let i = 0; i < cities.length; i++) {
+        const area = cities[i];
     }
     res.redirect('/pokemon');
 });
@@ -111,14 +113,17 @@ router.post('/pokemon/new', async (req, res) => {
 router.post('/raids/new', async (req, res) => {
     const { guild_id, pokemon, form, city } = req.body;
     const user_id = defaultData.user_id;
-    if (Array.isArray(city)) {
-        // TODO: Add all cities
-    } else {
-        const exists = await Raid.getByPokemon(guild_id, user_id, pokemon, form, city);
+    let cities = city;
+    if (!Array.isArray(city)) {
+        cities = [city];
+    }
+    for (let i = 0; i < cities.length; i++) {
+        const area = cities[i];
+        const exists = await Raid.getByPokemon(guild_id, user_id, pokemon, form, area);
         if (exists) {
             // Already exists
         } else {
-            const raid = new Raid(guild_id, user_id, pokemon, form, city);
+            const raid = new Raid(guild_id, user_id, pokemon, form, area);
             const result = await raid.create();
             if (result) {
                 // Success
@@ -147,14 +152,17 @@ router.post('/raids/delete/:id', async (req, res) => {
 router.post('/quests/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
     const user_id = defaultData.user_id;
-    if (Array.isArray(city)) {
-        // TODO: Add all cities
-    } else {
-        const exists = await Quest.getByReward(guild_id, user_id, reward, city);
+    let cities = city;
+    if (!Array.isArray(city)) {
+        cities = [city];
+    }
+    for (let i = 0; i < cities.length; i++) {
+        const area = cities[i];
+        const exists = await Quest.getByReward(guild_id, user_id, reward, area);
         if (exists) {
             // Already exists
         } else {
-            const quest = new Quest(guild_id, user_id, reward, city);
+            const quest = new Quest(guild_id, user_id, reward, area);
             const result = await quest.create();
             if (result) {
                 // Success
@@ -181,20 +189,23 @@ router.post('/quests/delete/:id', async (req, res) => {
     res.redirect('/quests');
 });
 
+
 // Invasion routes
 router.post('/invasions/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
     const user_id = defaultData.user_id;
-    // TODO: Check if city is array
-    if (Array.isArray(city)) {
-        // TODO: Add all cities
-    } else {
-        const exists = await Invasion.getByReward(guild_id, user_id, reward, city);
+    let cities = city;
+    if (!Array.isArray(city)) {
+        cities = [city];
+    }
+    for (let i = 0; i < cities.length; i++) {
+        const area = cities[i];
+        const exists = await Invasion.getByReward(guild_id, user_id, reward, area);
         if (exists) {
             // Already exists
             console.log('Invasion subscription with reward', reward, 'already exists.');
         } else {
-            const invasion = new Invasion(guild_id, user_id, reward, city);
+            const invasion = new Invasion(guild_id, user_id, reward, area);
             const result = await invasion.create();
             if (result) {
                 // Success

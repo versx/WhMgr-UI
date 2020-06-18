@@ -37,7 +37,7 @@ router.get('/callback', catchAsyncErrors(async function(req, res) {
     }).then(async function(response) {
         const client = new DiscordClient(response.data.access_token);
         const user = await client.getUser();
-        if (config.discord.userIdWhitelist.includes(user.id)) {
+        if (config.discord.userIdWhitelist.length > 0 && config.discord.userIdWhitelist.includes(user.id)) {
             console.log(`Discord user ${user.id} in whitelist, skipping role and guild check...`);
             req.session.logged_in = true;
             req.session.user_id = user.id;
