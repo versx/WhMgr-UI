@@ -1,0 +1,28 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Delete All Quest Subscriptions}}</h1>
+        <br>
+        <div class="w-75" style="float: none; margin: 0 auto;">
+            <form action="/api/quests/delete_all" method="post">
+                <div align="center">
+                    <h3 id="message">{{Are you sure that you want to delete all of your quest subscriptions?}}</h3>
+                    <a href="/quests" id="cancel" name="cancel" class="btn btn-secondary">{{Cancel}}</a>
+                    <input type="hidden" id="guild_id" name="guild_id" required>
+                    <button type="submit" class="btn btn-danger">{{Delete}}</button>
+                </div>
+                <br>
+            </form>
+        </div>
+    </body>
+</html>
+
+<script>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+    }
+    $('#guild_id').val(guildId);
+</script>

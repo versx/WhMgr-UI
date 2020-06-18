@@ -171,6 +171,20 @@ router.post('/raids/delete/:id', async (req, res) => {
     res.redirect('/raids');
 });
 
+router.post('/raids/delete_all', async (req, res) => {
+    const { guild_id } = req.body;
+    const user_id = defaultData.user_id;
+    if (guild_id && user_id) {
+        const result = await Raid.deleteAll(guild_id, user_id);
+        if (result) {
+            // Success
+        }
+    } else {
+        console.error('Guild ID or User ID not set, failed to delete all raid subscriptions for user.');
+    }
+    res.redirect('/raids');
+});
+
 
 // Quest routes
 router.post('/quests/new', async (req, res) => {
@@ -223,6 +237,20 @@ router.post('/quests/delete/:id', async (req, res) => {
         }
     } else {
         // Does not exist
+    }
+    res.redirect('/quests');
+});
+
+router.post('/quests/delete_all', async (req, res) => {
+    const { guild_id } = req.body;
+    const user_id = defaultData.user_id;
+    if (guild_id && user_id) {
+        const result = await Quest.deleteAll(guild_id, user_id);
+        if (result) {
+            // Success
+        }
+    } else {
+        console.error('Guild ID or User ID not set, failed to delete all quest subscriptions for user.');
     }
     res.redirect('/quests');
 });
@@ -281,6 +309,20 @@ router.post('/invasions/delete/:id', async (req, res) => {
         }
     } else {
         // Does not exist
+    }
+    res.redirect('/invasions');
+});
+
+router.post('/invasions/delete_all', async (req, res) => {
+    const { guild_id } = req.body;
+    const user_id = defaultData.user_id;
+    if (guild_id && user_id) {
+        const result = await Invasion.deleteAll(guild_id, user_id);
+        if (result) {
+            // Success
+        }
+    } else {
+        console.error('Guild ID or User ID not set, failed to delete all invasion subscriptions for user.');
     }
     res.redirect('/invasions');
 });

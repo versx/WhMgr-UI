@@ -107,6 +107,11 @@ router.get('/raid/delete/:id', (req, res) => {
     res.render('raid-delete', data);
 });
 
+router.get('/raids/delete_all', (req, res) => {
+    const data = defaultData;
+    res.render('raids-delete-all', data);
+});
+
 
 // Quest routes
 router.get('/quests', (req, res) => {
@@ -137,6 +142,11 @@ router.get('/quest/delete/:id', (req, res) => {
     const data = defaultData;
     data.id = req.params.id;
     res.render('quest-delete', data);
+});
+
+router.get('/quests/delete_all', (req, res) => {
+    const data = defaultData;
+    res.render('quests-delete-all', data);
 });
 
 
@@ -173,6 +183,11 @@ router.get('/invasion/delete/:id', (req, res) => {
     const data = defaultData;
     data.id = req.params.id;
     res.render('invasion-delete', data);
+});
+
+router.get('/invasions/delete_all', (req, res) => {
+    const data = defaultData;
+    res.render('invasions-delete-all', data);
 });
 
 function buildCityList(guilds) {
