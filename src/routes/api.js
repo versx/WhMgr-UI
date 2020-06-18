@@ -72,8 +72,21 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
 
 // Pokemon routes
 router.post('/pokemon/new', async (req, res) => {
-    // TODO: Check if exists already, if so skip
-    // TODO: If not, create then redirect
+    const {
+        guild_id,
+        pokemon,
+        form,
+        iv,
+        lvl,
+        gender,
+        city
+    } = req.body;
+    const user_id = defaultData.user_id;
+    if (Array.isArray(city)) {
+        // TODO: Add all cities
+    } else {
+        // TODO: Add single city
+    }
     res.redirect('/pokemon');
 });
 
@@ -82,15 +95,18 @@ router.post('/pokemon/new', async (req, res) => {
 router.post('/raids/new', async (req, res) => {
     const { guild_id, pokemon, form, city } = req.body;
     const user_id = defaultData.user_id;
-    // TODO: Check if city is array
-    const exists = await Raid.getByPokemon(guild_id, user_id, pokemon, form, city);
-    if (exists) {
-        // Already exists
+    if (Array.isArray(city)) {
+        // TODO: Add all cities
     } else {
-        const raid = new Raid(guild_id, user_id, pokemon, form, city);
-        const result = await raid.create();
-        if (result) {
-            // Success
+        const exists = await Raid.getByPokemon(guild_id, user_id, pokemon, form, city);
+        if (exists) {
+            // Already exists
+        } else {
+            const raid = new Raid(guild_id, user_id, pokemon, form, city);
+            const result = await raid.create();
+            if (result) {
+                // Success
+            }
         }
     }
     res.redirect('/raids');
@@ -101,15 +117,18 @@ router.post('/raids/new', async (req, res) => {
 router.post('/quests/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
     const user_id = defaultData.user_id;
-    // TODO: Check if city is array
-    const exists = await Quest.getByReward(guild_id, user_id, reward, city);
-    if (exists) {
-        // Already exists
+    if (Array.isArray(city)) {
+        // TODO: Add all cities
     } else {
-        const quest = new Quest(guild_id, user_id, reward, city);
-        const result = await quest.create();
-        if (result) {
-            // Success
+        const exists = await Quest.getByReward(guild_id, user_id, reward, city);
+        if (exists) {
+            // Already exists
+        } else {
+            const quest = new Quest(guild_id, user_id, reward, city);
+            const result = await quest.create();
+            if (result) {
+                // Success
+            }
         }
     }
     res.redirect('/quests');
@@ -123,16 +142,20 @@ router.post('/invasions/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
     const user_id = defaultData.user_id;
     // TODO: Check if city is array
-    const exists = await Invasion.getByReward(guild_id, user_id, reward, city);
-    if (exists) {
-        // Already exists
-        console.log('Invasion subscription with reward', reward, 'already exists.');
+    if (Array.isArray(city)) {
+        // TODO: Add all cities
     } else {
-        const invasion = new Invasion(guild_id, user_id, reward, city);
-        const result = await invasion.create();
-        if (result) {
-            // Success
-            console.log('Invasion subscription for reward', reward, 'created successfully.');
+        const exists = await Invasion.getByReward(guild_id, user_id, reward, city);
+        if (exists) {
+            // Already exists
+            console.log('Invasion subscription with reward', reward, 'already exists.');
+        } else {
+            const invasion = new Invasion(guild_id, user_id, reward, city);
+            const result = await invasion.create();
+            if (result) {
+                // Success
+                console.log('Invasion subscription for reward', reward, 'created successfully.');
+            }
         }
     }
     res.redirect('/invasions');
