@@ -142,13 +142,14 @@ router.post('/raids/new', async (req, res) => {
 router.post('/raids/edit/:id', async (req, res) => {
     const id = req.params.id;
     const { guild_id, pokemon, form, city } = req.body;
-    //const user_id = defaultData.user_id;
+    const user_id = defaultData.user_id;
     const raid = await Raid.getById(id);
     if (raid) {
-        raid.pokemonId = pokemon;
-        raid.form = form;
-        raid.city = city;
-        const result = await raid.save();
+        //raid.pokemonId = pokemon;
+        //raid.form = form;
+        //raid.city = city;
+        //const result = await raid.save();
+        const result = await Raid.save(id, guild_id, user_id, pokemon, form, city);
         if (result) {
             // Success
             console.log('Raid subscription', id, 'updated successfully.');
@@ -213,12 +214,13 @@ router.post('/quests/new', async (req, res) => {
 router.post('/quests/edit/:id', async (req, res) => {
     const id = req.params.id;
     const { guild_id, reward, city } = req.body;
-    //const user_id = defaultData.user_id;
+    const user_id = defaultData.user_id;
     const quest = await Quest.getById(id);
     if (quest) {
-        quest.reward = reward;
-        quest.city = city;
-        const result = await quest.save();
+        //quest.reward = reward;
+        //quest.city = city;
+        //const result = await quest.save(id);
+        const result = await Quest.save(id, guild_id, user_id, reward, city);
         if (result) {
             // Success
             console.log('Quest subscription', id, 'updated successfully.');
@@ -285,12 +287,13 @@ router.post('/invasions/new', async (req, res) => {
 router.post('/invasions/edit/:id', async (req, res) => {
     const id = req.params.id;
     const { guild_id, reward, city } = req.body;
-    //const user_id = defaultData.user_id;
+    const user_id = defaultData.user_id;
     const invasion = await Invasion.getById(id);
     if (invasion) {
-        invasion.rewardPokemonId = reward;
-        invasion.city = city;
-        const result = await invasion.save(id);
+        //invasion.rewardPokemonId = reward;
+        //invasion.city = city;
+        //const result = await invasion.save(id);
+        const result = await Invasion.save(id, guild_id, user_id, reward, city);
         if (result) {
             // Success
             console.log('Invasion subscription', id, 'updated successfully.');

@@ -105,19 +105,18 @@ class Quest {
         const result = await query(sql, args);
         return result.affectedRows > 0;
     }
-    async save(newReward, newCity) {
+    static async save(id, guildId, userId, reward, city) {
         const sql = `
         UPDATE quests
-        SET reward = ? AND city = ?
-        WHERE guild_id = ? AND userId = ? AND reward = ? AND city = ?
+        SET reward = ?, city = ?
+        WHERE guild_id = ? AND userId = ? AND id = ?
         `;
         const args = [
-            newReward,
-            newCity,
-            this.guildId,
-            this.userId,
-            this.reward,
-            this.city
+            reward,
+            city,
+            guildId,
+            userId,
+            id
         ];
         const result = await query(sql, args);
         return result.affectedRows === 1;

@@ -109,21 +109,19 @@ class Raid {
         const result = await query(sql, args);
         return result.affectedRows > 0;
     }
-    async save(newPokemonId, newForm, newCity) {
+    static async save(id, guildId, userId, pokemonId, form, city) {
         const sql = `
         UPDATE raids
-        SET pokemon_id = ? AND form = ? AND city = ?
-        WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND city = ?
+        SET pokemon_id = ?, form = ?, city = ?
+        WHERE guild_id = ? AND userId = ? AND id = ?
         `;
         const args = [
-            newPokemonId,
-            newForm,
-            newCity,
-            this.guildId,
-            this.userId,
-            this.pokemonId,
-            this.form,
-            this.city
+            pokemonId,
+            form,
+            city,
+            guildId,
+            userId,
+            id
         ];
         const result = await query(sql, args);
         return result.affectedRows === 1;
