@@ -290,7 +290,7 @@ router.post('/invasions/edit/:id', async (req, res) => {
     if (invasion) {
         invasion.rewardPokemonId = reward;
         invasion.city = city;
-        const result = await invasion.save();
+        const result = await invasion.save(id);
         if (result) {
             // Success
             console.log('Invasion subscription', id, 'updated successfully.');

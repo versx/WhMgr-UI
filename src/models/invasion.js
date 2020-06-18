@@ -106,21 +106,21 @@ class Invasion {
         const result = await query(sql, args);
         return result.affectedRows > 0;
     }
-    async save(newRewardPokemonId, newCity) {
+    async save(id) {
         const sql = `
         UPDATE invasions
         SET reward_pokemon_id = ? AND city = ?
-        WHERE guild_id = ? AND userId = ? AND reward_pokemon_id = ? AND city = ?
+        WHERE guild_id = ? AND userId = ? AND id = ?
         `;
         const args = [
-            newRewardPokemonId,
-            newCity,
+            this.rewardPokemonId,
+            this.city,
             this.guildId,
             this.userId,
-            this.rewardPokemonId,
-            this.city
+            id
         ];
         const result = await query(sql, args);
+        //console.log('Save result:', result);
         return result.affectedRows === 1;
     }
 }
