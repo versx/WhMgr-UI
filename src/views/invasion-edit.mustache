@@ -1,0 +1,48 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Edit Invasion Subscription}} {{id}}</h1>
+        <br>
+        <div class="w-75" style="float: none; margin: 0 auto;">
+            <form action="/api/invasions/edit/{{id}}" method="post">
+                <div class="form-group">
+                    {{Reward}}
+                    <select name="reward" class="custom-select">
+                        <option value="" selected disabled hidden>{{Choose a Reward}}</option>
+                        {{#rewards}}
+                        <option value="{{pokemon_id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/rewards}}
+                    </select>
+                </div>
+                <div class="form-group">
+                    {{City}}
+                    <select name="city" class="custom-select" required>
+                        <option value="" selected disabled hidden>{{Choose a City}}</option>
+                        <!--<option value="all">All</option>-->
+                        {{#cities}}
+                        <option value="{{name}}" id="g_{{guild}}" {{#selected}}selected{{/selected}} hidden>{{name}}</option>
+                        {{/cities}}
+                    </select>
+                </div>
+                <br>
+                <input type="hidden" id="guild_id" name="guild_id" required>
+                <button type="submit" class="btn btn-primary">{{Save}}</button>
+                <br>
+            </form>
+        </div>
+    </body>
+</html>
+
+<script>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+    }
+    $('#guild_id').val(guildId);
+    const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
+    if (guilds) {
+        guilds.forEach(guild => guild.hidden = false);
+    }
+</script>

@@ -31,6 +31,13 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (pokemon) {
                 pokemon.forEach(pkmn => {
                     pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='64'>&nbsp;${pkmn.name}`;
+                    /*
+                    pkmn.gender === '*'
+                    ? 'All'
+                    : pkmn.gender === 'm'
+                        ? 'Male Only'
+                        : 'Female Only';
+                    */
                     pkmn.buttons = `
                     <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
                     &nbsp;
@@ -51,7 +58,6 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     <a href='/raid/delete/${raid.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
                     `;
                 });
-                console.log("Raids:", raids);
             }
             res.json({ data: { raids: raids } });
             break;
@@ -133,6 +139,24 @@ router.post('/raids/new', async (req, res) => {
     res.redirect('/raids');
 });
 
+router.post('/raids/edit/:id', async (req, res) => {
+    const id = req.params.id;
+    const { guild_id, pokemon, form, city } = req.body;
+    //const user_id = defaultData.user_id;
+    const raid = await Raid.getById(id);
+    if (raid) {
+        raid.pokemonId = pokemon;
+        raid.form = form;
+        raid.city = city;
+        const result = await raid.save();
+        if (result) {
+            // Success
+            console.log('Raid subscription', id, 'updated successfully.');
+        }
+    }
+    res.redirect('/quests');
+});
+
 router.post('/raids/delete/:id', async (req, res) => {
     const id = req.params.id;
     const exists = await Raid.getById(id);
@@ -172,7 +196,21 @@ router.post('/quests/new', async (req, res) => {
     res.redirect('/quests');
 });
 
-router.post('/quests/edit', async (req, res) => {
+router.post('/quests/edit/:id', async (req, res) => {
+    const id = req.params.id;
+    const { guild_id, reward, city } = req.body;
+    //const user_id = defaultData.user_id;
+    const quest = await Quest.getById(id);
+    if (quest) {
+        quest.reward = reward;
+        quest.city = city;
+        const result = await quest.save();
+        if (result) {
+            // Success
+            console.log('Quest subscription', id, 'updated successfully.');
+        }
+    }
+    res.redirect('/quests');
 });
 
 router.post('/quests/delete/:id', async (req, res) => {
@@ -216,7 +254,21 @@ router.post('/invasions/new', async (req, res) => {
     res.redirect('/invasions');
 });
 
-router.post('/invasions/edit', async (req, res) => {
+router.post('/invasions/edit/:id', async (req, res) => {
+    const id = req.params.id;
+    const { guild_id, reward, city } = req.body;
+    //const user_id = defaultData.user_id;
+    const invasion = await Invasion.getById(id);
+    if (invasion) {
+        invasion.rewardPokemonId = reward;
+        invasion.city = city;
+        const result = await invasion.save();
+        if (result) {
+            // Success
+            console.log('Invasion subscription', id, 'updated successfully.');
+        }
+    }
+    res.redirect('/invasions');
 });
 
 router.post('/invasions/delete/:id', async (req, res) => {
