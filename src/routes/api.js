@@ -30,8 +30,12 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
             if (pokemon) {
                 pokemon.forEach(pkmn => {
-                    pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='32'>&nbsp;${pkmn.name}`;
-                    pkmn.buttons = '<button class="btn btn-primary">Edit</button>&nbsp;<button class="btn btn-danger">Delete</button>';
+                    pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='64'>&nbsp;${pkmn.name}`;
+                    pkmn.buttons = `
+                    <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
+                    &nbsp;
+                    <a href='/pokemon/delete/${pkmn.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
+                    `;
                 });
             }
             res.json({ data: { pokemon: pokemon } });
@@ -40,8 +44,12 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const raids = await subscriptions.getRaidSubscriptions(guild_id, user_id);
             if (raids) {
                 raids.forEach(raid => {
-                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, 0)}' width='auto' height='32'>&nbsp;${raid.name}`;
-                    raid.buttons = '<button class="btn btn-primary">Edit</button>&nbsp;<button class="btn btn-danger">Delete</button>';
+                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, 0)}' width='auto' height='64'>&nbsp;${raid.name}`;
+                    raid.buttons = `
+                    <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
+                    &nbsp;
+                    <a href='/raid/delete/${raid.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
+                    `;
                 });
                 console.log("Raids:", raids);
             }
@@ -51,7 +59,11 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const quests = await subscriptions.getQuestSubscriptions(guild_id, user_id);
             if (quests) {
                 quests.forEach(quest => {
-                    quest.buttons = '<button class="btn btn-primary">Edit</button>&nbsp;<button class="btn btn-danger">Delete</button>';
+                    quest.buttons = `
+                    <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
+                    &nbsp;
+                    <a href='/quest/delete/${quest.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
+                    `;
                 });
             }
             res.json({ data: { quests: quests } });
@@ -60,8 +72,12 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const invasions = await subscriptions.getInvasionSubscriptions(guild_id, user_id);
             if (invasions) {
                 invasions.forEach(invasion => {
-                    invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='32'>&nbsp;${invasion.reward}`;
-                    invasion.buttons = '<button class="btn btn-primary">Edit</button>&nbsp;<button class="btn btn-danger">Delete</button>';
+                    invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='64'>&nbsp;${invasion.reward}`;
+                    invasion.buttons = `
+                    <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
+                    &nbsp;
+                    <a href='/invasion/delete/${invasion.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
+                    `;
                 });
             }
             res.json({ data: { invasions: invasions } });
@@ -112,6 +128,20 @@ router.post('/raids/new', async (req, res) => {
     res.redirect('/raids');
 });
 
+router.post('/raids/delete/:id', async (req, res) => {
+    const id = req.params.id;
+    const exists = await Raid.getById(id);
+    if (exists) {
+        const result = await Raid.deleteById(id);
+        if (result) {
+            // Success
+        }
+    } else {
+        // Does not exist
+    }
+    res.redirect('/raids');
+});
+
 
 // Quest routes
 router.post('/quests/new', async (req, res) => {
@@ -137,6 +167,20 @@ router.post('/quests/new', async (req, res) => {
 router.post('/quests/edit', async (req, res) => {
 });
 
+router.post('/quests/delete/:id', async (req, res) => {
+    const id = req.params.id;
+    const exists = await Quest.getById(id);
+    if (exists) {
+        const result = await Quest.deleteById(id);
+        if (result) {
+            // Success
+        }
+    } else {
+        // Does not exist
+    }
+    res.redirect('/quests');
+});
+
 // Invasion routes
 router.post('/invasions/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
@@ -157,6 +201,23 @@ router.post('/invasions/new', async (req, res) => {
                 console.log('Invasion subscription for reward', reward, 'created successfully.');
             }
         }
+    }
+    res.redirect('/invasions');
+});
+
+router.post('/invasions/edit', async (req, res) => {
+});
+
+router.post('/invasions/delete/:id', async (req, res) => {
+    const id = req.params.id;
+    const exists = await Invasion.getById(id);
+    if (exists) {
+        const result = await Invasion.deleteById(id);
+        if (result) {
+            // Success
+        }
+    } else {
+        // Does not exist
     }
     res.redirect('/invasions');
 });

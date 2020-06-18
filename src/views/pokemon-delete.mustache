@@ -1,0 +1,27 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Delete Pokemon Subscription}} {{id}} </h1>
+        <br>
+        <div class="w-75" style="float: none; margin: 0 auto;">
+            <form action="/api/pokemon/delete/{{id}}" method="post">
+                <div align="center">
+                    <h3 id="message">{{Are you sure that you want to delete pokemon subscription}} {{id}}?</h3>
+                    <a href="/pokemon" id="cancel" name="cancel" class="btn btn-secondary">{{Cancel}}</a>
+                    <input type="hidden" id="guild_id" name="guild_id" required>
+                    <button type="submit" class="btn btn-danger">{{Delete}}</button>
+                </div>
+                <br>
+            </form>
+        </div>
+    </body>
+</html>
+
+<script>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+    }
+</script>

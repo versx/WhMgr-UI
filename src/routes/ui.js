@@ -49,11 +49,17 @@ router.get('/pokemon', (req, res) => {
     res.render('pokemon', data);
 });
 
-router.get('/pokemon/new', async (req, res) => {
+router.get('/pokemon/new', (req, res) => {
     const data = defaultData;
     data.pokemon = map.getPokemonNameIdsList();
     data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
     res.render('pokemon-new', data);
+});
+
+router.get('/pokemon/delete/:id', (req, res) => {
+    const data = defaultData;
+    data.id = req.params.id;
+    res.render('pokemon-delete', data);
 });
 
 
@@ -64,39 +70,57 @@ router.get('/raids', (req, res) => {
     res.render('raids', data);
 });
 
-router.get('/raid/new', async (req, res) => {
+router.get('/raid/new', (req, res) => {
     const data = defaultData;
     data.pokemon = map.getPokemonNameIdsList();
     data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
     res.render('raid-new', data);
 });
 
+router.get('/raid/delete/:id', (req, res) => {
+    const data = defaultData;
+    data.id = req.params.id;
+    res.render('raid-delete', data);
+});
+
 
 // Quest routes
-router.get('/quests', async (req, res) => {
+router.get('/quests', (req, res) => {
     const data = defaultData;
     data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
     res.render('quests', data);
 });
 
-router.get('/quest/new', async (req, res) => {
+router.get('/quest/new', (req, res) => {
     const data = defaultData;
     data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
     res.render('quest-new', data);
 });
 
+router.get('/quest/delete/:id', (req, res) => {
+    const data = defaultData;
+    data.id = req.params.id;
+    res.render('quest-delete', data);
+});
+
 
 // Invasion routes
-router.get('/invasions', async (req, res) => {
+router.get('/invasions', (req, res) => {
     const data = defaultData;
     res.render('invasions', data);
 });
 
-router.get('/invasion/new', async (req, res) => {
+router.get('/invasion/new', (req, res) => {
     const data = defaultData;
     data.rewards = map.getGruntRewardIdsList();
     data.cities = svc.geofences.map(x => { return { 'name': x.name }; });
     res.render('invasion-new', data);
+});
+
+router.get('/invasion/delete/:id', (req, res) => {
+    const data = defaultData;
+    data.id = req.params.id;
+    res.render('invasion-delete', data);
 });
 
 module.exports = router;

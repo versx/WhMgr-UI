@@ -21,7 +21,7 @@ class Raid {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT guild_id, userId, pokemonId, form, city
+        SELECT guild_id, userId, pokemon_id, form, city
         FROM raids
         WHERE guild_id = ? AND userId = ?
         `;
@@ -39,6 +39,26 @@ class Raid {
                 ));
             });
             return list;
+        }
+        return null;
+    }
+    static async getById(id) {
+        const sql = `
+        SELECT guild_id, userId, pokemon_id, form, city
+        FROM raids
+        WHERE id = ?
+        `;
+        const args = [id];
+        const results = await query(sql, args);
+        if (results && results.length > 0) {
+            const result = results[0];
+            return new Raid(
+                result.guild_id,
+                result.userId,
+                result.pokemon_id,
+                result.form,
+                result.city
+            );
         }
         return null;
     }
@@ -68,6 +88,15 @@ class Raid {
         WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND city = ?
         `;
         const args = [guildId, userId, pokemonId, form, city];
+        const result = await query(sql, args);
+        return result.affectedRows === 1;
+    }
+    static async deleteById(id) {
+        const sql = `
+        DELETE FROM raids
+        WHERE id = ?
+        `;
+        const args = [id];
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }

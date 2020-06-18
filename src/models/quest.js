@@ -11,7 +11,7 @@ class Quest {
     }
     async create() {
         const sql = `
-        INSERT INTO invasions (guild_id, userId, reward, city)
+        INSERT INTO quests (guild_id, userId, reward, city)
         VALUES (?, ?, ?, ?)
         `;
         const args = [this.guildId, this.userId, this.reward, this.city];
@@ -21,7 +21,7 @@ class Quest {
     static async getAll(guildId, userId) {
         const sql = `
         SELECT guild_id, userId, reward, city
-        FROM invasions
+        FROM quests
         WHERE guild_id = ? AND userId = ?
         `;
         const args = [guildId, userId];
@@ -37,6 +37,25 @@ class Quest {
                 ));
             });
             return list;
+        }
+        return null;
+    }
+    static async getById(id) {
+        const sql = `
+        SELECT guild_id, userId, reward, city
+        FROM quests
+        WHERE id = ?
+        `;
+        const args = [id];
+        const results = await query(sql, args);
+        if (results && results.length > 0) {
+            const result = results[0];
+            return new Quest(
+                result.guild_id,
+                result.userId,
+                result.reward,
+                result.city
+            );
         }
         return null;
     }
@@ -61,16 +80,25 @@ class Quest {
     }
     static async delete(guildId, userId, reward, city) {
         const sql = `
-        DELETE FROM invasions
+        DELETE FROM quests
         WHERE guild_id = ? AND userId = ? AND reward = ? AND city = ?
         `;
         const args = [guildId, userId, reward, city];
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }
+    static async deleteById(id) {
+        const sql = `
+        DELETE FROM quests
+        WHERE id = ?
+        `;
+        const args = [id];
+        const result = await query(sql, args);
+        return result.affectedRows === 1;
+    }
     static async deleteAll(guildId, userId) {
         const sql = `
-        DELETE FROM invasions
+        DELETE FROM quests
         WHERE guild_id = ? AND userId = ?
         `;
         const args = [guildId, userId];
@@ -79,7 +107,7 @@ class Quest {
     }
     async save(newReward, newCity) {
         const sql = `
-        UPDATE invasions
+        UPDATE quests
         SET reward = ? AND city = ?
         WHERE guild_id = ? AND userId = ? AND reward = ? AND city = ?
         `;
