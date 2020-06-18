@@ -155,7 +155,7 @@ router.post('/raids/edit/:id', async (req, res) => {
             console.log('Raid subscription', id, 'updated successfully.');
         }
     }
-    res.redirect('/quests');
+    res.redirect('/raids');
 });
 
 router.post('/raids/delete/:id', async (req, res) => {
