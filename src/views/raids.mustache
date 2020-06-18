@@ -14,6 +14,7 @@
                         <th class="all">{{Pokemon}}</th>
                         <th class="all">{{Form}}</th>
                         <th class="all">{{City}}</th>
+                        <th class="all" width="5%"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,11 +72,16 @@
         "columns": [
             { "data": "name" },
             { "data": "form" },
-            { "data": "city" }
+            { "data": "city" },
+            { "data": "buttons" }
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
+        "columnDefs": [{
+            "targets": [3],
+            "orderable": false
+        }],
         "responsive": true
     });
 

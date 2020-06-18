@@ -13,7 +13,7 @@ class Raid {
     async create() {
         const sql = `
         INSERT INTO raids (guild_id, userId, pokemon_id, form, city)
-        VALUES (?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?)
         `;
         const args = [this.guildId, this.userId, this.pokemonId, this.form, this.city];
         const result = await query(sql, args);
@@ -45,14 +45,14 @@ class Raid {
     static async getByPokemon(guildId, userId, pokemonId, form, city) {
         const sql = `
         SELECT guild_id, userId, pokemon_id, form, city
-        FROM pokemon
+        FROM raids
         WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND city = ?
         LIMIT 1
         `;
         const args = [guildId, userId, pokemonId, form, city];
         const results = await query(sql, args);
         if (results && results.length > 0) {
-            return new Pokemon(
+            return new Raid(
                 result.guild_id,
                 result.userId,
                 result.pokemonId,
