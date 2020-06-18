@@ -14,7 +14,7 @@ class Quest {
         INSERT INTO invasions (guild_id, userId, reward, city)
         VALUES (?, ?, ?, ?)
         `;
-        const args = [this.guild, this.userId, this.reward, this.city];
+        const args = [this.guildId, this.userId, this.reward, this.city];
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }

@@ -15,7 +15,7 @@ class Raid {
         INSERT INTO raids (guild_id, userId, pokemon_id, form, city)
         VALUES (?, ?, ?, ?)
         `;
-        const args = [this.guild, this.userId, this.pokemonId, this.form, this.city];
+        const args = [this.guildId, this.userId, this.pokemonId, this.form, this.city];
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }

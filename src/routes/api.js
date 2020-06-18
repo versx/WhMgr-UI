@@ -7,6 +7,7 @@ const defaultData = require('../data/default.js');
 const subscriptions = require('../data/subscriptions.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
+const utils = require('../services/utils.js');
 
 router.post('/server/:guild_id/user/:user_id', async (req, res) => {
     const { guild_id, user_id } = req.params;
@@ -28,6 +29,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
             if (pokemon) {
                 pokemon.forEach(pkmn => {
+                    pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='32'>&nbsp;${pkmn.name}`;
                     pkmn.buttons = '<button class="btn btn-primary">Edit</button>&nbsp;<button class="btn btn-danger">Delete</button>';
                 });
             }
@@ -116,15 +118,18 @@ router.post('/quests/edit', async (req, res) => {
 router.post('/invasions/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
     const user_id = defaultData.user_id;
+    console.log('Body:', req.body);
     // TODO: Check if city is array
     const exists = await Invasion.getByReward(guild_id, user_id, reward, city);
     if (exists) {
         // Already exists
+        console.log('Invasion subscription with reward', reward, 'already exists.');
     } else {
         const invasion = new Invasion(guild_id, user_id, reward, city);
         const result = await invasion.create();
         if (result) {
             // Success
+            console.log('Invasion subscription for reward', reward, 'created successfully.');
         }
     }
     res.redirect('/invasions');

@@ -113,7 +113,7 @@ logs
 geofences/
 
 # No icons
-static/pokemon/
+static/img/pokemon/
 
 # No docker-compose.yml files
 docker-compose.yml

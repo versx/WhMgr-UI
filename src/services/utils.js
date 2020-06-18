@@ -1,5 +1,6 @@
 'use strict';
 
+const util = require('util');
 const config = require('../config.json');
 
 function generateString() {
@@ -68,11 +69,18 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 
+function getPokemonIcon(pokemonId, formId) {
+    const padId = (pokemonId + '').padStart(3, '0');
+    const form = formId > 0 ? formId : '00';
+    return util.format(config.urls.images.pokemon, padId, form);
+}
+
 module.exports = {
     generateString,
     hasGuild,
     hasRole,
     inArray,
     toHHMMSS,
-    formatDate
+    formatDate,
+    getPokemonIcon
 };

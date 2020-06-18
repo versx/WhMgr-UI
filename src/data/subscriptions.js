@@ -4,6 +4,8 @@ const query = require('../services/db.js');
 
 const pokedex = require('../../static/data/pokedex.json');
 
+// TODO: Move to model classes
+
 async function getUserSubscriptionStats(guildId, userId) {
     const sql = `
     SELECT
