@@ -1,0 +1,69 @@
+<!DOCTYPE html="{{locale}}">
+    {{> header}}
+    <body>
+        {{> navbar}}
+        <br>
+        <h1 align="center" id="header">{{Edit PVP Subscription}} {{id}}</h1>
+        <br>
+        <div class="w-75" style="float: none; margin: 0 auto;">
+            <form action="/api/pvp/edit/{{id}}" method="post">
+                <div class="form-group">
+                    {{Pokemon}}
+                    <select name="pokemon" class="custom-select" required>
+                        <option value="" selected disabled hidden>{{Choose a Pokemon}}</option>
+                        {{#pokemon}}
+                        <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/pokemon}}
+                    </select>
+                </div>
+                <div class="form-group">
+                    {{Form}}
+                    <input type="text" class="form-control" name="form" value="{{form}}" placeholder="Sunny">
+                </div>
+                <div class="form-group">
+                    {{League}}
+                    <select name="league" class="custom-select" required>
+                        <option value="" selected disabled hidden>{{Choose a League}}</option>
+                        {{#leagues}}
+                        <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/leagues}}
+                    </select>
+                </div>
+                <div class="form-group">
+                    {{Minimum Rank}}
+                    <input type="text" class="form-control" name="min_rank" value="{{min_rank}}" placeholder="0-4096" min="0", max="4096">
+                </div>
+                <div class="form-group">
+                    {{Minimum Percent}}
+                    <input type="text" class="form-control" name="min_percent" value="{{min_percent}}" placeholder="0-100" min="0", max="100">
+                </div>
+                <div class="form-group">
+                    {{City}}
+                    <select name="city" class="custom-select" multiple required>
+                        <option value="all" selected>All</option>
+                        {{#cities}}
+                        <option value="{{name}}" id="g_{{guild}}" {{#selected}}selected{{/selected}} hidden>{{name}}</option>
+                        {{/cities}}
+                    </select>
+                </div>
+                <br>
+                <input type="hidden" id="guild_id" name="guild_id">
+                <button type="submit" class="btn btn-primary">{{Save}}</button>
+                <br>
+            </form>
+        </div>
+    </body>
+</html>
+
+<script type='text/javascript' src="/js/pokemon-list.js"></script>
+<script type='text/javascript'>
+    if ("{{style}}" === 'dark') {
+        $('body').css('background-color', 'rgb(33, 37, 41)');
+        $('body').css('color', 'rgb(255, 255, 255)');
+    }
+    $('#guild_id').val(guildId);
+    const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
+    if (guilds) {
+        guilds.forEach(guild => guild.hidden = false);
+    }
+</script>

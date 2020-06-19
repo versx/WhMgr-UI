@@ -129,6 +129,7 @@ class PVP {
             id
         ];
         const result = await query(sql, args);
+        console.log('Pvp result:', result);
         return result.affectedRows === 1;
     }
 }

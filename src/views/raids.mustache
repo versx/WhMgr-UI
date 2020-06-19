@@ -64,6 +64,16 @@
         $('.modal-content').css('background-color', 'rgb(33, 37, 41)');
         $('.modal-content').css('color', 'rgb(255, 255, 255)');
     }
+
+    const hash = window.location.hash;
+    hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+    $('.nav-tabs a').click(function (e) {
+        $(this).tab('show');
+        const scrollmem = $('body').scrollTop();
+        window.location.hash = this.hash;
+        $('html,body').scrollTop(scrollmem);
+    });
+
     const table = $('#table').DataTable({
         "ajax": {
             "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=raids",

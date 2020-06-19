@@ -24,6 +24,7 @@ const utils = require('./services/utils.js');
 // TODO: Refresh page upon discord server changed
 // TODO: Add delete button to edit pages
 // TODO: Import/export options
+// TODO: IV list options
 // TODO: Copy subscriptions to other discord server options
 // TODO: Delete all subscriptions from all servers
 // TODO: Filter by Gen 1-5, Rarity button, Meta relevant button

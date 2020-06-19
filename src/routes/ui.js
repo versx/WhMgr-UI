@@ -7,6 +7,7 @@ const config = require('../config.json');
 const defaultData = require('../data/default.js');
 const map = require('../data/map.js');
 const Pokemon = require('../models/pokemon.js');
+const PVP = require('../models/pvp.js');
 const Raid = require('../models/raid.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
@@ -90,6 +91,29 @@ router.get('/pvp/new', (req, res) => {
     data.pokemon = map.getPokemonNameIdsList();
     data.cities = buildCityList(req.session.guilds);
     res.render('pvp-new', data);
+});
+
+router.get('/pvp/edit/:id', async (req, res) => {
+    const data = defaultData;
+    const id = req.params.id;
+    data.id = id;
+    const pvp = await PVP.getById(id);
+    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon.forEach(pkmn => {
+        pkmn.selected = parseInt(pkmn.id) === pvp.pokemonId;
+    });
+    data.leagues.forEach(league => {
+        league.selected = league.name === pvp.league;
+    });
+    data.min_rank = pvp.minRank;
+    data.min_percent = pvp.minPercent;
+    data.cities = buildCityList(req.session.guilds);
+    /*
+    data.cities.forEach(city => {
+        city.selected = city.name === pokemon.city;
+    });
+    */
+    res.render('pvp-edit', data);
 });
 
 router.get('/pvp/delete/:id', (req, res) => {

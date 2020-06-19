@@ -170,7 +170,6 @@ router.post('/pokemon/new', async (req, res) => {
 });
 
 router.post('/pokemon/edit/:id', async (req, res) => {
-    // TODO: City
     const id = req.params.id;
     const {
         guild_id,
@@ -183,9 +182,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         city
     } = req.body;
     const user_id = defaultData.user_id;
-    console.log('Id:', id);
     const pkmn = await Pokemon.getById(id);
-    console.log('Pkmn:', pkmn);
     if (pkmn) {
         const result = await Pokemon.save(id, guild_id, user_id, pokemon, form, 0, iv, min_lvl, max_lvl, gender);
         console.log('Result:', result);
@@ -232,6 +229,31 @@ router.post('/pvp/new', async (req, res) => {
         const result = await pvp.create();
         if (result) {
             // Success
+        }
+    }
+    res.redirect('/pokemon');
+});
+
+router.post('/pvp/edit/:id', async (req, res) => {
+    const id = req.params.id;
+    const {
+        guild_id,
+        pokemon,
+        form,
+        league,
+        min_rank,
+        min_percent,
+        city
+    } = req.body;
+    const user_id = defaultData.user_id;
+    const exists = await PVP.getById(id);
+    console.log('Pvp:', exists);
+    if (exists) {
+        const result = await PVP.save(id, guild_id, user_id, pokemon, form, league, min_rank, min_percent);
+        console.log('Result:', result);
+        if (result) {
+            // Success
+            console.log('PVP subscription', id, 'updated successfully.');
         }
     }
     res.redirect('/pokemon');
