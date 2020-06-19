@@ -53,6 +53,7 @@
                     <i class="fa fa-fw fa-user" aria-hidden="true"></i>&nbsp;{{username}}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/settings"><i class="fa fa-fw fa-cog" aria-hidden="true"></i>&nbsp;Settings</a>
                     <a class="dropdown-item" href="/logout"><i class="fa fa-fw fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a>
                 </div>
             </li>
@@ -74,16 +75,6 @@
         // Get current URL path and assign 'active' class
         var pathname = window.location.pathname;
         $('#navbar > ul > li > a[href="'+pathname+'"]').parent().addClass('active');
-
-        {{^home_page}}
-            $('.home_page').removeClass('active');
-        {{/home_page}}
-        {{^pokemon_page}}
-            $('.pokemon_page').css('hidden', {{pokemon_page}});
-        {{/pokemon_page}}
-        {{^raids_page}}
-            $('.raids_page').css('hidden', {{raids_page}});
-        {{/raids_page}}
     });
 
     function onServerChanged() {

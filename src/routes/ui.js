@@ -241,6 +241,12 @@ router.get('/invasions/delete_all', (req, res) => {
     res.render('invasions-delete-all', data);
 });
 
+
+router.get('/settings', (req, res) => {
+    const data = defaultData;
+    res.render('settings', data);
+});
+
 function buildCityList(guilds) {
     let cities = [];
     for (let i = 0; i < svc.geofences.length; i++) {
