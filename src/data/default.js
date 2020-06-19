@@ -14,6 +14,11 @@ data.genders = [
     { 'id': '*', 'name': 'All' },
     { 'id': 'm', 'name': 'Male' },
     { 'id': 'f', 'name': 'Female', }
-]
+];
+data.leagues = [
+    { 'id': 'great', 'name': 'Great' },
+    { 'id': 'ultra', 'name': 'Ultra' },
+    //{ 'id': 'master', 'name': 'Ultra' },
+];
 
 module.exports = data;

@@ -33,7 +33,7 @@ if (config.discord.enabled) {
 }
 
 
-// Pokemon Routes
+// Pokemon routes
 router.get('/pokemon', (req, res) => {
     const data = defaultData;
     res.render('pokemon', data);
@@ -82,6 +82,27 @@ router.get('/pokemon/delete_all', (req, res) => {
     const data = defaultData;
     res.render('pokemon-delete-all', data);
 });
+
+
+// PVP routes
+router.get('/pvp/new', (req, res) => {
+    const data = defaultData;
+    data.pokemon = map.getPokemonNameIdsList();
+    data.cities = buildCityList(req.session.guilds);
+    res.render('pvp-new', data);
+});
+
+router.get('/pvp/delete/:id', (req, res) => {
+    const data = defaultData;
+    data.id = req.params.id;
+    res.render('pvp-delete', data);
+});
+
+router.get('/pvp/delete_all', (req, res) => {
+    const data = defaultData;
+    res.render('pvp-delete-all', data);
+});
+
 
 // Raid routes
 router.get('/raids', (req, res) => {

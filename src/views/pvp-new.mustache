@@ -3,10 +3,10 @@
     <body>
         {{> navbar}}
         <br>
-        <h1 align="center" id="header">{{New Pokemon Subscription}}</h1>
+        <h1 align="center" id="header">{{New PVP Subscription}}</h1>
         <br>
         <div class="w-75" style="float: none; margin: 0 auto;">
-            <form action="/api/pokemon/new" method="post">
+            <form action="/api/pvp/new" method="post">
                 <div class="form-group">
                     {{Pokemon}}
                     <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
@@ -28,32 +28,21 @@
                     <input type="text" class="form-control" name="form" value="" placeholder="Sunny">
                 </div>
                 <div class="form-group">
-                    {{IV}}
-                    <input type="text" class="form-control" name="iv" value="" placeholder="100">
-                </div>
-                <div class="form-group">
-                    IV List
-                    <textarea class="form-control" name="iv_list" value="" placeholder="0/15/14&#10;0/15/15&#10;1/15/15" rows="5"></textarea>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <div class="form-group">
-                            {{Minimum Level}}
-                            <input type="text" class="form-control" name="min_lvl" value="" placeholder="0-35 or 0 or 10 etc">
-                        </div>
-                        <div class="form-group">
-                            {{Maximum Level}}
-                            <input type="text" class="form-control" name="max_lvl" value="" placeholder="0-35 or 0 or 35 etc">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    {{Gender}}
-                    <select name="gender" class="custom-select" required>
-                        {{#genders}}
-                        <option value="{{id}}">{{name}}</option>
-                        {{/genders}}
+                    {{League}}
+                    <select name="league" class="custom-select" required>
+                        <option value="" selected disabled hidden>{{Choose a League}}</option>
+                        {{#leagues}}
+                        <option value="{{name}}">{{name}}</option>
+                        {{/leagues}}
                     </select>
+                </div>
+                <div class="form-group">
+                    {{Minimum Rank}}
+                    <input type="text" class="form-control" name="min_rank" value="" placeholder="0-4096" min="0", max="4096">
+                </div>
+                <div class="form-group">
+                    {{Minimum Percent}}
+                    <input type="text" class="form-control" name="min_percent" value="" placeholder="0-100" min="0", max="100">
                 </div>
                 <div class="form-group">
                     {{City}}

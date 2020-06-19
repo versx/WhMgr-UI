@@ -6,6 +6,7 @@ const router = express.Router();
 const defaultData = require('../data/default.js');
 const subscriptions = require('../data/subscriptions.js');
 const Pokemon = require('../models/pokemon.js');
+const PVP = require('../models/pvp.js');
 const Raid = require('../models/raid.js');
 const Gym = require('../models/gym.js');
 const Quest = require('../models/quest.js');
@@ -54,7 +55,6 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const pvp = await subscriptions.getPvpSubscriptions(guild_id, user_id);
             if (pvp) {
                 pvp.forEach(pvpSub => {
-                    pvpSub.city = '';
                     pvpSub.buttons = `
                     <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
                     &nbsp;
@@ -206,6 +206,59 @@ router.post('/pokemon/delete_all', async (req, res) => {
         }
     } else {
         console.error('Guild ID or User ID not set, failed to delete all pokemon subscriptions for user.');
+    }
+    res.redirect('/pokemon');
+});
+
+
+// PVP routes
+router.post('/pvp/new', async (req, res) => {
+    const { guild_id, pokemon, form, city } = req.body;
+    const user_id = defaultData.user_id;
+    let cities = city;
+    if (!Array.isArray(city)) {
+        cities = [city];
+    }
+    //for (let i = 0; i < cities.length; i++) {
+    //    const area = cities[i];
+        const exists = await PVP.getByPokemon(guild_id, user_id, pokemon, form, area);
+        if (exists) {
+            // Already exists
+        } else {
+            const raid = new Raid(guild_id, user_id, pokemon, form, area);
+            const result = await raid.create();
+            if (result) {
+                // Success
+            }
+        }
+    //}
+    res.redirect('/pokemon');
+});
+
+router.post('/pvp/delete/:id', async (req, res) => {
+    const id = req.params.id;
+    const exists = await PVP.getById(id);
+    if (exists) {
+        const result = await PVP.deleteById(id);
+        if (result) {
+            // Success
+        }
+    } else {
+        // Does not exist
+    }
+    res.redirect('/pokemon');
+});
+
+router.post('/pvp/delete_all', async (req, res) => {
+    const { guild_id } = req.body;
+    const user_id = defaultData.user_id;
+    if (guild_id && user_id) {
+        const result = await PVP.deleteAll(guild_id, user_id);
+        if (result) {
+            // Success
+        }
+    } else {
+        console.error('Guild ID or User ID not set, failed to delete all PVP subscriptions for user.');
     }
     res.redirect('/pokemon');
 });

@@ -88,6 +88,7 @@ async function getPvpSubscriptions(guildId, userId) {
     if (results) {
         results.forEach(result => {
             result.name = pokedex[result.pokemon_id];
+            result.min_rank = result.miv_rank;
             result.city = ''; // TODO: City
         });
     }

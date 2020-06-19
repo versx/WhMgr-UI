@@ -131,7 +131,7 @@
     const tablePVP = $('#table-pvp').DataTable({
         "ajax": {
             "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pvp",
-            "dataSrc": "data.pokemon",
+            "dataSrc": "data.pvp",
             "async": true,
             "type": "POST"
         },
