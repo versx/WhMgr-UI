@@ -115,7 +115,17 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'settings':
             const settings = await subscriptions.getSubscriptionSettings(guild_id, user_id);
-            res.json({ data: { settings: settings } });
+            const formatted = req.query.formatted;
+            if (formatted) {
+                let list = [];
+                const keys = Object.keys(settings);
+                keys.forEach(key => {
+                    list.push({ 'name': key.toUpperCase(), 'value': settings[key] });
+                });
+                res.json({ data: { settings: list } });
+            } else {
+                res.json({ data: { settings: settings } });
+            }
             break;
     }
 });

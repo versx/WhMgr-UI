@@ -73,6 +73,21 @@
                     </div>
                 </div>
             </div>
+            <div class="card text-center p-1 m-3">
+                <div class="card-header bg-dark text-light text-center"><b>{{Settings}}</b></div>
+                <div class="card-body">
+                    <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>{{Name}}</th>
+                            <th>{{Value}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <br>
     </body>
@@ -91,6 +106,26 @@
         $('.list-group-item').css('border-color', 'white');
         //$('.darkInvert').css('filter', 'invert(100%)');
     }
+
+    $(document).ready(function() {
+        const table = $('#table').DataTable({
+            "ajax": {
+                "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=settings&formatted=true",
+                "dataSrc": "data.settings",
+                "async": true,
+                "type": "POST"
+            },
+            "paging": false,
+            "columns": [
+                { "data": "name" },
+                { "data": "value" }
+            ],
+            "info": false,
+            "order": [[ 0, "asc" ]],
+            "searching": false,
+            "responsive": true
+        });
+    });
 
     function refreshData() {
         $.ajax({

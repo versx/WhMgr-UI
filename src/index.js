@@ -23,7 +23,7 @@ const utils = require('./services/utils.js');
 // TODO: Add delete button to edit pages
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
-// TODO: Delete all subscriptions from all servers
+// TODO: Add city support for Pokemon and PvP subscriptions
 
 
 run();
@@ -105,7 +105,7 @@ async function run() {
             const data = defaultData;
             data.logged_in = true;
             data.username = req.session.username || 'root';
-            data.user_id = '266771160253988875'; // TODO: req.session.user_id;
+            data.user_id = req.session.user_id;
             return next();
         }
         res.redirect('/login');

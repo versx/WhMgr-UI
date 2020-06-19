@@ -54,7 +54,7 @@ class Pokemon {
         }
         return null;
     }
-    static async getByPokemon(guildId, userId, pokemonId, form) { // TODO: City
+    static async getByPokemon(guildId, userId, pokemonId, form) {
         const sql = `
         SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender
         FROM pokemon

@@ -71,7 +71,7 @@ async function getPokemonSubscriptions(guildId, userId) {
             result.cp = `${result.min_cp}-4096`;
             result.iv = result.miv_iv;
             result.lvl = `${result.min_lvl}-${result.max_lvl}`;
-            result.city = ''; // TODO: City
+            result.city = '';
             //result.guild_id = result.guild_id.toString();
             //result.userId = result.userId.toString();
         });
@@ -91,7 +91,7 @@ async function getPvpSubscriptions(guildId, userId) {
         results.forEach(result => {
             result.name = pokedex[result.pokemon_id];
             result.min_rank = result.miv_rank;
-            result.city = ''; // TODO: City
+            result.city = '';
         });
     }
     return results;
