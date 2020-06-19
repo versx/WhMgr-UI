@@ -151,6 +151,39 @@ async function getInvasionSubscriptions(guildId, userId) {
     return results;
 }
 
+async function getSubscriptionSettings(guildId, userId) {
+    const sql = `
+    SELECT enabled, distance, latitude, longitude, icon_style
+    FROM subscriptions
+    WHERE guild_id = ? AND userId = ?
+    `;
+    const args = [guildId, userId];
+    const results = await query(sql, args);
+    if (results && results.length > 0) {
+        return results[0];
+    }
+    return results;
+}
+
+async function setSubscriptionSettings(guildId, userId, enabled, distance, latitude, longitude, icon_style) {
+    const sql = `
+    UPDATE subscriptions
+    SET enabled = ?, distance = ?, latitude = ?, longitude = ?, icon_style = ?
+    WHERE guild_id = ? AND userId = ?
+    `;
+    const args = [
+        guildId,
+        userId,
+        enabled,
+        distance,
+        latitude,
+        longitude,
+        icon_style
+    ];
+    const results = await query(sql, args);
+    return results.affectedRows > 0;;
+}
+
 module.exports = {
     getUserSubscriptionStats,
     getPokemonSubscriptions,
@@ -158,5 +191,7 @@ module.exports = {
     getRaidSubscriptions,
     getGymSubscriptions,
     getQuestSubscriptions,
-    getInvasionSubscriptions
+    getInvasionSubscriptions,
+    getSubscriptionSettings,
+    setSubscriptionSettings
 };

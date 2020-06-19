@@ -113,6 +113,10 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             }
             res.json({ data: { invasions: invasions } });
             break;
+        case 'settings':
+            const settings = await subscriptions.getSubscriptionSettings(guild_id, user_id);
+            res.json({ data: { settings: settings } });
+            break;
     }
 });
 
@@ -554,6 +558,35 @@ router.post('/invasions/delete_all', async (req, res) => {
         console.error('Guild ID or User ID not set, failed to delete all invasion subscriptions for user.');
     }
     res.redirect('/invasions');
+});
+
+
+// Settings routes
+router.post('/settings', async (req, res) => {
+    const {
+        guild_id,
+        icon_style,
+        location,
+        distance,
+        enabled
+    } = req.body;
+    const user_id = defaultData.user_id;
+    const split = (location || '0,0').split(',');
+    const lat = parseFloat(split[0]);
+    const lon = parseFloat(split[1]);
+    const result = subscriptions.setSubscriptionSettings(
+        guild_id,
+        user_id,
+        enabled === 'checked',
+        distance,
+        lat,
+        lon,
+        icon_style
+    );
+    if (result) {
+        // Success
+    }
+    res.redirect('/settings');
 });
 
 module.exports = router;

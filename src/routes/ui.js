@@ -379,6 +379,7 @@ router.get('/invasions/delete_all', (req, res) => {
 });
 
 
+// Settings routes
 router.get('/settings', (req, res) => {
     const data = defaultData;
     data.servers.forEach(server => {
