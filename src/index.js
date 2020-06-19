@@ -24,6 +24,7 @@ const utils = require('./services/utils.js');
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
 // TODO: Add city support for Pokemon and PvP subscriptions
+// TODO: Use translations for pokemon names and forms
 
 
 run();
