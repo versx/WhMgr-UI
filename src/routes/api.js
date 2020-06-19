@@ -24,7 +24,13 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
     switch (type) {
         case 'subscriptions':
             const subscription = await subscriptions.getUserSubscriptionStats(guild_id, user_id);
-            res.json({ data: { subscriptions: subscription } });
+            req.sessionStore.length(function(err, length) {
+                if (err) {
+                    console.error('Failed to get session store length:', err);
+                    return;
+                }
+                res.json({ data: { subscriptions: subscription, clients_online: length } });
+            });
             break;
         case 'pokemon':
             const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
@@ -266,7 +272,7 @@ router.post('/pvp/new', async (req, res) => {
     if (exists) {
         // Already exists
     } else {
-        const pvp = new PVP(guild_id, user_id, pokemon, form, league, min_rank, min_percent);
+        const pvp = new PVP(guild_id, user_id, pokemon, form, league, min_rank || 25, min_percent || 98);
         const result = await pvp.create();
         if (result) {
             // Success
@@ -290,7 +296,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
     const user_id = defaultData.user_id;
     const exists = await PVP.getById(id);
     if (exists) {
-        const result = await PVP.save(id, guild_id, user_id, pokemon, form, league, min_rank, min_percent);
+        const result = await PVP.save(id, guild_id, user_id, pokemon, form, league, min_rank || 25, min_percent || 98);
         if (result) {
             // Success
             console.log('PVP subscription', id, 'updated successfully.');

@@ -5,6 +5,7 @@ const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const session = require('express-session');
+const MemoryStore = require('memorystore')(session)
 const app = express();
 const mustacheExpress = require('mustache-express');
 const helmet = require('helmet');
@@ -68,10 +69,14 @@ async function run() {
     // Set locale
     i18n.setLocale(config.locale);
 
+    // Session store in memory
+    const store = new MemoryStore();
+
     // Sessions middleware
     app.use(session({
         secret: utils.generateString(),
         resave: true,
+        store: store,
         saveUninitialized: true
     }));
 
@@ -99,6 +104,8 @@ async function run() {
 
     // Login middleware
     app.use((req, res, next) => {
+        // Expose the store
+        req.sessionStore = store;
         if (config.discord.enabled && (req.path === '/api/discord/login' || req.path === '/login')) {
             return next();
         }
