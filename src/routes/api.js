@@ -34,7 +34,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
             if (pokemon) {
                 pokemon.forEach(pkmn => {
-                    pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='64'>&nbsp;${pkmn.name}`;
+                    pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='48'>&nbsp;${pkmn.name}`;
                     /*
                     pkmn.gender === '*'
                     ? 'All'
@@ -55,6 +55,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const pvp = await subscriptions.getPvpSubscriptions(guild_id, user_id);
             if (pvp) {
                 pvp.forEach(pvpSub => {
+                    pvpSub.name = `<img src='${utils.getPokemonIcon(pvpSub.pokemon_id, pvpSub.form)}' width='auto' height='48'>&nbsp;${pvpSub.name}`;
                     pvpSub.buttons = `
                     <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
                     &nbsp;
@@ -68,7 +69,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const raids = await subscriptions.getRaidSubscriptions(guild_id, user_id);
             if (raids) {
                 raids.forEach(raid => {
-                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, 0)}' width='auto' height='64'>&nbsp;${raid.name}`;
+                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, 0)}' width='auto' height='48'>&nbsp;${raid.name}`;
                     raid.buttons = `
                     <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
                     &nbsp;
@@ -106,7 +107,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const invasions = await subscriptions.getInvasionSubscriptions(guild_id, user_id);
             if (invasions) {
                 invasions.forEach(invasion => {
-                    invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='64'>&nbsp;${invasion.reward}`;
+                    invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='48'>&nbsp;${invasion.reward}`;
                     invasion.buttons = `
                     <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
                     &nbsp;
@@ -213,25 +214,26 @@ router.post('/pokemon/delete_all', async (req, res) => {
 
 // PVP routes
 router.post('/pvp/new', async (req, res) => {
-    const { guild_id, pokemon, form, city } = req.body;
+    const {
+        guild_id,
+        pokemon,
+        form,
+        league,
+        min_rank,
+        min_percent,
+        city
+    } = req.body;
     const user_id = defaultData.user_id;
-    let cities = city;
-    if (!Array.isArray(city)) {
-        cities = [city];
-    }
-    //for (let i = 0; i < cities.length; i++) {
-    //    const area = cities[i];
-        const exists = await PVP.getByPokemon(guild_id, user_id, pokemon, form, area);
-        if (exists) {
-            // Already exists
-        } else {
-            const raid = new Raid(guild_id, user_id, pokemon, form, area);
-            const result = await raid.create();
-            if (result) {
-                // Success
-            }
+    const exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemon, form, league);
+    if (exists) {
+        // Already exists
+    } else {
+        const pvp = new PVP(guild_id, user_id, pokemon, form, league, min_rank, min_percent);
+        const result = await pvp.create();
+        if (result) {
+            // Success
         }
-    //}
+    }
     res.redirect('/pokemon');
 });
 
