@@ -23,6 +23,9 @@ const utils = require('./services/utils.js');
 // TODO: Check guilds from req.session.guilds and only show guilds user is in (defaultData)
 // TODO: Refresh page upon discord server changed
 // TODO: Add delete button to edit pages
+// TODO: Import/export options
+// TODO: Copy subscriptions to other discord server options
+// TODO: Delete all subscriptions from all servers
 
 
 run();
