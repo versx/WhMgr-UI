@@ -3,29 +3,13 @@
     <body>
         {{> navbar}}
         <br>
-        <h1 align="center" id="header">{{New Raid Subscription}}</h1>
+        <h1 align="center" id="header">{{New Gym Subscription}}</h1>
         <br>
         <div class="w-75" style="float: none; margin: 0 auto;">
-            <form action="/api/raids/new" method="post">
+            <form action="/api/gyms/new" method="post">
                 <div class="form-group">
-                    {{Pokemon}}
-                    <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
-                    {{#pokemon}}
-                        <div class="pokemon-icon-sprite item" id="{{id}}" name="{{id}}" data-value="{{id}}" onclick="onPokemonClicked(this)">
-                            <img src="{{image_url}}" width="auto" height="48" />
-                            <span class="caption">#{{id}}</span>
-                        </div>
-                    {{/pokemon}}
-                    </div>
-                    <input type="hidden" id="pokemon" name="pokemon" />
-                    <br>
-                    <!--<input type="text" class="form-control" placeholder="Search Name or ID" />-->
-                    <button id="select_all" type="button" class="btn btn-primary btn-sm">Select All</button>
-                    <button id="select_none" type="button" class="btn btn-primary btn-sm">Select None</button>
-                </div>
-                <div class="form-group">
-                    {{Form}}
-                    <input type="text" class="form-control" name="form" value="" placeholder="Sunny">
+                    {{Gym Name}}
+                    <input type="text" class="form-control" name="name" value="" placeholder="Starbucks">
                 </div>
                 <div class="form-group">
                     {{City}}

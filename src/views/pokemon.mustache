@@ -12,26 +12,55 @@
         <h1 align="center" id="header">{{Pokemon}}</h1>
         <br>
         <div style="width:90%; margin-left:calc(5%);">
-            <a href="/pokemon/delete_all" role="button" style="float: right; margin-left: 5px;" class="btn btn-danger">{{Delete All}}</a>
-            <a href="/pokemon/new" role="button" style="float: right; margin-right: 5px;" class="btn btn-success">{{New Pokemon Subscription}}</a>
-            <br><br>
-            <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
-                <thead class="thead-dark">
-                    <tr>
-                        <th class="all">{{ID}}</th>
-                        <th class="all">{{Pokemon}}</th>
-                        <th class="all">{{Form}}</th>
-                        <th class="all">{{CP}}</th>
-                        <th class="all">{{IV}}</th>
-                        <th class="min-desktop">{{Level}}</th>
-                        <th class="all">{{Gender}}</th>
-                        <th class="all">{{City}}</th>
-                        <th class="all" width="5%"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item"><a class="nav-link active" data-toggle="pill" href="#pokemon">{{Pokemon}}</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="pill" href="#pvp">{{PVP}}</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="pokemon">
+                    <a href="/pokemon/delete_all" role="button" style="float: right; margin-left: 5px;" class="btn btn-danger">{{Delete All}}</a>
+                    <a href="/pokemon/new" role="button" style="float: right; margin-right: 5px;" class="btn btn-success">{{New Pokemon Subscription}}</a>
+                    <br><br>
+                    <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="all">{{ID}}</th>
+                                <th class="all">{{Pokemon}}</th>
+                                <th class="all">{{Form}}</th>
+                                <th class="all">{{CP}}</th>
+                                <th class="all">{{IV}}</th>
+                                <th class="min-desktop">{{Level}}</th>
+                                <th class="all">{{Gender}}</th>
+                                <th class="all">{{City}}</th>
+                                <th class="all" width="5%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane" id="pvp">
+                    <a href="/pvp/delete_all" role="button" style="float: right; margin-left: 5px;" class="btn btn-danger">{{Delete All}}</a>
+                    <a href="/pvp/new" role="button" style="float: right; margin-right: 5px;" class="btn btn-success">{{New PVP Subscription}}</a>
+                    <br><br>
+                    <table id="table-pvp" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="all">{{ID}}</th>
+                                <th class="all">{{Pokemon}}</th>
+                                <th class="all">{{Form}}</th>
+                                <th class="all">{{League}}</th>
+                                <th class="all">{{Minimum Rank}}</th>
+                                <th class="min-desktop">{{Minimum Percent}}</th>
+                                <th class="all">{{City}}</th>
+                                <th class="all" width="5%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <br>
     </body>
@@ -99,7 +128,57 @@
         "responsive": true
     });
 
+    const tablePVP = $('#table-pvp').DataTable({
+        "ajax": {
+            "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pvp",
+            "dataSrc": "data.pokemon",
+            "async": true,
+            "type": "POST"
+        },
+        //"dom": "Bfrtip",
+        // Reference: https://stackoverflow.com/a/43176143
+        /*
+        "dom": "<'row'<'col-sm-8'B><'col-sm-4'f>t>" +
+                "<'row'<'col-sm-4'li><'col-sm-8'p>>",
+        */
+        "dom": "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        "fixedHeader": {
+            "header": true,
+            "headerOffset": $('.navbar').height() + 15
+        },
+        "buttons": [
+            "colvis",
+            "pageLength"
+        ],
+        "colReorder": true,
+        "stateSave": true,
+        "paging":   true,
+        "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
+        "pageLength": 100,
+        "columns": [
+            { "data": "pokemon_id" },
+            { "data": "name" },
+            { "data": "form" },
+            { "data": "league" },
+            { "data": "min_rank" },
+            { "data": "min_percent" },
+            { "data": "city" },
+            { "data": "buttons" }
+        ],
+        "info": true,
+        "order": [[ 0, "asc" ]],
+        "search.caseInsensitive": true,
+        "columnDefs": [{
+            "targets": [7],
+            "orderable": false
+        }],
+        "responsive": true
+    });
+
     function refreshData() {
         $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pokemon").load();
+        $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pvp").load();
     }
 </script>

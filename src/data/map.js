@@ -1,11 +1,12 @@
 'use strict';
 
+const utils = require('../services/utils.js');
 const grunttypes = require('../../static/data/grunttype.json');
 const pokedex = require('../../static/data/pokedex.json');
 
 function getPokemonNameIdsList() {
     const dex = pokedex;
-    const result = Object.keys(dex).map(x => { return { 'id': x, 'name': pokedex[x] }; });
+    const result = Object.keys(dex).map(x => { return { 'id': x, 'id_3': (x + '').padStart(3, '0'), 'name': pokedex[x], 'image_url': utils.getPokemonIcon(x, 0) }; });
     return result;
 }
 
@@ -22,7 +23,9 @@ function getGruntRewardIdsList() {
                 const pokemonId = parseInt(encounter.split('_')[0]);
                 rewards.push({
                     'pokemon_id': pokemonId,
-                    'name': pokedex[pokemonId]
+                    'pokemon_id_3': (pokemonId + '').padStart(3, '0'),
+                    'name': pokedex[pokemonId],
+                    'image_url': utils.getPokemonIcon(pokemonId, 0)
                 });
             }
             if (grunt.second_reward) {
@@ -31,12 +34,15 @@ function getGruntRewardIdsList() {
                     const pokemonId = parseInt(encounter.split('_')[0]);
                     rewards.push({
                         'pokemon_id': pokemonId,
-                        'name': pokedex[pokemonId]
+                        'pokemon_id_3': (pokemonId + '').padStart(3, '0'),
+                        'name': pokedex[pokemonId],
+                        'image_url': utils.getPokemonIcon(pokemonId, 0)
                     });
                 }
             }
         }
     }
+    rewards.sort((x, y) => x.pokemon_id - y.pokemon_id);
     return rewards;
 }
 

@@ -16,9 +16,19 @@ async function getUserSubscriptionStats(guildId, userId) {
         ) AS pokemon,
         (
             SELECT COUNT(id)
+            FROM   pvp
+            WHERE guild_id = ? AND userId = ?
+        ) AS pvp,
+        (
+            SELECT COUNT(id)
             FROM   raids
             WHERE guild_id = ? AND userId = ?
         ) AS raids,
+        (
+            SELECT COUNT(id)
+            FROM   gyms
+            WHERE guild_id = ? AND userId = ?
+        ) AS gyms,
         (
             SELECT COUNT(id)
             FROM   quests
@@ -37,6 +47,8 @@ async function getUserSubscriptionStats(guildId, userId) {
         guildId, userId,
         guildId, userId,
         guildId, userId,
+        guildId, userId,
+        guildId, userId
     ];
     const results = await query(sql, args);
     if (results && results.length > 0) {
@@ -59,7 +71,24 @@ async function getPokemonSubscriptions(guildId, userId) {
             result.cp = `${result.min_cp}-4096`;
             result.iv = result.miv_iv;
             result.lvl = `${result.min_lvl}-${result.max_lvl}`;
-            result.city = '';
+            result.city = ''; // TODO: City
+        });
+    }
+    return results;
+}
+
+async function getPvpSubscriptions(guildId, userId) {
+    const sql = `
+    SELECT id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent
+    FROM pvp
+    WHERE guild_id = ? AND userId = ?
+    `;
+    const args = [guildId, userId];
+    const results = await query(sql, args);
+    if (results) {
+        results.forEach(result => {
+            result.name = pokedex[result.pokemon_id];
+            result.city = ''; // TODO: City
         });
     }
     return results;
@@ -78,6 +107,17 @@ async function getRaidSubscriptions(guildId, userId) {
             result.name = pokedex[result.pokemon_id];
         });
     }
+    return results;
+}
+
+async function getGymSubscriptions(guildId, userId) {
+    const sql = `
+    SELECT id, guild_id, userId, name
+    FROM gyms
+    WHERE guild_id = ? AND userId = ?
+    `;
+    const args = [guildId, userId];
+    const results = await query(sql, args);
     return results;
 }
 
@@ -111,7 +151,9 @@ async function getInvasionSubscriptions(guildId, userId) {
 module.exports = {
     getUserSubscriptionStats,
     getPokemonSubscriptions,
+    getPvpSubscriptions,
     getRaidSubscriptions,
+    getGymSubscriptions,
     getQuestSubscriptions,
     getInvasionSubscriptions
 };

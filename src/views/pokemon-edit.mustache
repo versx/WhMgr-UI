@@ -3,47 +3,40 @@
     <body>
         {{> navbar}}
         <br>
-        <h1 align="center" id="header">{{New Pokemon Subscription}}</h1>
+        <h1 align="center" id="header">{{Edit Pokemon Subscription}} {{id}}</h1>
         <br>
         <div class="w-75" style="float: none; margin: 0 auto;">
-            <form action="/api/pokemon/new" method="post">
+            <form action="/api/pokemon/edit/{{id}}" method="post">
                 <div class="form-group">
                     {{Pokemon}}
-                    <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
-                    {{#pokemon}}
-                        <div class="pokemon-icon-sprite item" id="{{id}}" name="{{id}}" data-value="{{id}}" onclick="onPokemonClicked(this)">
-                            <img src="{{image_url}}" width="auto" height="48" />
-                            <span class="caption">#{{id}}</span>
-                        </div>
-                    {{/pokemon}}
-                    </div>
-                    <input type="hidden" id="pokemon" name="pokemon" />
-                    <br>
-                    <!--<input type="text" class="form-control" placeholder="Search Name or ID" />-->
-                    <button id="select_all" type="button" class="btn btn-primary btn-sm">Select All</button>
-                    <button id="select_none" type="button" class="btn btn-primary btn-sm">Select None</button>
+                    <select name="pokemon" class="custom-select" required>
+                        <option value="" selected disabled hidden>{{Choose a Pokemon}}</option>
+                        {{#pokemon}}
+                        <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        {{/pokemon}}
+                    </select>
                 </div>
                 <div class="form-group">
                     {{Form}}
-                    <input type="text" class="form-control" name="form" value="" placeholder="Sunny">
+                    <input type="text" class="form-control" name="form" value="{{form}}" placeholder="Sunny">
                 </div>
                 <div class="form-group">
                     {{IV}}
-                    <input type="text" class="form-control" name="iv" value="" placeholder="100">
+                    <input type="text" class="form-control" name="iv" value="{{iv}}" placeholder="100">
                 </div>
                 <div class="form-group">
                     IV List
-                    <textarea class="form-control" name="iv_list" value="" placeholder="0/15/14&#10;0/15/15&#10;1/15/15" rows="5"></textarea>
+                    <textarea class="form-control" name="iv_list" value="{{iv_list}}" placeholder="0/15/14&#10;0/15/15&#10;1/15/15" rows="5"></textarea>
                 </div>
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
                             {{Minimum Level}}
-                            <input type="text" class="form-control" name="min_lvl" value="" placeholder="0-35 or 0 or 10 etc">
+                            <input type="text" class="form-control" name="min_lvl" value="{{min_lvl}}" placeholder="0-35 or 0 or 10 etc">
                         </div>
                         <div class="form-group">
                             {{Maximum Level}}
-                            <input type="text" class="form-control" name="max_lvl" value="" placeholder="0-35 or 0 or 35 etc">
+                            <input type="text" class="form-control" name="max_lvl" value="{{max_lvl}}" placeholder="0-35 or 0 or 10 etc">
                         </div>
                     </div>
                 </div>
@@ -51,22 +44,23 @@
                     {{Gender}}
                     <select name="gender" class="custom-select" required>
                         {{#genders}}
-                        <option value="{{id}}">{{name}}</option>
+                        <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
                         {{/genders}}
                     </select>
                 </div>
                 <div class="form-group">
                     {{City}}
-                    <select name="city" class="custom-select" multiple required>
-                        <option value="all" selected>All</option>
+                    <select name="city" class="custom-select" required>
+                        <option value="" selected disabled hidden>{{Choose a City}}</option>
+                        <option value="all">All</option>
                         {{#cities}}
-                        <option value="{{name}}" id="g_{{guild}}" hidden>{{name}}</option>
+                        <option value="{{name}}" id="g_{{guild}}" {{#selected}}selected{{/selected}} hidden>{{name}}</option>
                         {{/cities}}
                     </select>
                 </div>
                 <br>
                 <input type="hidden" id="guild_id" name="guild_id">
-                <button type="submit" class="btn btn-primary">{{Create}}</button>
+                <button type="submit" class="btn btn-primary">{{Save}}</button>
                 <br>
             </form>
         </div>

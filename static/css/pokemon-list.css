@@ -1,0 +1,15 @@
+.pokemon-list {
+    max-height: 331px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    border-width: 1px;
+    border-color: white;
+}
+div.item {
+    vertical-align: top;
+    display: inline-block;
+    text-align: center;
+}
+.caption {
+    display: block;
+}

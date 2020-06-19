@@ -6,7 +6,7 @@ const router = express.Router();
 const config = require('../config.json');
 const defaultData = require('../data/default.js');
 const map = require('../data/map.js');
-//const subscriptions = require('../data/subscriptions.js');
+const Pokemon = require('../models/pokemon.js');
 const Raid = require('../models/raid.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
@@ -32,11 +32,6 @@ if (config.discord.enabled) {
     });
 }
 
-router.get('/subscriptions', async (req, res) => {
-    const data = defaultData;
-    res.render('subscriptions', data);
-});
-
 
 // Pokemon Routes
 router.get('/pokemon', (req, res) => {
@@ -47,22 +42,34 @@ router.get('/pokemon', (req, res) => {
 router.get('/pokemon/new', (req, res) => {
     const data = defaultData;
     data.pokemon = map.getPokemonNameIdsList();
-    let cities = [];
-    for (let i = 0; i < svc.geofences.length; i++) {
-        const geofence = svc.geofences[i];
-        const configGuilds = config.discord.guilds;
-        for (let j = 0; j < configGuilds.length; j++) {
-            const guild = configGuilds[j];
-            if (req.session.guilds.includes(guild.id) && guild.geofences.includes(geofence.name)) {
-                cities.push({
-                    'name': geofence.name,
-                    'guild': guild.id
-                });
-            }
-        }
-    };
-    data.cities = cities;
+    data.cities = buildCityList(req.session.guilds);
     res.render('pokemon-new', data);
+});
+
+router.get('/pokemon/edit/:id', async (req, res) => {
+    const data = defaultData;
+    const id = req.params.id;
+    data.id = id;
+    const pokemon = await Pokemon.getById(id);
+    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon.forEach(pkmn => {
+        pkmn.selected = parseInt(pkmn.id) === pokemon.pokemonId;
+    });
+    data.iv = pokemon.minIV;
+    data.iv_list = ['10/10/10\n0/15/15'];
+    //data.lvl = `${pokemon.min_lvl}-${pokemon.max_lvl}`;
+    data.min_lvl = pokemon.minLvl;
+    data.max_lvl = pokemon.maxLvl;
+    data.genders.forEach(gender => {
+        data.selected = gender.id === pokemon.gender;
+    });
+    data.cities = buildCityList(req.session.guilds);
+    /*
+    data.cities.forEach(city => {
+        city.selected = city.name === pokemon.city;
+    });
+    */
+    res.render('pokemon-edit', data);
 });
 
 router.get('/pokemon/delete/:id', (req, res) => {
@@ -71,6 +78,10 @@ router.get('/pokemon/delete/:id', (req, res) => {
     res.render('pokemon-delete', data);
 });
 
+router.get('/pokemon/delete_all', (req, res) => {
+    const data = defaultData;
+    res.render('pokemon-delete-all', data);
+});
 
 // Raid routes
 router.get('/raids', (req, res) => {
@@ -110,6 +121,25 @@ router.get('/raid/delete/:id', (req, res) => {
 router.get('/raids/delete_all', (req, res) => {
     const data = defaultData;
     res.render('raids-delete-all', data);
+});
+
+
+// Gym routes
+router.get('/gym/new', (req, res) => {
+    const data = defaultData;
+    //data.cities = buildCityList(req.session.guilds);
+    res.render('gym-new', data);
+});
+
+router.get('/gym/delete/:id', (req, res) => {
+    const data = defaultData;
+    data.id = req.params.id;
+    res.render('gym-delete', data);
+});
+
+router.get('/gyms/delete_all', (req, res) => {
+    const data = defaultData;
+    res.render('gyms-delete-all', data);
 });
 
 
