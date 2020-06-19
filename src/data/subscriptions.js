@@ -72,6 +72,8 @@ async function getPokemonSubscriptions(guildId, userId) {
             result.iv = result.miv_iv;
             result.lvl = `${result.min_lvl}-${result.max_lvl}`;
             result.city = ''; // TODO: City
+            //result.guild_id = result.guild_id.toString();
+            //result.userId = result.userId.toString();
         });
     }
     return results;

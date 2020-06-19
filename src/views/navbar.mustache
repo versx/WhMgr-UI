@@ -78,14 +78,14 @@
     });
 
     function onServerChanged() {
-        const guildId = document.getElementById("server_selector").value;//$(".server_selector").val();
+        const guildId = document.getElementById("server_selector").value;
         console.log("Guild:", guildId);
         if (guildId) {
             set('guild_id', guildId);
             try {
                 $('#guild_id').val(guildId);
                 refreshData();
-                //location.reload();
+                location.reload();
             } catch { }
         }
     }

@@ -31,8 +31,22 @@
         "clientSecret": "",
         "redirectUri": "http://localhost:8080/api/discord/callback",
         "guilds": [
-            { "name": "Guild Name1", "id": "111111111111111111", "geofences": [] },
-            { "name": "Guild Name2", "id": "222222222222222222", "geofences": [] }
+            {
+                "name": "Guild Name1",
+                "id": "111111111111111111",
+                "roles": [
+                    "000000000000000000"
+                ],
+                "geofences": []
+            },
+            {
+                "name": "Guild Name2",
+                "id": "222222222222222222",
+                "roles": [
+                    "000000000000000000"
+                ],
+                "geofences": []
+            }
         ],
         "userIdWhitelist": []
     },

@@ -69,7 +69,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const raids = await subscriptions.getRaidSubscriptions(guild_id, user_id);
             if (raids) {
                 raids.forEach(raid => {
-                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, 0)}' width='auto' height='48'>&nbsp;${raid.name}`;
+                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, raid.form)}' width='auto' height='48'>&nbsp;${raid.name}`;
                     raid.buttons = `
                     <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
                     &nbsp;
@@ -194,6 +194,20 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     res.redirect('/pokemon');
 });
 
+router.post('/pokemon/delete/:id', async (req, res) => {
+    const id = req.params.id;
+    const exists = await Pokemon.getById(id);
+    if (exists) {
+        const result = await Pokemon.deleteById(id);
+        if (result) {
+            // Success
+        }
+    } else {
+        // Does not exist
+    }
+    res.redirect('/pokemon');
+});
+
 router.post('/pokemon/delete_all', async (req, res) => {
     const { guild_id } = req.body;
     const user_id = defaultData.user_id;
@@ -231,7 +245,7 @@ router.post('/pvp/new', async (req, res) => {
             // Success
         }
     }
-    res.redirect('/pokemon');
+    res.redirect('/pokemon#pvp');
 });
 
 router.post('/pvp/edit/:id', async (req, res) => {
@@ -256,7 +270,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
             console.log('PVP subscription', id, 'updated successfully.');
         }
     }
-    res.redirect('/pokemon');
+    res.redirect('/pokemon#pvp');
 });
 
 router.post('/pvp/delete/:id', async (req, res) => {
@@ -270,7 +284,7 @@ router.post('/pvp/delete/:id', async (req, res) => {
     } else {
         // Does not exist
     }
-    res.redirect('/pokemon');
+    res.redirect('/pokemon#pvp');
 });
 
 router.post('/pvp/delete_all', async (req, res) => {
@@ -284,7 +298,7 @@ router.post('/pvp/delete_all', async (req, res) => {
     } else {
         console.error('Guild ID or User ID not set, failed to delete all PVP subscriptions for user.');
     }
-    res.redirect('/pokemon');
+    res.redirect('/pokemon#pvp');
 });
 
 

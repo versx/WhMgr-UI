@@ -9,7 +9,7 @@
             <form action="/api/pvp/delete/{{id}}" method="post">
                 <div align="center">
                     <h3 id="message">{{Are you sure that you want to delete PVP subscription}} {{id}}?</h3>
-                    <a href="/pokemon" id="cancel" name="cancel" class="btn btn-secondary">{{Cancel}}</a>
+                    <a href="/pokemon#pvp" id="cancel" name="cancel" class="btn btn-secondary">{{Cancel}}</a>
                     <input type="hidden" id="guild_id" name="guild_id" required>
                     <button type="submit" class="btn btn-danger">{{Delete}}</button>
                 </div>

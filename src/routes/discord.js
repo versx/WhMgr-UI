@@ -22,7 +22,7 @@ router.get('/login', (req, res) => {
     res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${config.discord.clientId}&scope=${scope}&response_type=code&redirect_uri=${redirect}`);
 });
 
-router.get('/callback', catchAsyncErrors(async function(req, res) {
+router.get('/callback', catchAsyncErrors(async (req, res) => {
     if (!req.query.code) {
         throw new Error('NoCodeProvided');
     }
@@ -34,7 +34,7 @@ router.get('/callback', catchAsyncErrors(async function(req, res) {
     
     axios.post('https://discord.com/api/oauth2/token', data, {
         headers: headers
-    }).then(async function(response) {
+    }).then(async (response) => {
         const client = new DiscordClient(response.data.access_token);
         const user = await client.getUser();
         if (config.discord.userIdWhitelist.length > 0 && config.discord.userIdWhitelist.includes(user.id)) {
@@ -49,7 +49,6 @@ router.get('/callback', catchAsyncErrors(async function(req, res) {
         }
         const guilds = await client.getGuilds();
         const roles = await client.getUserRoles(user.id);
-
         req.session.logged_in = true;
         req.session.user_id = user.id;
         req.session.username = `${user.username}#${user.discriminator}`;
