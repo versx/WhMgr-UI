@@ -4,7 +4,7 @@ function numberWithCommas(x) {
 
 function updateCounter(name, value) {
     $({ counter: 0 }).animate({ counter: value }, {
-        duration: 1500,
+        duration: 1000,
         easing: 'swing', // can be anything
         step: function() { // called on every step
             // Update the element's text with rounded-up value:
