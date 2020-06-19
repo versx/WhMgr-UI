@@ -19,13 +19,11 @@ const utils = require('./services/utils.js');
 
 // TODO: Group quests and invasion cities when listing
 // TODO: Convert to typescript
-// TODO: Multiple individual value subscriptions
+// TODO: Multiple individual value/IV list subscriptions
 // TODO: Add delete button to edit pages
 // TODO: Import/export options
-// TODO: IV list options
 // TODO: Copy subscriptions to other discord server options
 // TODO: Delete all subscriptions from all servers
-// TODO: Filter by Gen 1-5, Rarity button, Meta relevant button
 
 
 run();

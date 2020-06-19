@@ -16,15 +16,11 @@ const utils = require('../services/utils.js');
 
 router.post('/server/:guild_id/user/:user_id', async (req, res) => {
     const { guild_id, user_id } = req.params;
-    const type = req.query.type;
-    console.log('Path:', req.path);
-    console.log('Query:', req.query);
-
     if (guild_id === null) {
         console.warn('[WARN] Guild ID is null.');
         return;
     }
-
+    const type = req.query.type;
     switch (type) {
         case 'subscriptions':
             const subscription = await subscriptions.getUserSubscriptionStats(guild_id, user_id);
@@ -134,9 +130,6 @@ router.post('/pokemon/new', async (req, res) => {
         city
     } = req.body;
     const user_id = defaultData.user_id;
-    console.log('Body:', req.body);
-    console.log('Params:', req.params);
-    console.log('Query:', req.query);
     /*
     let cities = city;
     if (!Array.isArray(city)) {
@@ -149,20 +142,17 @@ router.post('/pokemon/new', async (req, res) => {
     const split = pokemon.split(',');
     for (let i = 0; i < split.length; i++) {
         const pokemonId = split[i];
-        console.log('PokemonId:', pokemonId);
         const exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form);
-        console.log('Exists:', exists);
         if (exists) {
             // Already exists
             // TODO: Update already existing
             console.log('Already exists');
         } else {
             const pkmn = new Pokemon(guild_id, user_id, pokemonId, form, 0, iv, min_lvl, max_lvl, gender);
-            console.log('Pkmn:', pkmn);
             const result = await pkmn.create();
-            console.log('Result:', result);
             if (result) {
                 // Success
+                console.log('Pokemon subscription for Pokemon', pokemon, 'created successfully.');
             }
         }
     }
@@ -185,7 +175,6 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     const pkmn = await Pokemon.getById(id);
     if (pkmn) {
         const result = await Pokemon.save(id, guild_id, user_id, pokemon, form, 0, iv, min_lvl, max_lvl, gender);
-        console.log('Result:', result);
         if (result) {
             // Success
             console.log('Pokemon subscription', id, 'updated successfully.');
@@ -201,6 +190,7 @@ router.post('/pokemon/delete/:id', async (req, res) => {
         const result = await Pokemon.deleteById(id);
         if (result) {
             // Success
+            console.log('Pokemon subscription', id, 'deleted successfully.');
         }
     } else {
         // Does not exist
@@ -215,6 +205,7 @@ router.post('/pokemon/delete_all', async (req, res) => {
         const result = await Pokemon.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            console.log('All Pokemon subscriptions deleted for guild:', guild_id, 'user:', user_id);
         }
     } else {
         console.error('Guild ID or User ID not set, failed to delete all pokemon subscriptions for user.');
@@ -243,6 +234,7 @@ router.post('/pvp/new', async (req, res) => {
         const result = await pvp.create();
         if (result) {
             // Success
+            console.log('PVP subscription for Pokemon', pokemon, 'created successfully.');
         }
     }
     res.redirect('/pokemon#pvp');
@@ -261,10 +253,8 @@ router.post('/pvp/edit/:id', async (req, res) => {
     } = req.body;
     const user_id = defaultData.user_id;
     const exists = await PVP.getById(id);
-    console.log('Pvp:', exists);
     if (exists) {
         const result = await PVP.save(id, guild_id, user_id, pokemon, form, league, min_rank, min_percent);
-        console.log('Result:', result);
         if (result) {
             // Success
             console.log('PVP subscription', id, 'updated successfully.');
@@ -280,6 +270,7 @@ router.post('/pvp/delete/:id', async (req, res) => {
         const result = await PVP.deleteById(id);
         if (result) {
             // Success
+            console.log('PVP subscription with id', id, 'deleted successfully.');
         }
     } else {
         // Does not exist
@@ -294,6 +285,7 @@ router.post('/pvp/delete_all', async (req, res) => {
         const result = await PVP.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            console.log('All PVP subscriptions deleted for guild:', guild_id, 'user:', user_id);
         }
     } else {
         console.error('Guild ID or User ID not set, failed to delete all PVP subscriptions for user.');
@@ -320,6 +312,7 @@ router.post('/raids/new', async (req, res) => {
             const result = await raid.create();
             if (result) {
                 // Success
+                console.log('Raid subscription for Pokemon', pokemon, 'created successfully.');
             }
         }
     }
@@ -348,6 +341,7 @@ router.post('/raids/delete/:id', async (req, res) => {
         const result = await Raid.deleteById(id);
         if (result) {
             // Success
+            console.log('Raid subscription with id', id, 'deleted successfully.');
         }
     } else {
         // Does not exist
@@ -362,6 +356,7 @@ router.post('/raids/delete_all', async (req, res) => {
         const result = await Raid.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            console.log('All raid subscriptions deleted for guild:', guild_id, 'user:', user_id);
         }
     } else {
         console.error('Guild ID or User ID not set, failed to delete all raid subscriptions for user.');
@@ -382,6 +377,7 @@ router.post('/gyms/new', async (req, res) => {
         const result = await gym.create();
         if (result) {
             // Success
+            console.log('Gym subscription for gym', name, 'created successfully.');
         }
     }
     res.redirect('/raids');
@@ -394,6 +390,7 @@ router.post('/gyms/delete/:id', async (req, res) => {
         const result = await Gym.deleteById(id);
         if (result) {
             // Success
+            console.log('Gym subscription with id', id, 'deleted successfully.');
         }
     } else {
         // Does not exist
@@ -408,6 +405,7 @@ router.post('/gyms/delete_all', async (req, res) => {
         const result = await Gym.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            console.log('All gym subscriptions deleted for guild:', guild_id, 'user:', user_id);
         }
     } else {
         console.error('Guild ID or User ID not set, failed to delete all gym subscriptions for user.');
@@ -434,6 +432,7 @@ router.post('/quests/new', async (req, res) => {
             const result = await quest.create();
             if (result) {
                 // Success
+                console.log('Quest subscription for reward', reward, 'created successfully.');
             }
         }
     }
@@ -462,6 +461,7 @@ router.post('/quests/delete/:id', async (req, res) => {
         const result = await Quest.deleteById(id);
         if (result) {
             // Success
+            console.log('Quest subscription with id', id, 'deleted successfully.');
         }
     } else {
         // Does not exist
@@ -476,6 +476,7 @@ router.post('/quests/delete_all', async (req, res) => {
         const result = await Quest.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            console.log('All quest subscriptions deleted for guild:', guild_id, 'user:', user_id);
         }
     } else {
         console.error('Guild ID or User ID not set, failed to delete all quest subscriptions for user.');
@@ -532,6 +533,7 @@ router.post('/invasions/delete/:id', async (req, res) => {
         const result = await Invasion.deleteById(id);
         if (result) {
             // Success
+            console.log('Invasion subscription with id', id, 'deleted successfully.');
         }
     } else {
         // Does not exist
@@ -546,6 +548,7 @@ router.post('/invasions/delete_all', async (req, res) => {
         const result = await Invasion.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            console.log('All invasion subscriptions deleted for guild:', guild_id, 'user:', user_id);
         }
     } else {
         console.error('Guild ID or User ID not set, failed to delete all invasion subscriptions for user.');

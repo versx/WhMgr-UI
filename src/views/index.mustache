@@ -98,7 +98,6 @@
             method: "POST",
             type: "json",
             success: function(result) {
-                console.log("Data:", result);
                 updateCounter(".pokemon_count", result.data.subscriptions.pokemon);
                 updateCounter(".pvp_count", result.data.subscriptions.pvp);
                 updateCounter(".raids_count", result.data.subscriptions.raids);
