@@ -206,7 +206,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
             pokemon,
             form,
             0,
-            pokemonId === 201 ? 0 : iv || 0,
+            pokemon === 201 ? 0 : iv || 0,
             min_lvl || 0,
             max_lvl || 35,
             gender || '*'
