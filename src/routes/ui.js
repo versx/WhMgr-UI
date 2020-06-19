@@ -17,7 +17,12 @@ const svc = new GeofenceService.GeofenceService();
 
 
 router.get(['/', '/index'], async (req, res) => {
-    res.render('index', defaultData);
+    const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
+    res.render('index', data);
 });
 
 if (config.discord.enabled) {
@@ -37,11 +42,19 @@ if (config.discord.enabled) {
 // Pokemon routes
 router.get('/pokemon', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('pokemon', data);
 });
 
 router.get('/pokemon/new', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.pokemon = map.getPokemonNameIdsList();
     data.cities = buildCityList(req.session.guilds);
     res.render('pokemon-new', data);
@@ -49,6 +62,10 @@ router.get('/pokemon/new', (req, res) => {
 
 router.get('/pokemon/edit/:id', async (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     const id = req.params.id;
     data.id = id;
     const pokemon = await Pokemon.getById(id);
@@ -75,12 +92,20 @@ router.get('/pokemon/edit/:id', async (req, res) => {
 
 router.get('/pokemon/delete/:id', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.id = req.params.id;
     res.render('pokemon-delete', data);
 });
 
 router.get('/pokemon/delete_all', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('pokemon-delete-all', data);
 });
 
@@ -88,6 +113,10 @@ router.get('/pokemon/delete_all', (req, res) => {
 // PVP routes
 router.get('/pvp/new', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.pokemon = map.getPokemonNameIdsList();
     data.cities = buildCityList(req.session.guilds);
     res.render('pvp-new', data);
@@ -95,6 +124,10 @@ router.get('/pvp/new', (req, res) => {
 
 router.get('/pvp/edit/:id', async (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     const id = req.params.id;
     data.id = id;
     const pvp = await PVP.getById(id);
@@ -118,12 +151,20 @@ router.get('/pvp/edit/:id', async (req, res) => {
 
 router.get('/pvp/delete/:id', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.id = req.params.id;
     res.render('pvp-delete', data);
 });
 
 router.get('/pvp/delete_all', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('pvp-delete-all', data);
 });
 
@@ -131,11 +172,19 @@ router.get('/pvp/delete_all', (req, res) => {
 // Raid routes
 router.get('/raids', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('raids', data);
 });
 
 router.get('/raid/new', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.pokemon = map.getPokemonNameIdsList();
     data.cities = buildCityList(req.session.guilds);
     res.render('raid-new', data);
@@ -143,6 +192,10 @@ router.get('/raid/new', (req, res) => {
 
 router.get('/raid/edit/:id', async (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     const id = req.params.id;
     data.id = id;
     const raid = await Raid.getById(id);
@@ -159,12 +212,20 @@ router.get('/raid/edit/:id', async (req, res) => {
 
 router.get('/raid/delete/:id', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.id = req.params.id;
     res.render('raid-delete', data);
 });
 
 router.get('/raids/delete_all', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('raids-delete-all', data);
 });
 
@@ -172,18 +233,30 @@ router.get('/raids/delete_all', (req, res) => {
 // Gym routes
 router.get('/gym/new', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     //data.cities = buildCityList(req.session.guilds);
     res.render('gym-new', data);
 });
 
 router.get('/gym/delete/:id', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.id = req.params.id;
     res.render('gym-delete', data);
 });
 
 router.get('/gyms/delete_all', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('gyms-delete-all', data);
 });
 
@@ -191,17 +264,29 @@ router.get('/gyms/delete_all', (req, res) => {
 // Quest routes
 router.get('/quests', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('quests', data);
 });
 
 router.get('/quest/new', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.cities = buildCityList(req.session.guilds);
     res.render('quest-new', data);
 });
 
 router.get('/quest/edit/:id', async (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     const id = req.params.id;
     data.id = id;
     const quest = await Quest.getById(id);
@@ -215,12 +300,20 @@ router.get('/quest/edit/:id', async (req, res) => {
 
 router.get('/quest/delete/:id', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.id = req.params.id;
     res.render('quest-delete', data);
 });
 
 router.get('/quests/delete_all', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('quests-delete-all', data);
 });
 
@@ -228,11 +321,19 @@ router.get('/quests/delete_all', (req, res) => {
 // Invasion routes
 router.get('/invasions', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('invasions', data);
 });
 
 router.get('/invasion/new', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.rewards = map.getGruntRewardIdsList();
     data.cities = buildCityList(req.session.guilds);
     res.render('invasion-new', data);
@@ -240,6 +341,10 @@ router.get('/invasion/new', (req, res) => {
 
 router.get('/invasion/edit/:id', async (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     const id = req.params.id;
     data.id = id;
     const invasion = await Invasion.getById(id);
@@ -256,18 +361,30 @@ router.get('/invasion/edit/:id', async (req, res) => {
 
 router.get('/invasion/delete/:id', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     data.id = req.params.id;
     res.render('invasion-delete', data);
 });
 
 router.get('/invasions/delete_all', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('invasions-delete-all', data);
 });
 
 
 router.get('/settings', (req, res) => {
     const data = defaultData;
+    data.servers.forEach(server => {
+        const guilds = req.session.guilds;
+        server.show = guilds.includes(server.id);
+    });
     res.render('settings', data);
 });
 

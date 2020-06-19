@@ -33,7 +33,7 @@
                     <option value="" selected disabled hidden>Choose a Server</option>
                     <!--<option value="all">All</option>-->
                     {{#servers}}
-                        <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                        <option value="{{id}}" {{#selected}}selected{{/selected}} {{^show}}hidden{{/show}}>{{name}}</option>
                     {{/servers}}
                 </select>
             </li>
