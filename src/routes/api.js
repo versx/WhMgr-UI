@@ -162,7 +162,17 @@ router.post('/pokemon/new', async (req, res) => {
             // TODO: Update already existing
             console.log('Already exists');
         } else {
-            const pkmn = new Pokemon(guild_id, user_id, pokemonId, form, 0, iv, min_lvl, max_lvl, gender);
+            const pkmn = new Pokemon(
+                guild_id,
+                user_id,
+                pokemonId,
+                form,
+                0,
+                pokemonId === 201 ? 0 : iv || 0,
+                min_lvl || 0,
+                max_lvl || 35,
+                gender || '*'
+            );
             const result = await pkmn.create();
             if (result) {
                 // Success
@@ -187,8 +197,20 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     } = req.body;
     const user_id = defaultData.user_id;
     const pkmn = await Pokemon.getById(id);
+    // TODO: Check if pokemon is rare (Unown, Azelf, etc), set IV value to 0.
     if (pkmn) {
-        const result = await Pokemon.save(id, guild_id, user_id, pokemon, form, 0, iv, min_lvl, max_lvl, gender);
+        const result = await Pokemon.save(
+            id,
+            guild_id,
+            user_id,
+            pokemon,
+            form,
+            0,
+            pokemonId === 201 ? 0 : iv || 0,
+            min_lvl || 0,
+            max_lvl || 35,
+            gender || '*'
+        );
         if (result) {
             // Success
             console.log('Pokemon subscription', id, 'updated successfully.');
