@@ -185,13 +185,13 @@ async function setSubscriptionSettings(guildId, userId, enabled, distance, latit
     WHERE guild_id = ? AND userId = ?
     `;
     const args = [
-        guildId,
-        userId,
         enabled,
         distance,
         latitude,
         longitude,
-        icon_style
+        icon_style,
+        guildId,
+        userId
     ];
     const results = await query(sql, args);
     return results.affectedRows > 0;;
