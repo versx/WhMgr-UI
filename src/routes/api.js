@@ -165,36 +165,38 @@ router.post('/pokemon/new', async (req, res) => {
             cities = [city];
         }
     }
-    const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-    for (let i = 0; i < cities.length; i++) {
-        const area = cities[i];
-        const split = pokemon.split(',');
-        for (let i = 0; i < split.length; i++) {
-            const pokemonId = split[i];
-            const exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form, area);
-            if (exists) {
-                // Already exists
-                // TODO: Update already existing
-                console.log('Already exists');
-            } else {
-                const pkmn = new Pokemon(
-                    subscriptionId,
-                    guild_id,
-                    user_id,
-                    pokemonId,
-                    form,
-                    0,
-                    isUltraRarePokemon(pokemonId) ? 0 : iv || 0,
-                    iv_list ? iv_list.split('\n') : [],
-                    min_lvl || 0,
-                    max_lvl || 35,
-                    gender || '*',
-                    area
-                );
-                const result = await pkmn.create();
-                if (result) {
-                    // Success
-                    console.log('Pokemon subscription for Pokemon', pokemon, 'created successfully.');
+    if (cities) {
+        const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
+        for (let i = 0; i < cities.length; i++) {
+            const area = cities[i];
+            const split = pokemon.split(',');
+            for (let i = 0; i < split.length; i++) {
+                const pokemonId = split[i];
+                const exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form, area);
+                if (exists) {
+                    // Already exists
+                    // TODO: Update already existing
+                    console.log('Already exists');
+                } else {
+                    const pkmn = new Pokemon(
+                        subscriptionId,
+                        guild_id,
+                        user_id,
+                        pokemonId,
+                        form,
+                        0,
+                        isUltraRarePokemon(pokemonId) ? 0 : iv || 0,
+                        iv_list ? iv_list.split('\n') : [],
+                        min_lvl || 0,
+                        max_lvl || 35,
+                        gender || '*',
+                        area
+                    );
+                    const result = await pkmn.create();
+                    if (result) {
+                        // Success
+                        console.log('Pokemon subscription for Pokemon', pokemon, 'created successfully.');
+                    }
                 }
             }
         }
@@ -297,20 +299,22 @@ router.post('/pvp/new', async (req, res) => {
             cities = [city];
         }
     }
-    for (let i = 0; i < cities.length; i++) {
-        const area = cities[i];
-        const split = pokemon.split(',');
-        for (let i = 0; i < split.length; i++) {
-            const pokemonId = split[i];
-            const exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemonId, form, league, area);
-            if (exists) {
-                // Already exists
-            } else {
-                const pvp = new PVP(subscriptionId, guild_id, user_id, pokemonId, form, league, min_rank || 25, min_percent || 98, area);
-                const result = await pvp.create();
-                if (result) {
-                    // Success
-                    console.log('PVP subscription for Pokemon', pokemonId, 'created successfully.');
+    if (cities) {
+        for (let i = 0; i < cities.length; i++) {
+            const area = cities[i];
+            const split = pokemon.split(',');
+            for (let i = 0; i < split.length; i++) {
+                const pokemonId = split[i];
+                const exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemonId, form, league, area);
+                if (exists) {
+                    // Already exists
+                } else {
+                    const pvp = new PVP(subscriptionId, guild_id, user_id, pokemonId, form, league, min_rank || 25, min_percent || 98, area);
+                    const result = await pvp.create();
+                    if (result) {
+                        // Success
+                        console.log('PVP subscription for Pokemon', pokemonId, 'created successfully.');
+                    }
                 }
             }
         }
@@ -389,17 +393,19 @@ router.post('/raids/new', async (req, res) => {
             cities = [city];
         }
     }
-    for (let i = 0; i < cities.length; i++) {
-        const area = cities[i];
-        const exists = await Raid.getByPokemon(guild_id, user_id, pokemon, form, area);
-        if (exists) {
-            // Already exists
-        } else {
-            const raid = new Raid(subscriptionId, guild_id, user_id, pokemon, form, area);
-            const result = await raid.create();
-            if (result) {
-                // Success
-                console.log('Raid subscription for Pokemon', pokemon, 'created successfully.');
+    if (cities) {
+        for (let i = 0; i < cities.length; i++) {
+            const area = cities[i];
+            const exists = await Raid.getByPokemon(guild_id, user_id, pokemon, form, area);
+            if (exists) {
+                // Already exists
+            } else {
+                const raid = new Raid(subscriptionId, guild_id, user_id, pokemon, form, area);
+                const result = await raid.create();
+                if (result) {
+                    // Success
+                    console.log('Raid subscription for Pokemon', pokemon, 'created successfully.');
+                }
             }
         }
     }
@@ -519,17 +525,19 @@ router.post('/quests/new', async (req, res) => {
             cities = [city];
         }
     }
-    for (let i = 0; i < cities.length; i++) {
-        const area = cities[i];
-        const exists = await Quest.getByReward(guild_id, user_id, reward, area);
-        if (exists) {
-            // Already exists
-        } else {
-            const quest = new Quest(subscriptionId, guild_id, user_id, reward, area);
-            const result = await quest.create();
-            if (result) {
-                // Success
-                console.log('Quest subscription for reward', reward, 'created successfully.');
+    if (cities) {
+        for (let i = 0; i < cities.length; i++) {
+            const area = cities[i];
+            const exists = await Quest.getByReward(guild_id, user_id, reward, area);
+            if (exists) {
+                // Already exists
+            } else {
+                const quest = new Quest(subscriptionId, guild_id, user_id, reward, area);
+                const result = await quest.create();
+                if (result) {
+                    // Success
+                    console.log('Quest subscription for reward', reward, 'created successfully.');
+                }
             }
         }
     }
@@ -599,18 +607,20 @@ router.post('/invasions/new', async (req, res) => {
             cities = [city];
         }
     }
-    for (let i = 0; i < cities.length; i++) {
-        const area = cities[i];
-        const exists = await Invasion.getByReward(guild_id, user_id, pokemon, area);
-        if (exists) {
-            // Already exists
-            console.log('Invasion subscription with reward', pokemon, 'already exists.');
-        } else {
-            const invasion = new Invasion(subscriptionId, guild_id, user_id, pokemon, area);
-            const result = await invasion.create();
-            if (result) {
-                // Success
-                console.log('Invasion subscription for reward', pokemon, 'created successfully.');
+    if (cities) {
+        for (let i = 0; i < cities.length; i++) {
+            const area = cities[i];
+            const exists = await Invasion.getByReward(guild_id, user_id, pokemon, area);
+            if (exists) {
+                // Already exists
+                console.log('Invasion subscription with reward', pokemon, 'already exists.');
+            } else {
+                const invasion = new Invasion(subscriptionId, guild_id, user_id, pokemon, area);
+                const result = await invasion.create();
+                if (result) {
+                    // Success
+                    console.log('Invasion subscription for reward', pokemon, 'created successfully.');
+                }
             }
         }
     }
