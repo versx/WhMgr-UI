@@ -68,7 +68,6 @@
 
 <script>
     const guildId = get("guild_id");
-    console.log("Stored Guild Id:", guildId);
     $("#server_selector").val(guildId);
     $('#guild_id').val(guildId);
     $(document).ready(function() {
@@ -79,7 +78,6 @@
 
     function onServerChanged() {
         const guildId = document.getElementById("server_selector").value;
-        console.log("Guild:", guildId);
         if (guildId) {
             set('guild_id', guildId);
             try {

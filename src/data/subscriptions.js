@@ -6,6 +6,20 @@ const pokedex = require('../../static/data/pokedex.json');
 
 // TODO: Move to model classes
 
+async function getUserSubscriptionId(guildId, userId) {
+    const sql = `
+    SELECT id
+    FROM subscriptions
+    WHERE guild_id = ? AND userId = ?
+    `;
+    const args = [guildId, userId];
+    const results = await query(sql, args);
+    if (results && results.length > 0) {
+        return results[0].id;
+    }
+    return results;
+}
+
 async function getUserSubscriptionStats(guildId, userId) {
     const sql = `
     SELECT
@@ -185,6 +199,7 @@ async function setSubscriptionSettings(guildId, userId, enabled, distance, latit
 }
 
 module.exports = {
+    getUserSubscriptionId,
     getUserSubscriptionStats,
     getPokemonSubscriptions,
     getPvpSubscriptions,

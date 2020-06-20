@@ -3,7 +3,8 @@
 const query = require('../services/db.js');
 
 class Pokemon {
-    constructor(guildId, userId, pokemonId, form, minCP, minIV, minLvl, maxLvl, gender) {
+    constructor(subscriptionId, guildId, userId, pokemonId, form, minCP, minIV, minLvl, maxLvl, gender) {
+        this.subscriptionId = subscriptionId;
         this.guildId = guildId;
         this.userId = userId;
         this.pokemonId = pokemonId;
@@ -16,10 +17,11 @@ class Pokemon {
     }
     async create() {
         const sql = `
-        INSERT INTO pokemon (guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO pokemon (subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const args = [
+            this.subscriptionId,
             this.guildId, this.userId, this.pokemonId,
             this.form, this.minCP, this.minIV,
             this.minLvl, this.maxLvl, this.gender

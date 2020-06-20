@@ -3,17 +3,22 @@
 const query = require('../services/db.js');
 
 class Gym {
-    constructor(guildId, userId, name) {
+    constructor(subscriptionId, guildId, userId, name) {
+        this.subscriptionId = subscriptionId;
         this.guildId = guildId;
         this.userId = userId;
         this.name = name;
     }
     async create() {
         const sql = `
-        INSERT INTO gyms (guild_id, userId, name)
-        VALUES (?, ?, ?)
+        INSERT INTO gyms (subscriptionId, guild_id, userId, name)
+        VALUES (?, ?, ?, ?)
         `;
-        const args = [this.guildId, this.userId, this.name];
+        const args = [
+            this.subscriptionId,
+            this.guildId, this.userId,
+            this.name
+        ];
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }

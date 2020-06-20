@@ -3,7 +3,8 @@
 const query = require('../services/db.js');
 
 class PVP {
-    constructor(guildId, userId, pokemonId, form, league, minRank, minPercent) {
+    constructor(subscriptionId, guildId, userId, pokemonId, form, league, minRank, minPercent) {
+        this.subscriptionId = subscriptionId;
         this.guildId = guildId;
         this.userId = userId;
         this.pokemonId = pokemonId;
@@ -14,10 +15,11 @@ class PVP {
     }
     async create() {
         const sql = `
-        INSERT INTO pvp (guild_id, userId, pokemon_id, form, league, miv_rank, min_percent)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO pvp (subscription_id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const args = [
+            this.subscriptionId,
             this.guildId, this.userId, this.pokemonId,
             this.form, this.league, this.minRank,
             this.minPercent

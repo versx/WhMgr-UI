@@ -3,7 +3,8 @@
 const query = require('../services/db.js');
 
 class Quest {
-    constructor(guildId, userId, reward, city) {
+    constructor(subscriptionId, guildId, userId, reward, city) {
+        this.subscriptionId = subscriptionId;
         this.guildId = guildId;
         this.userId = userId;
         this.reward = reward;
@@ -11,10 +12,14 @@ class Quest {
     }
     async create() {
         const sql = `
-        INSERT INTO quests (guild_id, userId, reward, city)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO quests (subscriptionId, guild_id, userId, reward, city)
+        VALUES (?, ?, ?, ?, ?)
         `;
-        const args = [this.guildId, this.userId, this.reward, this.city];
+        const args = [
+            this.subscriptionId,
+            this.guildId, this.userId,
+            this.reward, this.city
+        ];
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }

@@ -3,7 +3,8 @@
 const query = require('../services/db.js');
 
 class Invasion {
-    constructor(guildId, userId, rewardPokemonId, city) {
+    constructor(subscriptionId, guildId, userId, rewardPokemonId, city) {
+        this.subscriptionId = subscriptionId;
         this.guildId = guildId;
         this.userId = userId;
         this.rewardPokemonId = rewardPokemonId;
@@ -11,10 +12,14 @@ class Invasion {
     }
     async create() {
         const sql = `
-        INSERT INTO invasions (guild_id, userId, reward_pokemon_id, city)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO invasions (subscription_id, guild_id, userId, reward_pokemon_id, city)
+        VALUES (?, ?, ?, ?, ?)
         `;
-        const args = [this.guildId, this.userId, this.rewardPokemonId, this.city];
+        const args = [
+            this.subscriptionId,
+            this.guildId, this.userId,
+            this.rewardPokemonId, this.city
+        ];
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }
