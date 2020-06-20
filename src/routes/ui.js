@@ -11,9 +11,6 @@ const PVP = require('../models/pvp.js');
 const Raid = require('../models/raid.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
-const GeofenceService = require('../services/geofence.js');
-
-const svc = new GeofenceService.GeofenceService();
 
 
 router.get(['/', '/index'], async (req, res) => {
@@ -56,7 +53,7 @@ router.get('/pokemon/new', (req, res) => {
         server.show = guilds.includes(server.id);
     });
     data.pokemon = map.getPokemonNameIdsList();
-    data.cities = buildCityList(req.session.guilds);
+    data.cities = map.buildCityList(req.session.guilds);
     res.render('pokemon-new', data);
 });
 
@@ -74,19 +71,16 @@ router.get('/pokemon/edit/:id', async (req, res) => {
         pkmn.selected = parseInt(pkmn.id) === pokemon.pokemonId;
     });
     data.iv = pokemon.minIV;
-    data.iv_list = ['10/10/10\n0/15/15'];
-    //data.lvl = `${pokemon.min_lvl}-${pokemon.max_lvl}`;
+    data.iv_list = pokemon.ivList.join('\n');
     data.min_lvl = pokemon.minLvl;
     data.max_lvl = pokemon.maxLvl;
     data.genders.forEach(gender => {
         data.selected = gender.id === pokemon.gender;
     });
-    data.cities = buildCityList(req.session.guilds);
-    /*
+    data.cities = map.buildCityList(req.session.guilds);
     data.cities.forEach(city => {
         city.selected = city.name === pokemon.city;
     });
-    */
     res.render('pokemon-edit', data);
 });
 
@@ -118,7 +112,7 @@ router.get('/pvp/new', (req, res) => {
         server.show = guilds.includes(server.id);
     });
     data.pokemon = map.getPokemonNameIdsList();
-    data.cities = buildCityList(req.session.guilds);
+    data.cities = map.buildCityList(req.session.guilds);
     res.render('pvp-new', data);
 });
 
@@ -140,12 +134,10 @@ router.get('/pvp/edit/:id', async (req, res) => {
     });
     data.min_rank = pvp.minRank;
     data.min_percent = pvp.minPercent;
-    data.cities = buildCityList(req.session.guilds);
-    /*
+    data.cities = map.buildCityList(req.session.guilds);
     data.cities.forEach(city => {
         city.selected = city.name === pokemon.city;
     });
-    */
     res.render('pvp-edit', data);
 });
 
@@ -186,7 +178,7 @@ router.get('/raid/new', (req, res) => {
         server.show = guilds.includes(server.id);
     });
     data.pokemon = map.getPokemonNameIdsList();
-    data.cities = buildCityList(req.session.guilds);
+    data.cities = map.buildCityList(req.session.guilds);
     res.render('raid-new', data);
 });
 
@@ -203,7 +195,7 @@ router.get('/raid/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
     });
-    data.cities = buildCityList(req.session.guilds);
+    data.cities = map.buildCityList(req.session.guilds);
     data.cities.forEach(city => {
         city.selected = city.name === raid.city;
     });
@@ -237,7 +229,7 @@ router.get('/gym/new', (req, res) => {
         const guilds = req.session.guilds;
         server.show = guilds.includes(server.id);
     });
-    //data.cities = buildCityList(req.session.guilds);
+    //data.cities = map.buildCityList(req.session.guilds);
     res.render('gym-new', data);
 });
 
@@ -277,7 +269,7 @@ router.get('/quest/new', (req, res) => {
         const guilds = req.session.guilds;
         server.show = guilds.includes(server.id);
     });
-    data.cities = buildCityList(req.session.guilds);
+    data.cities = map.buildCityList(req.session.guilds);
     res.render('quest-new', data);
 });
 
@@ -291,7 +283,7 @@ router.get('/quest/edit/:id', async (req, res) => {
     data.id = id;
     const quest = await Quest.getById(id);
     data.reward = quest.reward;
-    data.cities = buildCityList(req.session.guilds);
+    data.cities = map.buildCityList(req.session.guilds);
     data.cities.forEach(city => {
         city.selected = city.name === quest.city;
     });
@@ -335,7 +327,7 @@ router.get('/invasion/new', (req, res) => {
         server.show = guilds.includes(server.id);
     });
     data.rewards = map.getGruntRewardIdsList();
-    data.cities = buildCityList(req.session.guilds);
+    data.cities = map.buildCityList(req.session.guilds);
     res.render('invasion-new', data);
 });
 
@@ -352,7 +344,7 @@ router.get('/invasion/edit/:id', async (req, res) => {
     data.rewards.forEach(reward => {
         reward.selected = reward.pokemon_id === invasion.rewardPokemonId;
     });
-    data.cities = buildCityList(req.session.guilds);
+    data.cities = map.buildCityList(req.session.guilds);
     data.cities.forEach(city => {
         city.selected = city.name === invasion.city;
     });
@@ -388,23 +380,5 @@ router.get('/settings', (req, res) => {
     });
     res.render('settings', data);
 });
-
-function buildCityList(guilds) {
-    let cities = [];
-    for (let i = 0; i < svc.geofences.length; i++) {
-        const geofence = svc.geofences[i];
-        const configGuilds = config.discord.guilds;
-        for (let j = 0; j < configGuilds.length; j++) {
-            const configGuild = configGuilds[j];
-            if (guilds.includes(configGuild.id) && configGuild.geofences.includes(geofence.name)) {
-                cities.push({
-                    'name': geofence.name,
-                    'guild': configGuild.id
-                });
-            }
-        }
-    }
-    return cities;
-}
 
 module.exports = router;

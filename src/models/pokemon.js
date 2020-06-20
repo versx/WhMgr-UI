@@ -36,7 +36,7 @@ class Pokemon {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
+        SELECT subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE guild_id = ? AND userId = ?
         `;
@@ -46,6 +46,7 @@ class Pokemon {
             const list = [];
             results.forEach(result => {
                 list.push(new Pokemon(
+                    result.subscription_id,
                     result.guild_id,
                     result.userId,
                     result.pokemon_id,
@@ -65,7 +66,7 @@ class Pokemon {
     }
     static async getByPokemon(guildId, userId, pokemonId, form, city) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
+        SELECT subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND city = ?
         `;
@@ -74,6 +75,7 @@ class Pokemon {
         if (results && results.length > 0) {
             const result = results[0];
             return new Pokemon(
+                result.subscription_id,
                 result.guild_id,
                 result.userId,
                 result.pokemon_id,
@@ -91,15 +93,17 @@ class Pokemon {
     }
     static async getById(id) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
+        SELECT subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE id = ?
         `;
         const args = [id];
         const results = await query(sql, args);
         if (results && results.length > 0) {
+            console.log('Pokemon results:', results);
             const result = results[0];
             return new Pokemon(
+                result.subscription_id,
                 result.guild_id,
                 result.userId,
                 result.pokemon_id,

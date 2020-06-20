@@ -39,13 +39,13 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (pokemon) {
                 pokemon.forEach(pkmn => {
                     pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='48'>&nbsp;${pkmn.name}`;
-                    /*
-                    pkmn.gender === '*'
-                    ? 'All'
-                    : pkmn.gender === 'm'
-                        ? 'Male Only'
-                        : 'Female Only';
-                    */
+                    pkmn.iv_list = (pkmn.iv_list || []).length;
+                    pkmn.gender == '*'
+                        ? 'All'
+                        : pkmn.gender == 'm'
+                            ? 'Male Only'
+                            : 'Female Only';
+                    pkmn.gender_name = pkmn.gender === '*' ? 'All' : pkmn.gender;
                     pkmn.buttons = `
                     <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
                     &nbsp;
@@ -226,7 +226,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
             pokemon,
             form,
             0,
-            isUltraRarePokemon(pokemonId) ? 0 : iv || 0,
+            isUltraRarePokemon(pokemon) ? 0 : iv || 0,
             (iv_list || '').split('\n'),
             min_lvl || 0,
             max_lvl || 35,

@@ -72,7 +72,7 @@ async function getUserSubscriptionStats(guildId, userId) {
 
 async function getPokemonSubscriptions(guildId, userId) {
     const sql = `
-    SELECT id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender
+    SELECT id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
     FROM pokemon
     WHERE guild_id = ? AND userId = ?
     `;
@@ -83,10 +83,9 @@ async function getPokemonSubscriptions(guildId, userId) {
             result.name = locale.getPokemonName(result.pokemon_id);
             result.cp = `${result.min_cp}-4096`;
             result.iv = result.miv_iv;
+            result.iv_list = JSON.parse(result.iv_list || '[]');
             result.lvl = `${result.min_lvl}-${result.max_lvl}`;
-            result.city = '';
-            //result.guild_id = result.guild_id.toString();
-            //result.userId = result.userId.toString();
+            result.city = result.city;
         });
     }
     return results;
@@ -94,7 +93,7 @@ async function getPokemonSubscriptions(guildId, userId) {
 
 async function getPvpSubscriptions(guildId, userId) {
     const sql = `
-    SELECT id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent
+    SELECT id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
     FROM pvp
     WHERE guild_id = ? AND userId = ?
     `;
@@ -104,7 +103,7 @@ async function getPvpSubscriptions(guildId, userId) {
         results.forEach(result => {
             result.name = locale.getPokemonName(result.pokemon_id);
             result.min_rank = result.miv_rank;
-            result.city = '';
+            result.city = result.city;
         });
     }
     return results;

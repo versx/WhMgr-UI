@@ -27,7 +27,7 @@ class Raid {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, city
+        SELECT subscription_id, guild_id, userId, pokemon_id, form, city
         FROM raids
         WHERE guild_id = ? AND userId = ?
         `;
@@ -37,6 +37,7 @@ class Raid {
             const list = [];
             results.forEach(result => {
                 list.push(new Raid(
+                    result.subscription_id,
                     result.guild_id,
                     result.userId,
                     result.pokemonId,
@@ -50,7 +51,7 @@ class Raid {
     }
     static async getById(id) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, city
+        SELECT subscription_id, guild_id, userId, pokemon_id, form, city
         FROM raids
         WHERE id = ?
         `;
@@ -59,6 +60,7 @@ class Raid {
         if (results && results.length > 0) {
             const result = results[0];
             return new Raid(
+                result.subscription_id,
                 result.guild_id,
                 result.userId,
                 result.pokemon_id,
@@ -70,7 +72,7 @@ class Raid {
     }
     static async getByPokemon(guildId, userId, pokemonId, form, city) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, city
+        SELECT subscription_id, guild_id, userId, pokemon_id, form, city
         FROM raids
         WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND city = ?
         LIMIT 1
@@ -79,6 +81,7 @@ class Raid {
         const results = await query(sql, args);
         if (results && results.length > 0) {
             return new Raid(
+                result.subscription_id,
                 result.guild_id,
                 result.userId,
                 result.pokemonId,

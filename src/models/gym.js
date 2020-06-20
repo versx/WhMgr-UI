@@ -24,7 +24,7 @@ class Gym {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT guild_id, userId, name
+        SELECT subscription_id, guild_id, userId, name
         FROM gyms
         WHERE guild_id = ? AND userId = ?
         `;
@@ -34,6 +34,7 @@ class Gym {
             const list = [];
             results.forEach(result => {
                 list.push(new Gym(
+                    result.subscription_id,
                     result.guild_id,
                     result.userId,
                     result.name
@@ -45,7 +46,7 @@ class Gym {
     }
     static async getByName(guildId, userId, name) {
         const sql = `
-        SELECT guild_id, userId, name
+        SELECT subscription_id, guild_id, userId, name
         FROM gyms
         WHERE guild_id = ? AND userId = ? AND name = ?
         `;
@@ -54,6 +55,7 @@ class Gym {
         if (results && results.length > 0) {
             const result = results[0];
             return new Gym(
+                result.subscription_id,
                 result.guild_id,
                 result.userId,
                 result.name
@@ -63,7 +65,7 @@ class Gym {
     }
     static async getById(id) {
         const sql = `
-        SELECT guild_id, userId, name
+        SELECT subscription_id, guild_id, userId, name
         FROM gyms
         WHERE id = ?
         `;
@@ -72,6 +74,7 @@ class Gym {
         if (results && results.length > 0) {
             const result = results[0];
             return new Gym(
+                result.subscription_id,
                 result.guild_id,
                 result.userId,
                 result.name

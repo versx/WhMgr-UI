@@ -2,9 +2,11 @@
 
 const locale = require('../services/locale.js');
 const utils = require('../services/utils.js');
-const grunttypes = require('../../static/data/grunttype.json');
+const GeofenceService = require('../services/geofence.js');
 
+const svc = new GeofenceService.GeofenceService();
 const config = require('../config.json');
+const grunttypes = require('../../static/data/grunttype.json');
 
 function getPokemonNameIdsList() {
     let pokemon = [];
@@ -55,7 +57,26 @@ function getGruntRewardIdsList() {
     return rewards;
 }
 
+function buildCityList(guilds) {
+    let cities = [];
+    for (let i = 0; i < svc.geofences.length; i++) {
+        const geofence = svc.geofences[i];
+        const configGuilds = config.discord.guilds;
+        for (let j = 0; j < configGuilds.length; j++) {
+            const configGuild = configGuilds[j];
+            if (guilds.includes(configGuild.id) && configGuild.geofences.includes(geofence.name)) {
+                cities.push({
+                    'name': geofence.name,
+                    'guild': configGuild.id
+                });
+            }
+        }
+    }
+    return cities;
+}
+
 module.exports = {
     getPokemonNameIdsList,
-    getGruntRewardIdsList
+    getGruntRewardIdsList,
+    buildCityList
 };

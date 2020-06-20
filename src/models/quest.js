@@ -25,7 +25,7 @@ class Quest {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT guild_id, userId, reward, city
+        SELECT subscription_id, guild_id, userId, reward, city
         FROM quests
         WHERE guild_id = ? AND userId = ?
         `;
@@ -35,6 +35,7 @@ class Quest {
             const list = [];
             results.forEach(result => {
                 list.push(new Quest(
+                    result.subscription_id,
                     result.guild_id,
                     result.userId,
                     result.reward,
@@ -47,7 +48,7 @@ class Quest {
     }
     static async getById(id) {
         const sql = `
-        SELECT guild_id, userId, reward, city
+        SELECT subscription_id, guild_id, userId, reward, city
         FROM quests
         WHERE id = ?
         `;
@@ -56,6 +57,7 @@ class Quest {
         if (results && results.length > 0) {
             const result = results[0];
             return new Quest(
+                result.subscription_id,
                 result.guild_id,
                 result.userId,
                 result.reward,
@@ -66,7 +68,7 @@ class Quest {
     }
     static async getByReward(guildId, userId, reward, city) {
         const sql = `
-        SELECT guild_id, userId, reward, city
+        SELECT subscription_id, guild_id, userId, reward, city
         FROM quests
         WHERE guild_id = ? AND userId = ? AND reward = ? AND city = ?
         LIMIT 1
@@ -75,6 +77,7 @@ class Quest {
         const results = await query(sql, args);
         if (results && results.length > 0) {
             return new Quest(
+                result.subscription_id,
                 result.guild_id,
                 result.userId,
                 result.reward,

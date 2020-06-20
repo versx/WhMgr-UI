@@ -32,7 +32,7 @@ class PVP {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
+        SELECT subscription_id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
         FROM pvp
         WHERE guild_id = ? AND userId = ?
         `;
@@ -42,6 +42,7 @@ class PVP {
             const list = [];
             results.forEach(result => {
                 list.push(new PVP(
+                    result.subscription_id,
                     result.guild_id,
                     result.userId,
                     result.pokemon_id,
@@ -58,7 +59,7 @@ class PVP {
     }
     static async getPokemonByLeague(guildId, userId, pokemonId, form, league, city) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
+        SELECT subscription_id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
         FROM pvp
         WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND league = ? AND city = ?
         `;
@@ -67,6 +68,7 @@ class PVP {
         if (results && results.length > 0) {
             const result = results[0];
             return new PVP(
+                result.subscription_id,
                 result.guild_id,
                 result.userId,
                 result.pokemon_id,
@@ -81,7 +83,7 @@ class PVP {
     }
     static async getById(id) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
+        SELECT subscription_id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
         FROM pvp
         WHERE id = ?
         `;
@@ -90,6 +92,7 @@ class PVP {
         if (results && results.length > 0) {
             const result = results[0];
             return new PVP(
+                result.subscription_id,
                 result.guild_id,
                 result.userId,
                 result.pokemon_id,
