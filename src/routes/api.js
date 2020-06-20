@@ -13,6 +13,8 @@ const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const utils = require('../services/utils.js');
 
+const config = require('../config.json');
+
 
 router.post('/server/:guild_id/user/:user_id', async (req, res) => {
     const { guild_id, user_id } = req.params;
@@ -150,41 +152,48 @@ router.post('/pokemon/new', async (req, res) => {
         city
     } = req.body;
     const user_id = defaultData.user_id;
-    /*
-    let cities = city;
-    if (!Array.isArray(city)) {
-        cities = [city];
+    let cities;
+    if (city === 'all') {
+        config.discord.guilds.map(x => {
+            if (x.id == guild_id) {
+                cities = x.geofences;
+            }
+        });
+    } else {
+        if (!Array.isArray(city)) {
+            cities = [city];
+        }
     }
+    const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
     for (let i = 0; i < cities.length; i++) {
         const area = cities[i];
-    }
-    */
-    const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-    const split = pokemon.split(',');
-    for (let i = 0; i < split.length; i++) {
-        const pokemonId = split[i];
-        const exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form);
-        if (exists) {
-            // Already exists
-            // TODO: Update already existing
-            console.log('Already exists');
-        } else {
-            const pkmn = new Pokemon(
-                subscriptionId,
-                guild_id,
-                user_id,
-                pokemonId,
-                form,
-                0,
-                pokemonId === 201 ? 0 : iv || 0,
-                min_lvl || 0,
-                max_lvl || 35,
-                gender || '*'
-            );
-            const result = await pkmn.create();
-            if (result) {
-                // Success
-                console.log('Pokemon subscription for Pokemon', pokemon, 'created successfully.');
+        const split = pokemon.split(',');
+        for (let i = 0; i < split.length; i++) {
+            const pokemonId = split[i];
+            const exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form, area);
+            if (exists) {
+                // Already exists
+                // TODO: Update already existing
+                console.log('Already exists');
+            } else {
+                const pkmn = new Pokemon(
+                    subscriptionId,
+                    guild_id,
+                    user_id,
+                    pokemonId,
+                    form,
+                    0,
+                    pokemonId === 201 ? 0 : iv || 0,
+                    min_lvl || 0,
+                    max_lvl || 35,
+                    gender || '*',
+                    area
+                );
+                const result = await pkmn.create();
+                if (result) {
+                    // Success
+                    console.log('Pokemon subscription for Pokemon', pokemon, 'created successfully.');
+                }
             }
         }
     }
@@ -217,7 +226,8 @@ router.post('/pokemon/edit/:id', async (req, res) => {
             pokemon === 201 ? 0 : iv || 0,
             min_lvl || 0,
             max_lvl || 35,
-            gender || '*'
+            gender || '*',
+            city
         );
         if (result) {
             // Success
@@ -271,15 +281,34 @@ router.post('/pvp/new', async (req, res) => {
     } = req.body;
     const user_id = defaultData.user_id;
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-    const exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemon, form, league);
-    if (exists) {
-        // Already exists
+    let cities;
+    if (city === 'all') {
+        config.discord.guilds.map(x => {
+            if (x.id == guild_id) {
+                cities = x.geofences;
+            }
+        });
     } else {
-        const pvp = new PVP(subscriptionId, guild_id, user_id, pokemon, form, league, min_rank || 25, min_percent || 98);
-        const result = await pvp.create();
-        if (result) {
-            // Success
-            console.log('PVP subscription for Pokemon', pokemon, 'created successfully.');
+        if (!Array.isArray(city)) {
+            cities = [city];
+        }
+    }
+    for (let i = 0; i < cities.length; i++) {
+        const area = cities[i];
+        const split = pokemon.split(',');
+        for (let i = 0; i < split.length; i++) {
+            const pokemonId = split[i];
+            const exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemonId, form, league, area);
+            if (exists) {
+                // Already exists
+            } else {
+                const pvp = new PVP(subscriptionId, guild_id, user_id, pokemonId, form, league, min_rank || 25, min_percent || 98, area);
+                const result = await pvp.create();
+                if (result) {
+                    // Success
+                    console.log('PVP subscription for Pokemon', pokemonId, 'created successfully.');
+                }
+            }
         }
     }
     res.redirect('/pokemon#pvp');
@@ -299,7 +328,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
     const user_id = defaultData.user_id;
     const exists = await PVP.getById(id);
     if (exists) {
-        const result = await PVP.save(id, guild_id, user_id, pokemon, form, league, min_rank || 25, min_percent || 98);
+        const result = await PVP.save(id, guild_id, user_id, pokemon, form, league, min_rank || 25, min_percent || 98, city);
         if (result) {
             // Success
             console.log('PVP subscription', id, 'updated successfully.');
@@ -344,9 +373,17 @@ router.post('/raids/new', async (req, res) => {
     const { guild_id, pokemon, form, city } = req.body;
     const user_id = defaultData.user_id;
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-    let cities = city;
-    if (!Array.isArray(city)) {
-        cities = [city];
+    let cities;
+    if (city === 'all') {
+        config.discord.guilds.map(x => {
+            if (x.id == guild_id) {
+                cities = x.geofences;
+            }
+        });
+    } else {
+        if (!Array.isArray(city)) {
+            cities = [city];
+        }
     }
     for (let i = 0; i < cities.length; i++) {
         const area = cities[i];
@@ -369,8 +406,8 @@ router.post('/raids/edit/:id', async (req, res) => {
     const id = req.params.id;
     const { guild_id, pokemon, form, city } = req.body;
     const user_id = defaultData.user_id;
-    const raid = await Raid.getById(id);
-    if (raid) {
+    const exists = await Raid.getByPokemon(guild_id, user_id, pokemon, form, city);
+    if (exists) {
         const result = await Raid.save(id, guild_id, user_id, pokemon, form, city);
         if (result) {
             // Success
@@ -466,9 +503,17 @@ router.post('/quests/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
     const user_id = defaultData.user_id;
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-    let cities = city;
-    if (!Array.isArray(city)) {
-        cities = [city];
+    let cities;
+    if (city === 'all') {
+        config.discord.guilds.map(x => {
+            if (x.id == guild_id) {
+                cities = x.geofences;
+            }
+        });
+    } else {
+        if (!Array.isArray(city)) {
+            cities = [city];
+        }
     }
     for (let i = 0; i < cities.length; i++) {
         const area = cities[i];
@@ -538,9 +583,17 @@ router.post('/invasions/new', async (req, res) => {
     const { guild_id, pokemon, city } = req.body;
     const user_id = defaultData.user_id;
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-    let cities = city;
-    if (!Array.isArray(city)) {
-        cities = [city];
+    let cities;
+    if (city === 'all') {
+        config.discord.guilds.map(x => {
+            if (x.id == guild_id) {
+                cities = x.geofences;
+            }
+        });
+    } else {
+        if (!Array.isArray(city)) {
+            cities = [city];
+        }
     }
     for (let i = 0; i < cities.length; i++) {
         const area = cities[i];

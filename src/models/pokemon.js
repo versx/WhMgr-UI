@@ -3,7 +3,7 @@
 const query = require('../services/db.js');
 
 class Pokemon {
-    constructor(subscriptionId, guildId, userId, pokemonId, form, minCP, minIV, minLvl, maxLvl, gender) {
+    constructor(subscriptionId, guildId, userId, pokemonId, form, minCP, minIV, minLvl, maxLvl, gender, city) {
         this.subscriptionId = subscriptionId;
         this.guildId = guildId;
         this.userId = userId;
@@ -14,24 +14,27 @@ class Pokemon {
         this.minLvl = minLvl;
         this.maxLvl = maxLvl;
         this.gender = gender;
+        this.city = city;
     }
     async create() {
         const sql = `
-        INSERT INTO pokemon (subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO pokemon (subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender, city)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const args = [
             this.subscriptionId,
-            this.guildId, this.userId, this.pokemonId,
-            this.form, this.minCP, this.minIV,
-            this.minLvl, this.maxLvl, this.gender
+            this.guildId, this.userId,
+            this.pokemonId, this.form,
+            this.minCP, this.minIV,
+            this.minLvl, this.maxLvl,
+            this.gender, this.city
         ];
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender
+        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE guild_id = ? AND userId = ?
         `;
@@ -49,20 +52,21 @@ class Pokemon {
                     result.miv_iv,
                     result.min_lvl,
                     result.max_lvl,
-                    result.gender
+                    result.gender,
+                    result.city
                 ));
             });
             return list;
         }
         return null;
     }
-    static async getByPokemon(guildId, userId, pokemonId, form) {
+    static async getByPokemon(guildId, userId, pokemonId, form, city) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender
+        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender, city
         FROM pokemon
-        WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ?
+        WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND city = ?
         `;
-        const args = [guildId, userId, pokemonId, form];
+        const args = [guildId, userId, pokemonId, form, city];
         const results = await query(sql, args);
         if (results && results.length > 0) {
             const result = results[0];
@@ -75,14 +79,15 @@ class Pokemon {
                 result.miv_iv,
                 result.min_lvl,
                 result.max_lvl,
-                result.gender
+                result.gender,
+                result.city
             );
         }
         return null;
     }
     static async getById(id) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender
+        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE id = ?
         `;
@@ -99,7 +104,8 @@ class Pokemon {
                 result.miv_iv,
                 result.min_lvl,
                 result.max_lvl,
-                result.gender
+                result.gender,
+                result.city
             );
         }
         return null;
@@ -122,10 +128,10 @@ class Pokemon {
         const result = await query(sql, args);
         return result.affectedRows > 0;
     }
-    static async save(id, guildId, userId, pokemonId, form, minCP, minIV, minLvl, maxLvl, gender) {
+    static async save(id, guildId, userId, pokemonId, form, minCP, minIV, minLvl, maxLvl, gender, city) {
         const sql = `
         UPDATE pokemon
-        SET pokemon_id = ?, form = ?, min_cp = ?, miv_iv = ?, min_lvl = ?, max_lvl = ?, gender = ?
+        SET pokemon_id = ?, form = ?, min_cp = ?, miv_iv = ?, min_lvl = ?, max_lvl = ?, gender = ?, city = ?
         WHERE guild_id = ? AND userId = ? AND id = ?
         `;
         const args = [
@@ -136,6 +142,7 @@ class Pokemon {
             minLvl,
             maxLvl,
             gender,
+            city,
             guildId,
             userId,
             id

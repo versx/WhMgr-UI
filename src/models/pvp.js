@@ -3,7 +3,7 @@
 const query = require('../services/db.js');
 
 class PVP {
-    constructor(subscriptionId, guildId, userId, pokemonId, form, league, minRank, minPercent) {
+    constructor(subscriptionId, guildId, userId, pokemonId, form, league, minRank, minPercent, city) {
         this.subscriptionId = subscriptionId;
         this.guildId = guildId;
         this.userId = userId;
@@ -12,24 +12,27 @@ class PVP {
         this.league = league;
         this.minRank = minRank;
         this.minPercent = minPercent;
+        this.city = city;
     }
     async create() {
         const sql = `
-        INSERT INTO pvp (subscription_id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO pvp (subscription_id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const args = [
             this.subscriptionId,
-            this.guildId, this.userId, this.pokemonId,
-            this.form, this.league, this.minRank,
-            this.minPercent
+            this.guildId, this.userId,
+            this.pokemonId, this.form,
+            this.league,
+            this.minRank, this.minPercent,
+            this.city
         ];
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, league, miv_rank, min_percent
+        SELECT guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
         FROM pvp
         WHERE guild_id = ? AND userId = ?
         `;
@@ -45,20 +48,21 @@ class PVP {
                     result.form,
                     result.league,
                     result.miv_rank,
-                    result.min_percent
+                    result.min_percent,
+                    result.city
                 ));
             });
             return list;
         }
         return null;
     }
-    static async getPokemonByLeague(guildId, userId, pokemonId, form, league) { // TODO: City
+    static async getPokemonByLeague(guildId, userId, pokemonId, form, league, city) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, league, miv_rank, min_percent
+        SELECT guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
         FROM pvp
-        WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND league = ?
+        WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND league = ? AND city = ?
         `;
-        const args = [guildId, userId, pokemonId, form, league];
+        const args = [guildId, userId, pokemonId, form, league, city];
         const results = await query(sql, args);
         if (results && results.length > 0) {
             const result = results[0];
@@ -69,14 +73,15 @@ class PVP {
                 result.form,
                 result.league,
                 result.miv_rank,
-                result.min_percent
+                result.min_percent,
+                result.city
             );
         }
         return null;
     }
     static async getById(id) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, league, miv_rank, min_percent
+        SELECT guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
         FROM pvp
         WHERE id = ?
         `;
@@ -91,7 +96,8 @@ class PVP {
                 result.form,
                 result.league,
                 result.miv_rank,
-                result.min_percent
+                result.min_percent,
+                result.city
             );
         }
         return null;
@@ -114,10 +120,10 @@ class PVP {
         const result = await query(sql, args);
         return result.affectedRows > 0;
     }
-    static async save(id, guildId, userId, pokemonId, form, league, minRank, minPercent) {
+    static async save(id, guildId, userId, pokemonId, form, league, minRank, minPercent, city) {
         const sql = `
         UPDATE pvp
-        SET pokemon_id = ?, form = ?, league = ?, miv_rank = ?, min_percent = ?
+        SET pokemon_id = ?, form = ?, league = ?, miv_rank = ?, min_percent = ?, city = ?
         WHERE guild_id = ? AND userId = ? AND id = ?
         `;
         const args = [
@@ -126,12 +132,12 @@ class PVP {
             league,
             minRank,
             minPercent,
+            city,
             guildId,
             userId,
             id
         ];
         const result = await query(sql, args);
-        console.log('Pvp result:', result);
         return result.affectedRows === 1;
     }
 }
