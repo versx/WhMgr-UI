@@ -672,10 +672,11 @@ router.post('/settings', async (req, res) => {
     const split = (location || '0,0').split(',');
     const lat = parseFloat(split[0]);
     const lon = parseFloat(split[1]);
+    const isEnabled = enabled !== 'undefined' && enabled === 'on';
     const result = subscriptions.setSubscriptionSettings(
         guild_id,
         user_id,
-        enabled === 'checked',
+        isEnabled,
         distance,
         lat,
         lon,
@@ -683,6 +684,7 @@ router.post('/settings', async (req, res) => {
     );
     if (result) {
         // Success
+        console.log('Successfully updated subscription settings for', user_id, 'in guild', guild_id);
     }
     res.redirect('/settings');
 });
