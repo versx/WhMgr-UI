@@ -11,7 +11,7 @@ class Pokemon {
         this.form = form;
         this.minCP = minCP;
         this.minIV = minIV;
-        this.ivList = JSON.parse(ivList || '[]');
+        this.ivList = ivList;
         this.minLvl = minLvl;
         this.maxLvl = maxLvl;
         this.gender = gender;
@@ -20,7 +20,7 @@ class Pokemon {
     async create() {
         const sql = `
         INSERT INTO pokemon (subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const args = [
             this.subscriptionId,
@@ -53,7 +53,7 @@ class Pokemon {
                     result.form,
                     result.min_cp,
                     result.miv_iv,
-                    result.iv_list,
+                    JSON.parse(result.iv_list || '[]'),
                     result.min_lvl,
                     result.max_lvl,
                     result.gender,
@@ -82,7 +82,7 @@ class Pokemon {
                 result.form,
                 result.min_cp,
                 result.miv_iv,
-                result.iv_list,
+                JSON.parse(result.iv_list || '[]'),
                 result.min_lvl,
                 result.max_lvl,
                 result.gender,
@@ -100,7 +100,6 @@ class Pokemon {
         const args = [id];
         const results = await query(sql, args);
         if (results && results.length > 0) {
-            console.log('Pokemon results:', results);
             const result = results[0];
             return new Pokemon(
                 result.subscription_id,
@@ -110,7 +109,7 @@ class Pokemon {
                 result.form,
                 result.min_cp,
                 result.miv_iv,
-                result.iv_list,
+                JSON.parse(result.iv_list || '[]'),
                 result.min_lvl,
                 result.max_lvl,
                 result.gender,
