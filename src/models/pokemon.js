@@ -3,7 +3,7 @@
 const query = require('../services/db.js');
 
 class Pokemon {
-    constructor(subscriptionId, guildId, userId, pokemonId, form, minCP, minIV, minLvl, maxLvl, gender, city) {
+    constructor(subscriptionId, guildId, userId, pokemonId, form, minCP, minIV, ivList, minLvl, maxLvl, gender, city) {
         this.subscriptionId = subscriptionId;
         this.guildId = guildId;
         this.userId = userId;
@@ -11,6 +11,7 @@ class Pokemon {
         this.form = form;
         this.minCP = minCP;
         this.minIV = minIV;
+        this.ivList = JSON.parse(ivList || '[]');
         this.minLvl = minLvl;
         this.maxLvl = maxLvl;
         this.gender = gender;
@@ -18,7 +19,7 @@ class Pokemon {
     }
     async create() {
         const sql = `
-        INSERT INTO pokemon (subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender, city)
+        INSERT INTO pokemon (subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const args = [
@@ -26,6 +27,7 @@ class Pokemon {
             this.guildId, this.userId,
             this.pokemonId, this.form,
             this.minCP, this.minIV,
+            JSON.stringify(this.ivList),
             this.minLvl, this.maxLvl,
             this.gender, this.city
         ];
@@ -34,7 +36,7 @@ class Pokemon {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender, city
+        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE guild_id = ? AND userId = ?
         `;
@@ -50,6 +52,7 @@ class Pokemon {
                     result.form,
                     result.min_cp,
                     result.miv_iv,
+                    result.iv_list,
                     result.min_lvl,
                     result.max_lvl,
                     result.gender,
@@ -62,7 +65,7 @@ class Pokemon {
     }
     static async getByPokemon(guildId, userId, pokemonId, form, city) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender, city
+        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND city = ?
         `;
@@ -77,6 +80,7 @@ class Pokemon {
                 result.form,
                 result.min_cp,
                 result.miv_iv,
+                result.iv_list,
                 result.min_lvl,
                 result.max_lvl,
                 result.gender,
@@ -87,7 +91,7 @@ class Pokemon {
     }
     static async getById(id) {
         const sql = `
-        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, min_lvl, max_lvl, gender, city
+        SELECT guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE id = ?
         `;
@@ -102,6 +106,7 @@ class Pokemon {
                 result.form,
                 result.min_cp,
                 result.miv_iv,
+                result.iv_list,
                 result.min_lvl,
                 result.max_lvl,
                 result.gender,
@@ -128,10 +133,10 @@ class Pokemon {
         const result = await query(sql, args);
         return result.affectedRows > 0;
     }
-    static async save(id, guildId, userId, pokemonId, form, minCP, minIV, minLvl, maxLvl, gender, city) {
+    static async save(id, guildId, userId, pokemonId, form, minCP, minIV, ivList, minLvl, maxLvl, gender, city) {
         const sql = `
         UPDATE pokemon
-        SET pokemon_id = ?, form = ?, min_cp = ?, miv_iv = ?, min_lvl = ?, max_lvl = ?, gender = ?, city = ?
+        SET pokemon_id = ?, form = ?, min_cp = ?, miv_iv = ?, iv_list = ?, min_lvl = ?, max_lvl = ?, gender = ?, city = ?
         WHERE guild_id = ? AND userId = ? AND id = ?
         `;
         const args = [
@@ -139,6 +144,7 @@ class Pokemon {
             form,
             minCP,
             minIV,
+            JSON.stringify(ivList),
             minLvl,
             maxLvl,
             gender,
