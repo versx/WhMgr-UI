@@ -183,7 +183,7 @@ router.post('/pokemon/new', async (req, res) => {
                     pokemonId,
                     form,
                     0,
-                    pokemonId === 201 ? 0 : iv || 0,
+                    isUltraRarePokemon(pokemonId) ? 0 : iv || 0,
                     min_lvl || 0,
                     max_lvl || 35,
                     gender || '*',
@@ -223,7 +223,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
             pokemon,
             form,
             0,
-            pokemon === 201 ? 0 : iv || 0,
+            isUltraRarePokemon(pokemonId) ? 0 : iv || 0,
             min_lvl || 0,
             max_lvl || 35,
             gender || '*',
@@ -688,5 +688,15 @@ router.post('/settings', async (req, res) => {
     }
     res.redirect('/settings');
 });
+
+function isUltraRarePokemon(pokemonId) {
+    const ultraRareList = [
+        201, //Unown
+        480, //Uxie
+        481, //Mesprit
+        482 //Azelf
+    ];
+    return ultraRareList.includes(pokemonId);
+}
 
 module.exports = router;
