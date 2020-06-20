@@ -20,12 +20,9 @@ const utils = require('./services/utils.js');
 
 // TODO: Group quests and invasion cities when listing
 // TODO: Convert to typescript
-// TODO: Multiple individual value/IV list subscriptions
 // TODO: Add delete button to edit pages
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
-// TODO: Add city support for Pokemon and PvP subscriptions
-// TODO: Use translations for pokemon names and forms
 
 
 run();

@@ -17,9 +17,6 @@ data.leagues = [
     { 'id': 'ultra', 'name': 'Ultra' },
     //{ 'id': 'master', 'name': 'Ultra' },
 ];
-data.icon_styles = [
-    { 'id': 'default', 'name': 'Default' },
-    { 'id': 'shuffle', 'name': 'Shuffle' }
-];
+data.icon_styles = config.iconStyles;
 
 module.exports = data;

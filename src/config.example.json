@@ -4,6 +4,7 @@
     "title": "Webhook Manager UI",
     "locale": "en",
     "style": "dark",
+    "maxPokemonId": 650,
     "lastNestMigration": "2019-03-07T01:00:00Z",
     "showFooter": true,
     "db": {
@@ -55,6 +56,10 @@
         "analytics": "",
         "adsense": ""
     },
+    "iconStyles": [
+        { "name": "Default" },
+        { "name": "Shuffle" }
+    ],
     "urls": {
         "images": {
             "pokemon": "https://cdn.example.com/images/original/monsters/%s_%s.png",

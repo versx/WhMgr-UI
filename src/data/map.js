@@ -1,13 +1,22 @@
 'use strict';
 
+const locale = require('../services/locale.js');
 const utils = require('../services/utils.js');
 const grunttypes = require('../../static/data/grunttype.json');
-const pokedex = require('../../static/data/pokedex.json');
+
+const config = require('../config.json');
 
 function getPokemonNameIdsList() {
-    const dex = pokedex;
-    const result = Object.keys(dex).map(x => { return { 'id': x, 'id_3': (x + '').padStart(3, '0'), 'name': pokedex[x], 'image_url': utils.getPokemonIcon(x, 0) }; });
-    return result;
+    let pokemon = [];
+    for (let i = 1; i < config.maxPokemonId; i++) {
+        pokemon.push({
+            'id': i,
+            'id_3': (i + '').padStart(3, '0'),
+            'name': locale.getPokemonName(i),
+            'image_url': utils.getPokemonIcon(i, 0)
+        });
+    }
+    return pokemon;
 }
 
 function getGruntRewardIdsList() {
@@ -24,7 +33,7 @@ function getGruntRewardIdsList() {
                 rewards.push({
                     'pokemon_id': pokemonId,
                     'pokemon_id_3': (pokemonId + '').padStart(3, '0'),
-                    'name': pokedex[pokemonId],
+                    'name': locale.getPokemonName(pokemonId),
                     'image_url': utils.getPokemonIcon(pokemonId, 0)
                 });
             }
@@ -35,7 +44,7 @@ function getGruntRewardIdsList() {
                     rewards.push({
                         'pokemon_id': pokemonId,
                         'pokemon_id_3': (pokemonId + '').padStart(3, '0'),
-                        'name': pokedex[pokemonId],
+                        'name': locale.getPokemonName(pokemonId),
                         'image_url': utils.getPokemonIcon(pokemonId, 0)
                     });
                 }

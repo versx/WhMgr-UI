@@ -1,8 +1,7 @@
 'use strict';
 
 const query = require('../services/db.js');
-
-const pokedex = require('../../static/data/pokedex.json');
+const locale = require('../services/locale.js');
 
 // TODO: Move to model classes
 
@@ -81,7 +80,7 @@ async function getPokemonSubscriptions(guildId, userId) {
     const results = await query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.name = pokedex[result.pokemon_id];
+            result.name = locale.getPokemonName(result.pokemon_id);
             result.cp = `${result.min_cp}-4096`;
             result.iv = result.miv_iv;
             result.lvl = `${result.min_lvl}-${result.max_lvl}`;
@@ -103,7 +102,7 @@ async function getPvpSubscriptions(guildId, userId) {
     const results = await query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.name = pokedex[result.pokemon_id];
+            result.name = locale.getPokemonName(result.pokemon_id);
             result.min_rank = result.miv_rank;
             result.city = '';
         });
@@ -121,7 +120,7 @@ async function getRaidSubscriptions(guildId, userId) {
     const results = await query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.name = pokedex[result.pokemon_id];
+            result.name = locale.getPokemonName(result.pokemon_id);
         });
     }
     return results;
@@ -159,7 +158,7 @@ async function getInvasionSubscriptions(guildId, userId) {
     const results = await query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.reward = pokedex[result.reward_pokemon_id];
+            result.reward = locale.getPokemonName(result.reward_pokemon_id);
         });
     }
     return results;
