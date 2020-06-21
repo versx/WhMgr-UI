@@ -65,6 +65,9 @@
                 <button type="submit" class="btn btn-primary">{{Save}}</button>
                 <br>
             </form>
+            <form action="/api/pokemon/delete/{{id}}" method="post">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('{{Are you sure that you want to delete pokemon subscription}} {{id}}?');">{{Delete}}</button>
+            </form>
         </div>
     </body>
 </html>
