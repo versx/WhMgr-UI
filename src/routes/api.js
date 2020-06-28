@@ -287,6 +287,10 @@ router.post('/pvp/new', async (req, res) => {
     } = req.body;
     const user_id = defaultData.user_id;
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
+    if (!subscriptionId) {
+        console.error('Failed to get user subscription ID for GuildId:', guildId, 'and UserId:', user_id);
+        return;
+    }
     let cities;
     if (city === 'all') {
         config.discord.guilds.map(x => {

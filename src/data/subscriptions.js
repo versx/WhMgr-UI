@@ -19,6 +19,20 @@ async function getUserSubscriptionId(guildId, userId) {
     return results;
 }
 
+async function createUserSubscription(guildId, userId) {
+    const sql = `
+    INSERT IGNORE INTO subscriptions (guild_id, userId, enabled, distance, latitude, longitude, icon_style)
+    VALUES (?, ?, 1, 0, 0, 0, 'Default')
+    `;
+    const args = [guildId, userId];
+    const results = await query(sql, args);
+    if (results && results.length > 0) {
+        console.log('Inserted', results.lastInsertId, 'into subscriptions table');
+        return results.lastInsertId;
+    }
+    return -1;
+}
+
 async function getUserSubscriptionStats(guildId, userId) {
     const sql = `
     SELECT
@@ -198,6 +212,7 @@ async function setSubscriptionSettings(guildId, userId, enabled, distance, latit
 
 module.exports = {
     getUserSubscriptionId,
+    createUserSubscription,
     getUserSubscriptionStats,
     getPokemonSubscriptions,
     getPvpSubscriptions,

@@ -20,7 +20,6 @@ const utils = require('./services/utils.js');
 
 // TODO: Group quests and invasion cities when listing
 // TODO: Convert to typescript
-// TODO: Add delete button to edit pages
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
 // TODO: Update insert if already exists update

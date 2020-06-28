@@ -136,7 +136,7 @@ router.get('/pvp/edit/:id', async (req, res) => {
     data.min_percent = pvp.minPercent;
     data.cities = map.buildCityList(req.session.guilds);
     data.cities.forEach(city => {
-        city.selected = city.name === pokemon.city;
+        city.selected = city.name === pvp.city;
     });
     res.render('pvp-edit', data);
 });
