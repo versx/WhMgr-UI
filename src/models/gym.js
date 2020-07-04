@@ -24,9 +24,9 @@ class Gym {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, name
+        SELECT subscription_id, guild_id, user_id, name
         FROM gyms
-        WHERE guild_id = ? AND userId = ?
+        WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
         const results = await query(sql, args);
@@ -36,7 +36,7 @@ class Gym {
                 list.push(new Gym(
                     result.subscription_id,
                     result.guild_id,
-                    result.userId,
+                    result.user_id,
                     result.name
                 ));
             });
@@ -46,9 +46,9 @@ class Gym {
     }
     static async getByName(guildId, userId, name) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, name
+        SELECT subscription_id, guild_id, user_id, name
         FROM gyms
-        WHERE guild_id = ? AND userId = ? AND name = ?
+        WHERE guild_id = ? AND user_id = ? AND name = ?
         `;
         const args = [guildId, userId, name];
         const results = await query(sql, args);
@@ -57,7 +57,7 @@ class Gym {
             return new Gym(
                 result.subscription_id,
                 result.guild_id,
-                result.userId,
+                result.user_id,
                 result.name
             );
         }
@@ -65,7 +65,7 @@ class Gym {
     }
     static async getById(id) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, name
+        SELECT subscription_id, guild_id, user_id, name
         FROM gyms
         WHERE id = ?
         `;
@@ -76,7 +76,7 @@ class Gym {
             return new Gym(
                 result.subscription_id,
                 result.guild_id,
-                result.userId,
+                result.user_id,
                 result.name
             );
         }
@@ -85,7 +85,7 @@ class Gym {
     static async delete(guildId, userId, name) {
         const sql = `
         DELETE FROM gyms
-        WHERE guild_id = ? AND userId = ? AND name = ?
+        WHERE guild_id = ? AND user_id = ? AND name = ?
         `;
         const args = [guildId, userId, name];
         const result = await query(sql, args);
@@ -103,7 +103,7 @@ class Gym {
     static async deleteAll(guildId, userId) {
         const sql = `
         DELETE FROM gyms
-        WHERE guild_id = ? AND userId = ?
+        WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
         const result = await query(sql, args);
@@ -113,7 +113,7 @@ class Gym {
         const sql = `
         UPDATE gyms
         SET name = ?
-        WHERE guild_id = ? AND userId = ? AND id = ?
+        WHERE guild_id = ? AND user_id = ? AND id = ?
         `;
         const args = [
             name,

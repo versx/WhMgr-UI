@@ -19,7 +19,7 @@ class Pokemon {
     }
     async create() {
         const sql = `
-        INSERT INTO pokemon (subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city)
+        INSERT INTO pokemon (subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const args = [
@@ -36,9 +36,9 @@ class Pokemon {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
+        SELECT subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
-        WHERE guild_id = ? AND userId = ?
+        WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
         const results = await query(sql, args);
@@ -48,11 +48,11 @@ class Pokemon {
                 list.push(new Pokemon(
                     result.subscription_id,
                     result.guild_id,
-                    result.userId,
+                    result.user_id,
                     result.pokemon_id,
                     result.form,
                     result.min_cp,
-                    result.miv_iv,
+                    result.min_iv,
                     JSON.parse(result.iv_list || '[]'),
                     result.min_lvl,
                     result.max_lvl,
@@ -66,9 +66,9 @@ class Pokemon {
     }
     static async getByPokemon(guildId, userId, pokemonId, form, city) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
+        SELECT subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
-        WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ? AND city = ?
         `;
         const args = [guildId, userId, pokemonId, form, city];
         const results = await query(sql, args);
@@ -77,11 +77,11 @@ class Pokemon {
             return new Pokemon(
                 result.subscription_id,
                 result.guild_id,
-                result.userId,
+                result.user_id,
                 result.pokemon_id,
                 result.form,
                 result.min_cp,
-                result.miv_iv,
+                result.min_iv,
                 JSON.parse(result.iv_list || '[]'),
                 result.min_lvl,
                 result.max_lvl,
@@ -93,7 +93,7 @@ class Pokemon {
     }
     static async getById(id) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, pokemon_id, form, min_cp, miv_iv, iv_list, min_lvl, max_lvl, gender, city
+        SELECT subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE id = ?
         `;
@@ -104,11 +104,11 @@ class Pokemon {
             return new Pokemon(
                 result.subscription_id,
                 result.guild_id,
-                result.userId,
+                result.user_id,
                 result.pokemon_id,
                 result.form,
                 result.min_cp,
-                result.miv_iv,
+                result.min_iv,
                 JSON.parse(result.iv_list || '[]'),
                 result.min_lvl,
                 result.max_lvl,
@@ -130,7 +130,7 @@ class Pokemon {
     static async deleteAll(guildId, userId) {
         const sql = `
         DELETE FROM pokemon
-        WHERE guild_id = ? AND userId = ?
+        WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
         const result = await query(sql, args);
@@ -139,8 +139,8 @@ class Pokemon {
     static async save(id, guildId, userId, pokemonId, form, minCP, minIV, ivList, minLvl, maxLvl, gender, city) {
         const sql = `
         UPDATE pokemon
-        SET pokemon_id = ?, form = ?, min_cp = ?, miv_iv = ?, iv_list = ?, min_lvl = ?, max_lvl = ?, gender = ?, city = ?
-        WHERE guild_id = ? AND userId = ? AND id = ?
+        SET pokemon_id = ?, form = ?, min_cp = ?, min_iv = ?, iv_list = ?, min_lvl = ?, max_lvl = ?, gender = ?, city = ?
+        WHERE guild_id = ? AND user_id = ? AND id = ?
         `;
         const args = [
             pokemonId,

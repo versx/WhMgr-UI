@@ -16,7 +16,7 @@ class PVP {
     }
     async create() {
         const sql = `
-        INSERT INTO pvp (subscription_id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city)
+        INSERT INTO pvp (subscription_id, guild_id, user_id, pokemon_id, form, league, min_rank, min_percent, city)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const args = [
@@ -32,9 +32,9 @@ class PVP {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
+        SELECT subscription_id, guild_id, user_id, pokemon_id, form, league, min_rank, min_percent, city
         FROM pvp
-        WHERE guild_id = ? AND userId = ?
+        WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
         const results = await query(sql, args);
@@ -44,11 +44,11 @@ class PVP {
                 list.push(new PVP(
                     result.subscription_id,
                     result.guild_id,
-                    result.userId,
+                    result.user_id,
                     result.pokemon_id,
                     result.form,
                     result.league,
-                    result.miv_rank,
+                    result.min_rank,
                     result.min_percent,
                     result.city
                 ));
@@ -59,9 +59,9 @@ class PVP {
     }
     static async getPokemonByLeague(guildId, userId, pokemonId, form, league, city) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
+        SELECT subscription_id, guild_id, user_id, pokemon_id, form, league, min_rank, min_percent, city
         FROM pvp
-        WHERE guild_id = ? AND userId = ? AND pokemon_id = ? AND form = ? AND league = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ? AND league = ? AND city = ?
         `;
         const args = [guildId, userId, pokemonId, form, league, city];
         const results = await query(sql, args);
@@ -70,11 +70,11 @@ class PVP {
             return new PVP(
                 result.subscription_id,
                 result.guild_id,
-                result.userId,
+                result.user_id,
                 result.pokemon_id,
                 result.form,
                 result.league,
-                result.miv_rank,
+                result.min_rank,
                 result.min_percent,
                 result.city
             );
@@ -83,7 +83,7 @@ class PVP {
     }
     static async getById(id) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, pokemon_id, form, league, miv_rank, min_percent, city
+        SELECT subscription_id, guild_id, user_id, pokemon_id, form, league, min_rank, min_percent, city
         FROM pvp
         WHERE id = ?
         `;
@@ -94,11 +94,11 @@ class PVP {
             return new PVP(
                 result.subscription_id,
                 result.guild_id,
-                result.userId,
+                result.user_id,
                 result.pokemon_id,
                 result.form,
                 result.league,
-                result.miv_rank,
+                result.min_rank,
                 result.min_percent,
                 result.city
             );
@@ -117,7 +117,7 @@ class PVP {
     static async deleteAll(guildId, userId) {
         const sql = `
         DELETE FROM pvp
-        WHERE guild_id = ? AND userId = ?
+        WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
         const result = await query(sql, args);
@@ -126,8 +126,8 @@ class PVP {
     static async save(id, guildId, userId, pokemonId, form, league, minRank, minPercent, city) {
         const sql = `
         UPDATE pvp
-        SET pokemon_id = ?, form = ?, league = ?, miv_rank = ?, min_percent = ?, city = ?
-        WHERE guild_id = ? AND userId = ? AND id = ?
+        SET pokemon_id = ?, form = ?, league = ?, min_rank = ?, min_percent = ?, city = ?
+        WHERE guild_id = ? AND user_id = ? AND id = ?
         `;
         const args = [
             pokemonId,

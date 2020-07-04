@@ -12,7 +12,7 @@ class Quest {
     }
     async create() {
         const sql = `
-        INSERT INTO quests (subscriptionId, guild_id, userId, reward, city)
+        INSERT INTO quests (subscriptionId, guild_id, user_id, reward, city)
         VALUES (?, ?, ?, ?, ?)
         `;
         const args = [
@@ -25,9 +25,9 @@ class Quest {
     }
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, reward, city
+        SELECT subscription_id, guild_id, user_id, reward, city
         FROM quests
-        WHERE guild_id = ? AND userId = ?
+        WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
         const results = await query(sql, args);
@@ -37,7 +37,7 @@ class Quest {
                 list.push(new Quest(
                     result.subscription_id,
                     result.guild_id,
-                    result.userId,
+                    result.user_id,
                     result.reward,
                     result.city
                 ));
@@ -48,7 +48,7 @@ class Quest {
     }
     static async getById(id) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, reward, city
+        SELECT subscription_id, guild_id, user_id, reward, city
         FROM quests
         WHERE id = ?
         `;
@@ -59,7 +59,7 @@ class Quest {
             return new Quest(
                 result.subscription_id,
                 result.guild_id,
-                result.userId,
+                result.user_id,
                 result.reward,
                 result.city
             );
@@ -68,9 +68,9 @@ class Quest {
     }
     static async getByReward(guildId, userId, reward, city) {
         const sql = `
-        SELECT subscription_id, guild_id, userId, reward, city
+        SELECT subscription_id, guild_id, user_id, reward, city
         FROM quests
-        WHERE guild_id = ? AND userId = ? AND reward = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND reward = ? AND city = ?
         LIMIT 1
         `;
         const args = [guildId, userId, reward, city];
@@ -79,7 +79,7 @@ class Quest {
             return new Quest(
                 result.subscription_id,
                 result.guild_id,
-                result.userId,
+                result.user_id,
                 result.reward,
                 result.city
             );
@@ -89,7 +89,7 @@ class Quest {
     static async delete(guildId, userId, reward, city) {
         const sql = `
         DELETE FROM quests
-        WHERE guild_id = ? AND userId = ? AND reward = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND reward = ? AND city = ?
         `;
         const args = [guildId, userId, reward, city];
         const result = await query(sql, args);
@@ -107,7 +107,7 @@ class Quest {
     static async deleteAll(guildId, userId) {
         const sql = `
         DELETE FROM quests
-        WHERE guild_id = ? AND userId = ?
+        WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
         const result = await query(sql, args);
@@ -117,7 +117,7 @@ class Quest {
         const sql = `
         UPDATE quests
         SET reward = ?, city = ?
-        WHERE guild_id = ? AND userId = ? AND id = ?
+        WHERE guild_id = ? AND user_id = ? AND id = ?
         `;
         const args = [
             reward,
