@@ -3,7 +3,6 @@
 const express = require('express');
 const router = express.Router();
 
-const config = require('../config.json');
 const defaultData = require('../data/default.js');
 const map = require('../data/map.js');
 const Pokemon = require('../models/pokemon.js');

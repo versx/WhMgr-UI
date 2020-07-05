@@ -23,7 +23,6 @@ const utils = require('./services/utils.js');
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
 // TODO: Update insert if already exists update
-// TODO: Remove discord enabled option from config
 
 run();
 
