@@ -77,36 +77,34 @@ async function run() {
         saveUninitialized: true
     }));
 
-    if (config.discord.enabled) {
-        app.use('/api/discord', discordRoutes);
+    app.use('/api/discord', discordRoutes);
 
-        // Discord error middleware
-        /* eslint-disable no-unused-vars */
-        app.use((err, req, res, next) => {
-        /* eslint-enable no-unused-vars */
-            switch (err.message) {
-            case 'NoCodeProvided':
-                return res.status(400).send({
-                    status: 'ERROR',
-                    error: err.message,
-                });
-            default:
-                return res.status(500).send({
-                    status: 'ERROR',
-                    error: err.message,
-                });
-            }
-        });
-    }
+    // Discord error middleware
+    /* eslint-disable no-unused-vars */
+    app.use((err, req, res, next) => {
+    /* eslint-enable no-unused-vars */
+        switch (err.message) {
+        case 'NoCodeProvided':
+            return res.status(400).send({
+                status: 'ERROR',
+                error: err.message,
+            });
+        default:
+            return res.status(500).send({
+                status: 'ERROR',
+                error: err.message,
+            });
+        }
+    });
 
     // Login middleware
     app.use((req, res, next) => {
         // Expose the store
         req.sessionStore = store;
-        if (config.discord.enabled && (req.path === '/api/discord/login' || req.path === '/login')) {
+        if (req.path === '/api/discord/login' || req.path === '/login') {
             return next();
         }
-        if (!config.discord.enabled || req.session.logged_in) {
+        if (req.session.logged_in) {
             const data = defaultData;
             data.logged_in = true;
             data.username = req.session.username || 'root';

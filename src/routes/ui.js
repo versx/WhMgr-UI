@@ -22,18 +22,16 @@ router.get(['/', '/index'], async (req, res) => {
     res.render('index', data);
 });
 
-if (config.discord.enabled) {
-    router.get('/login', (req, res) => {
-        res.redirect('/api/discord/login');
-    });
+router.get('/login', (req, res) => {
+    res.redirect('/api/discord/login');
+});
 
-    router.get('/logout', (req, res) => {
-        req.session.destroy((err) => {
-            if (err) throw err;
-            res.redirect('/login');
-        });
+router.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) throw err;
+        res.redirect('/login');
     });
-}
+});
 
 
 // Pokemon routes

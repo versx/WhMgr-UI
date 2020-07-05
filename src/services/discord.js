@@ -8,19 +8,17 @@ const oauth = new DiscordOauth2();
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-if (config.discord.enabled) {
-    client.on('ready', function() {
-        console.log(`Logged in as ${client.user.tag}!`);
-    });
-  
-    client.on('message', function(msg) {
-        if (msg.content === 'ping') {
-            msg.reply('pong');
-        }
-    });
-  
-    client.login(config.discord.botToken);
-}
+client.on('ready', function() {
+    console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on('message', function(msg) {
+    if (msg.content === 'ping') {
+        msg.reply('pong');
+    }
+});
+
+client.login(config.discord.botToken);
 
 class DiscordClient {
     constructor(accessToken) {
