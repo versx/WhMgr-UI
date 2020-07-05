@@ -38,7 +38,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
             if (pokemon) {
                 pokemon.forEach(pkmn => {
-                    pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='48'>&nbsp;${pkmn.name}`;
+                    pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='32'>&nbsp;${pkmn.name}`;
                     pkmn.iv_list = (pkmn.iv_list || []).length;
                     pkmn.gender == '*'
                         ? 'All'
@@ -47,9 +47,9 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                             : 'Female Only';
                     pkmn.gender_name = pkmn.gender === '*' ? 'All' : pkmn.gender;
                     pkmn.buttons = `
-                    <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
+                    <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
-                    <a href='/pokemon/delete/${pkmn.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
+                    <a href='/pokemon/delete/${pkmn.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
                 });
             }
@@ -59,11 +59,11 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const pvp = await subscriptions.getPvpSubscriptions(guild_id, user_id);
             if (pvp) {
                 pvp.forEach(pvpSub => {
-                    pvpSub.name = `<img src='${utils.getPokemonIcon(pvpSub.pokemon_id, pvpSub.form)}' width='auto' height='48'>&nbsp;${pvpSub.name}`;
+                    pvpSub.name = `<img src='${utils.getPokemonIcon(pvpSub.pokemon_id, pvpSub.form)}' width='auto' height='32'>&nbsp;${pvpSub.name}`;
                     pvpSub.buttons = `
-                    <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
+                    <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
-                    <a href='/pvp/delete/${pvpSub.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
+                    <a href='/pvp/delete/${pvpSub.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
                 });
             }
@@ -73,11 +73,11 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const raids = await subscriptions.getRaidSubscriptions(guild_id, user_id);
             if (raids) {
                 raids.forEach(raid => {
-                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, raid.form)}' width='auto' height='48'>&nbsp;${raid.name}`;
+                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, raid.form)}' width='auto' height='32'>&nbsp;${raid.name}`;
                     raid.buttons = `
-                    <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
+                    <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
-                    <a href='/raid/delete/${raid.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
+                    <a href='/raid/delete/${raid.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
                 });
             }
@@ -88,7 +88,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (gyms) {
                 gyms.forEach(gym => {
                     gym.buttons = `
-                    <a href='/gym/delete/${gym.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
+                    <a href='/gym/delete/${gym.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
                 });
             }
@@ -99,9 +99,9 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (quests) {
                 quests.forEach(quest => {
                     quest.buttons = `
-                    <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
+                    <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
-                    <a href='/quest/delete/${quest.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
+                    <a href='/quest/delete/${quest.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
                 });
             }
@@ -111,11 +111,11 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const invasions = await subscriptions.getInvasionSubscriptions(guild_id, user_id);
             if (invasions) {
                 invasions.forEach(invasion => {
-                    invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='48'>&nbsp;${invasion.reward}`;
+                    invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='32'>&nbsp;${invasion.reward}`;
                     invasion.buttons = `
-                    <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-primary'>Edit</button></a>
+                    <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
-                    <a href='/invasion/delete/${invasion.id}'><button type='button'class='btn btn-danger'>Delete</button></a>
+                    <a href='/invasion/delete/${invasion.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
                 });
             }
