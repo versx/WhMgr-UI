@@ -42,7 +42,7 @@ router.get('/callback', catchAsyncErrors(async function(req, res) {
             req.session.logged_in = true;
             req.session.user_id = user.id;
             req.session.username = `${user.username}#${user.discriminator}`;
-            req.session.roles = [];
+            req.session.roles = await client.getUserRoles(user.id);
             req.session.guilds = config.discord.guilds;
             res.redirect(`/?token=${response.data.access_token}`);
             return;
