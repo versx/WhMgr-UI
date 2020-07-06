@@ -11,7 +11,7 @@ class Gym {
     }
     async create() {
         const sql = `
-        INSERT INTO gyms (subscriptionId, guild_id, userId, name)
+        INSERT INTO gyms (subscription_id, guild_id, userId, name)
         VALUES (?, ?, ?, ?)
         `;
         const args = [

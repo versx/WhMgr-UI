@@ -195,7 +195,7 @@ router.post('/pokemon/new', async (req, res) => {
                     const result = await pkmn.create();
                     if (result) {
                         // Success
-                        console.log('Pokemon subscription for Pokemon', pokemon, 'created successfully.');
+                        console.log('Pokemon subscription for Pokemon', pokemonId, 'created successfully.');
                     }
                 }
             }

@@ -21,7 +21,7 @@ async function getUserSubscriptionId(guildId, userId) {
 
 async function createUserSubscription(guildId, userId) {
     const sql = `
-    INSERT IGNORE INTO subscriptions (guild_id, userId, enabled, distance, latitude, longitude, icon_style)
+    INSERT IGNORE INTO subscriptions (guild_id, user_id, enabled, distance, latitude, longitude, icon_style)
     VALUES (?, ?, 1, 0, 0, 0, 'Default')
     `;
     const args = [guildId, userId];

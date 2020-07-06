@@ -12,7 +12,7 @@ class Quest {
     }
     async create() {
         const sql = `
-        INSERT INTO quests (subscriptionId, guild_id, user_id, reward, city)
+        INSERT INTO quests (subscription_id, guild_id, user_id, reward, city)
         VALUES (?, ?, ?, ?, ?)
         `;
         const args = [
