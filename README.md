@@ -39,9 +39,9 @@ Once everything is setup and running appropriately, you can add this to PM2 ecos
 module.exports = {
   apps : [
   {
-    name: 'RDM-opole2',
+    name: 'WhMgr-UI',
     script: 'index.js',
-    cwd: '/home/username/RDM-opole2/src/',
+    cwd: '/home/username/WhMgr-UI/src/',
     instances: 1,
     autorestart: true,
     watch: false,
