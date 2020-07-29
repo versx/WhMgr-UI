@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
+const config = require('../config.json');
 const defaultData = require('../data/default.js');
 const map = require('../data/map.js');
 const Pokemon = require('../models/pokemon.js');
@@ -10,13 +11,19 @@ const PVP = require('../models/pvp.js');
 const Raid = require('../models/raid.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
+const utils = require('../services/utils.js');
 
 
 router.get(['/', '/index'], async (req, res) => {
     const data = defaultData;
+    const guilds = req.session.guilds;
+    const roles = req.session.roles;
+    data.user_id = req.session.user_id;
     data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
+        const userRoles = roles[server.id];
+        // TODO: Sanity check for length
+        const requiredRoles = config.discord.guilds.filter(x => x.id === server.id)[0].roles;
+        server.show = guilds.includes(server.id) && utils.hasRole(userRoles, requiredRoles);
     });
     res.render('index', data);
 });

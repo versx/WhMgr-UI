@@ -97,17 +97,29 @@ async function run() {
     });
 
     // Login middleware
-    app.use((req, res, next) => {
+    app.use(async (req, res, next) => {
+        res.header('Access-Control-Allow-Headers', '*');
         // Expose the store
         req.sessionStore = store;
         if (req.path === '/api/discord/login' || req.path === '/login') {
             return next();
         }
-        if (req.session.logged_in) {
-            const data = defaultData;
-            data.logged_in = true;
-            data.username = req.session.username || 'root';
-            data.user_id = req.session.user_id;
+        const session = await getSession(store, req.sessionID);
+        if (session === undefined || session === null) {
+            res.redirect('/login');
+            return;
+        }
+
+        console.log('Session:', req.session);
+        if (session.logged_in) {
+            defaultData.logged_in = session.logged_in;
+            defaultData.username = session.username || 'root';
+            defaultData.user_id = session.user_id;
+            if (!session.valid) {
+                //console.error('Invalid user authenticated', req.session.user_id);
+                res.redirect('/login');
+                return;
+            }
             return next();
         }
         res.redirect('/login');
@@ -134,4 +146,15 @@ async function run() {
 
     // Start listener
     app.listen(config.port, config.interface, () => console.log(`Listening on port ${config.port}...`));
+}
+
+async function getSession(store, id) {
+    return new Promise((resolve, reject) => {
+        store.get(id, (err, session) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(session);
+        });
+    });
 }
