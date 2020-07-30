@@ -5,7 +5,7 @@ const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const session = require('express-session');
-const MemoryStore = require('memorystore')(session)
+const MemoryStore = require('memorystore')(session);
 const app = express();
 const mustacheExpress = require('mustache-express');
 const helmet = require('helmet');
@@ -110,7 +110,7 @@ async function run() {
             return;
         }
 
-        console.log('Session:', req.session);
+        //console.log('Session:', req.session);
         if (session.logged_in) {
             defaultData.logged_in = session.logged_in;
             defaultData.username = session.username || 'root';

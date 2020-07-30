@@ -76,6 +76,7 @@ class Quest {
         const args = [guildId, userId, reward, city];
         const results = await query(sql, args);
         if (results && results.length > 0) {
+            let result = results[0];
             return new Quest(
                 result.subscription_id,
                 result.guild_id,

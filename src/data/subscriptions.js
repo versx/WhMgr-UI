@@ -99,7 +99,7 @@ async function getPokemonSubscriptions(guildId, userId) {
             result.iv = result.min_iv;
             result.iv_list = JSON.parse(result.iv_list || '[]');
             result.lvl = `${result.min_lvl}-${result.max_lvl}`;
-            result.city = result.city;
+            //result.city = result.city;
         });
     }
     return results;
@@ -116,8 +116,8 @@ async function getPvpSubscriptions(guildId, userId) {
     if (results) {
         results.forEach(result => {
             result.name = locale.getPokemonName(result.pokemon_id);
-            result.min_rank = result.min_rank;
-            result.city = result.city;
+            //result.min_rank = result.min_rank;
+            //result.city = result.city;
         });
     }
     return results;
@@ -207,7 +207,7 @@ async function setSubscriptionSettings(guildId, userId, enabled, distance, latit
         userId
     ];
     const results = await query(sql, args);
-    return results.affectedRows > 0;;
+    return results.affectedRows > 0;
 }
 
 module.exports = {

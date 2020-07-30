@@ -24,117 +24,125 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
     }
     const type = req.query.type;
     switch (type) {
-        case 'subscriptions':
-            const subscription = await subscriptions.getUserSubscriptionStats(guild_id, user_id);
-            req.sessionStore.length(function(err, length) {
-                if (err) {
-                    console.error('Failed to get session store length:', err);
-                    return;
-                }
-                res.json({ data: { subscriptions: subscription, clients_online: length } });
+    case 'subscriptions': {
+        const subscription = await subscriptions.getUserSubscriptionStats(guild_id, user_id);
+        req.sessionStore.length(function(err, length) {
+            if (err) {
+                console.error('Failed to get session store length:', err);
+                return;
+            }
+            res.json({ data: { subscriptions: subscription, clients_online: length } });
+        });
+        break;
+    }
+    case 'pokemon': {
+        const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
+        if (pokemon) {
+            pokemon.forEach(pkmn => {
+                pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='32'>&nbsp;${pkmn.name}`;
+                pkmn.iv_list = (pkmn.iv_list || []).length;
+                pkmn.gender == '*'
+                    ? 'All'
+                    : pkmn.gender == 'm'
+                        ? 'Male Only'
+                        : 'Female Only';
+                pkmn.gender_name = pkmn.gender === '*' ? 'All' : pkmn.gender;
+                pkmn.buttons = `
+                <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                &nbsp;
+                <a href='/pokemon/delete/${pkmn.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                `;
             });
-            break;
-        case 'pokemon':
-            const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
-            if (pokemon) {
-                pokemon.forEach(pkmn => {
-                    pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='32'>&nbsp;${pkmn.name}`;
-                    pkmn.iv_list = (pkmn.iv_list || []).length;
-                    pkmn.gender == '*'
-                        ? 'All'
-                        : pkmn.gender == 'm'
-                            ? 'Male Only'
-                            : 'Female Only';
-                    pkmn.gender_name = pkmn.gender === '*' ? 'All' : pkmn.gender;
-                    pkmn.buttons = `
-                    <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
-                    &nbsp;
-                    <a href='/pokemon/delete/${pkmn.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                    `;
-                });
-            }
-            res.json({ data: { pokemon: pokemon } });
-            break;
-        case 'pvp':
-            const pvp = await subscriptions.getPvpSubscriptions(guild_id, user_id);
-            if (pvp) {
-                pvp.forEach(pvpSub => {
-                    pvpSub.name = `<img src='${utils.getPokemonIcon(pvpSub.pokemon_id, pvpSub.form)}' width='auto' height='32'>&nbsp;${pvpSub.name}`;
-                    pvpSub.buttons = `
-                    <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
-                    &nbsp;
-                    <a href='/pvp/delete/${pvpSub.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                    `;
-                });
-            }
-            res.json({ data: { pvp: pvp } });
-            break;
-        case 'raids':
-            const raids = await subscriptions.getRaidSubscriptions(guild_id, user_id);
-            if (raids) {
-                raids.forEach(raid => {
-                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, raid.form)}' width='auto' height='32'>&nbsp;${raid.name}`;
-                    raid.buttons = `
-                    <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
-                    &nbsp;
-                    <a href='/raid/delete/${raid.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                    `;
-                });
-            }
-            res.json({ data: { raids: raids } });
-            break;
-        case 'gyms':
-            const gyms = await subscriptions.getGymSubscriptions(guild_id, user_id);
-            if (gyms) {
-                gyms.forEach(gym => {
-                    gym.buttons = `
-                    <a href='/gym/delete/${gym.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                    `;
-                });
-            }
-            res.json({ data: { gyms: gyms } });
-            break;
-        case 'quests':
-            const quests = await subscriptions.getQuestSubscriptions(guild_id, user_id);
-            if (quests) {
-                quests.forEach(quest => {
-                    quest.buttons = `
-                    <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
-                    &nbsp;
-                    <a href='/quest/delete/${quest.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                    `;
-                });
-            }
-            res.json({ data: { quests: quests } });
-            break;
-        case 'invasions':
-            const invasions = await subscriptions.getInvasionSubscriptions(guild_id, user_id);
-            if (invasions) {
-                invasions.forEach(invasion => {
-                    invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='32'>&nbsp;${invasion.reward}`;
-                    invasion.buttons = `
-                    <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
-                    &nbsp;
-                    <a href='/invasion/delete/${invasion.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                    `;
-                });
-            }
-            res.json({ data: { invasions: invasions } });
-            break;
-        case 'settings':
-            const settings = await subscriptions.getSubscriptionSettings(guild_id, user_id);
-            const formatted = req.query.formatted;
-            if (formatted) {
-                let list = [];
-                const keys = Object.keys(settings);
-                keys.forEach(key => {
-                    list.push({ 'name': key.toUpperCase(), 'value': settings[key] });
-                });
-                res.json({ data: { settings: list } });
-            } else {
-                res.json({ data: { settings: settings } });
-            }
-            break;
+        }
+        res.json({ data: { pokemon: pokemon } });
+        break;
+    }
+    case 'pvp': {
+        const pvp = await subscriptions.getPvpSubscriptions(guild_id, user_id);
+        if (pvp) {
+            pvp.forEach(pvpSub => {
+                pvpSub.name = `<img src='${utils.getPokemonIcon(pvpSub.pokemon_id, pvpSub.form)}' width='auto' height='32'>&nbsp;${pvpSub.name}`;
+                pvpSub.buttons = `
+                <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                &nbsp;
+                <a href='/pvp/delete/${pvpSub.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                `;
+            });
+        }
+        res.json({ data: { pvp: pvp } });
+        break;
+    }
+    case 'raids': {
+        const raids = await subscriptions.getRaidSubscriptions(guild_id, user_id);
+        if (raids) {
+            raids.forEach(raid => {
+                raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, raid.form)}' width='auto' height='32'>&nbsp;${raid.name}`;
+                raid.buttons = `
+                <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                &nbsp;
+                <a href='/raid/delete/${raid.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                `;
+            });
+        }
+        res.json({ data: { raids: raids } });
+        break;
+    }
+    case 'gyms': {
+        const gyms = await subscriptions.getGymSubscriptions(guild_id, user_id);
+        if (gyms) {
+            gyms.forEach(gym => {
+                gym.buttons = `
+                <a href='/gym/delete/${gym.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                `;
+            });
+        }
+        res.json({ data: { gyms: gyms } });
+        break;
+    }
+    case 'quests': {
+        const quests = await subscriptions.getQuestSubscriptions(guild_id, user_id);
+        if (quests) {
+            quests.forEach(quest => {
+                quest.buttons = `
+                <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                &nbsp;
+                <a href='/quest/delete/${quest.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                `;
+            });
+        }
+        res.json({ data: { quests: quests } });
+        break;
+    }
+    case 'invasions': {
+        const invasions = await subscriptions.getInvasionSubscriptions(guild_id, user_id);
+        if (invasions) {
+            invasions.forEach(invasion => {
+                invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='32'>&nbsp;${invasion.reward}`;
+                invasion.buttons = `
+                <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                &nbsp;
+                <a href='/invasion/delete/${invasion.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                `;
+            });
+        }
+        res.json({ data: { invasions: invasions } });
+        break;
+    }
+    case 'settings': {
+        const settings = await subscriptions.getSubscriptionSettings(guild_id, user_id);
+        const formatted = req.query.formatted;
+        if (formatted) {
+            let list = [];
+            const keys = Object.keys(settings);
+            keys.forEach(key => {
+                list.push({ 'name': key.toUpperCase(), 'value': settings[key] });
+            });
+            res.json({ data: { settings: list } });
+        } else {
+            res.json({ data: { settings: settings } });
+        }
+        break;
+    }
     }
 });
 
@@ -288,7 +296,7 @@ router.post('/pvp/new', async (req, res) => {
     const user_id = defaultData.user_id;
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
     if (!subscriptionId) {
-        console.error('Failed to get user subscription ID for GuildId:', guildId, 'and UserId:', user_id);
+        console.error('Failed to get user subscription ID for GuildId:', guild_id, 'and UserId:', user_id);
         return;
     }
     let cities;
