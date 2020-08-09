@@ -115,8 +115,24 @@ async function run() {
             defaultData.logged_in = session.logged_in;
             defaultData.username = session.username || 'root';
             defaultData.user_id = session.user_id;
-            if (!session.valid) {
-                //console.error('Invalid user authenticated', req.session.user_id);
+            let valid = false;
+            const guilds = req.session.guilds;
+            const roles = req.session.roles;
+            defaultData.servers.forEach(server => {
+                if (roles.hasOwnProperty(server.id)) {
+                    const userRoles = roles[server.id];
+                    const requiredRoles = config.discord.guilds.filter(x => x.id === server.id);
+                    if (requiredRoles.length > 0) {
+                        valid = guilds.includes(server.id) && utils.hasRole(userRoles, requiredRoles[0].roles);
+                    } else {
+                        valid = false;
+                    }
+                } else {
+                    valid = false;
+                }
+            });
+            if (!session.valid || !valid) {
+                console.error('Invalid user authentication, no valid roles for user', req.session.user_id);
                 res.redirect('/login');
                 return;
             }

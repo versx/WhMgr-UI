@@ -16,15 +16,8 @@ const utils = require('../services/utils.js');
 
 router.get(['/', '/index'], async (req, res) => {
     const data = defaultData;
-    const guilds = req.session.guilds;
-    const roles = req.session.roles;
     data.user_id = req.session.user_id;
-    data.servers.forEach(server => {
-        const userRoles = roles[server.id];
-        // TODO: Sanity check for length
-        const requiredRoles = config.discord.guilds.filter(x => x.id === server.id)[0].roles;
-        server.show = guilds.includes(server.id) && utils.hasRole(userRoles, requiredRoles);
-    });
+    data.servers = validateRoles(req, res);
     res.render('index', data);
 });
 
@@ -43,19 +36,13 @@ router.get('/logout', (req, res) => {
 // Pokemon routes
 router.get('/pokemon', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('pokemon', data);
 });
 
 router.get('/pokemon/new', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.pokemon = map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pokemon-new', data);
@@ -63,10 +50,7 @@ router.get('/pokemon/new', (req, res) => {
 
 router.get('/pokemon/edit/:id', async (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     const id = req.params.id;
     data.id = id;
     const pokemon = await Pokemon.getById(id);
@@ -90,20 +74,14 @@ router.get('/pokemon/edit/:id', async (req, res) => {
 
 router.get('/pokemon/delete/:id', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('pokemon-delete', data);
 });
 
 router.get('/pokemon/delete_all', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('pokemon-delete-all', data);
 });
 
@@ -111,10 +89,7 @@ router.get('/pokemon/delete_all', (req, res) => {
 // PVP routes
 router.get('/pvp/new', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.pokemon = map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pvp-new', data);
@@ -122,10 +97,7 @@ router.get('/pvp/new', (req, res) => {
 
 router.get('/pvp/edit/:id', async (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     const id = req.params.id;
     data.id = id;
     const pvp = await PVP.getById(id);
@@ -147,20 +119,14 @@ router.get('/pvp/edit/:id', async (req, res) => {
 
 router.get('/pvp/delete/:id', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('pvp-delete', data);
 });
 
 router.get('/pvp/delete_all', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('pvp-delete-all', data);
 });
 
@@ -168,19 +134,13 @@ router.get('/pvp/delete_all', (req, res) => {
 // Raid routes
 router.get('/raids', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('raids', data);
 });
 
 router.get('/raid/new', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.pokemon = map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('raid-new', data);
@@ -188,10 +148,7 @@ router.get('/raid/new', (req, res) => {
 
 router.get('/raid/edit/:id', async (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     const id = req.params.id;
     data.id = id;
     const raid = await Raid.getById(id);
@@ -208,20 +165,14 @@ router.get('/raid/edit/:id', async (req, res) => {
 
 router.get('/raid/delete/:id', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('raid-delete', data);
 });
 
 router.get('/raids/delete_all', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('raids-delete-all', data);
 });
 
@@ -229,30 +180,21 @@ router.get('/raids/delete_all', (req, res) => {
 // Gym routes
 router.get('/gym/new', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     //data.cities = map.buildCityList(req.session.guilds);
     res.render('gym-new', data);
 });
 
 router.get('/gym/delete/:id', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('gym-delete', data);
 });
 
 router.get('/gyms/delete_all', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('gyms-delete-all', data);
 });
 
@@ -260,29 +202,20 @@ router.get('/gyms/delete_all', (req, res) => {
 // Quest routes
 router.get('/quests', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('quests', data);
 });
 
 router.get('/quest/new', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.cities = map.buildCityList(req.session.guilds);
     res.render('quest-new', data);
 });
 
 router.get('/quest/edit/:id', async (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     const id = req.params.id;
     data.id = id;
     const quest = await Quest.getById(id);
@@ -296,20 +229,14 @@ router.get('/quest/edit/:id', async (req, res) => {
 
 router.get('/quest/delete/:id', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('quest-delete', data);
 });
 
 router.get('/quests/delete_all', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('quests-delete-all', data);
 });
 
@@ -317,19 +244,13 @@ router.get('/quests/delete_all', (req, res) => {
 // Invasion routes
 router.get('/invasions', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('invasions', data);
 });
 
 router.get('/invasion/new', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.rewards = map.getGruntRewardIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('invasion-new', data);
@@ -337,10 +258,7 @@ router.get('/invasion/new', (req, res) => {
 
 router.get('/invasion/edit/:id', async (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     const id = req.params.id;
     data.id = id;
     const invasion = await Invasion.getById(id);
@@ -357,20 +275,14 @@ router.get('/invasion/edit/:id', async (req, res) => {
 
 router.get('/invasion/delete/:id', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('invasion-delete', data);
 });
 
 router.get('/invasions/delete_all', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('invasions-delete-all', data);
 });
 
@@ -378,11 +290,37 @@ router.get('/invasions/delete_all', (req, res) => {
 // Settings routes
 router.get('/settings', (req, res) => {
     const data = defaultData;
-    data.servers.forEach(server => {
-        const guilds = req.session.guilds;
-        server.show = guilds.includes(server.id);
-    });
+    data.servers = validateRoles(req, res);
     res.render('settings', data);
 });
+
+const validateRoles = (req, res) => {
+    const servers = defaultData.servers;
+    const guilds = req.session.guilds;
+    const roles = req.session.roles;
+    let valid = false;
+    servers.forEach(server => {
+        if (roles.hasOwnProperty(server.id)) {
+            const userRoles = roles[server.id];
+            const requiredRoles = config.discord.guilds.filter(x => x.id === server.id);
+            if (requiredRoles.length > 0) {
+                server.show = guilds.includes(server.id) && utils.hasRole(userRoles, requiredRoles[0].roles);
+                if (server.show) {
+                    valid = true;
+                }
+            } else {
+                server.show = false;
+            }
+        } else {
+            server.show = false;
+        }
+        if (!valid) {
+            console.error('Access not granted...');
+            res.redirect('/login');
+            return null;
+        }
+    });
+    return servers;
+};
 
 module.exports = router;
