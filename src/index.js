@@ -123,12 +123,10 @@ async function run() {
                     const userRoles = roles[server.id];
                     const requiredRoles = config.discord.guilds.filter(x => x.id === server.id);
                     if (requiredRoles.length > 0) {
-                        valid = guilds.includes(server.id) && utils.hasRole(userRoles, requiredRoles[0].roles);
-                    } else {
-                        valid = false;
+                        if (guilds.includes(server.id) && utils.hasRole(userRoles, requiredRoles[0].roles)) {
+                            valid = true;
+                        }
                     }
-                } else {
-                    valid = false;
                 }
             });
             if (!session.valid || !valid) {
