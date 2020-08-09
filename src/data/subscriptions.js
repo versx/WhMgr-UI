@@ -86,7 +86,7 @@ const getUserSubscriptionStats = async (guildId, userId) => {
     return results;
 };
 
-const getPokemonSubscriptions = (guildId, userId) => {
+const getPokemonSubscriptions = async (guildId, userId) => {
     const sql = `
     SELECT id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
     FROM pokemon
@@ -107,7 +107,7 @@ const getPokemonSubscriptions = (guildId, userId) => {
     return results;
 };
 
-const getPvpSubscriptions = (guildId, userId) => {
+const getPvpSubscriptions = async (guildId, userId) => {
     const sql = `
     SELECT id, guild_id, user_id, pokemon_id, form, league, min_rank, min_percent, city
     FROM pvp
