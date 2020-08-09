@@ -1,6 +1,8 @@
 'use strict';
 
-const query = require('../services/db.js');
+const config = require('../config.json');
+const MySQLConnector = require('../services/mysql.js');
+const db = new MySQLConnector(config.db.brock);
 const locale = require('../services/locale.js');
 
 // TODO: Move to model classes
@@ -12,7 +14,7 @@ const getUserSubscriptionId = async (guildId, userId) => {
     WHERE guild_id = ? AND user_id = ?
     `;
     const args = [guildId, userId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     if (results && results.length > 0) {
         return results[0].id;
     }
@@ -25,7 +27,7 @@ const createUserSubscription = async (guildId, userId) => {
     VALUES (?, ?, 1, 0, 0, 0, 'Default')
     `;
     const args = [guildId, userId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     if (results && results.length > 0) {
         console.log('Inserted', results.lastInsertId, 'into subscriptions table');
         return results.lastInsertId;
@@ -77,7 +79,7 @@ const getUserSubscriptionStats = async (guildId, userId) => {
         guildId, userId,
         guildId, userId
     ];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     if (results && results.length > 0) {
         return results[0];
     }
@@ -91,7 +93,7 @@ const getPokemonSubscriptions = (guildId, userId) => {
     WHERE guild_id = ? AND user_id = ?
     `;
     const args = [guildId, userId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
             result.name = locale.getPokemonName(result.pokemon_id);
@@ -112,7 +114,7 @@ const getPvpSubscriptions = (guildId, userId) => {
     WHERE guild_id = ? AND user_id = ?
     `;
     const args = [guildId, userId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
             result.name = locale.getPokemonName(result.pokemon_id);
@@ -130,7 +132,7 @@ const getRaidSubscriptions = async (guildId, userId) => {
     WHERE guild_id = ? AND user_id = ?
     `;
     const args = [guildId, userId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
             result.name = locale.getPokemonName(result.pokemon_id);
@@ -146,7 +148,7 @@ const getGymSubscriptions = async (guildId, userId) => {
     WHERE guild_id = ? AND user_id = ?
     `;
     const args = [guildId, userId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 };
 
@@ -157,7 +159,7 @@ const getQuestSubscriptions = async (guildId, userId) => {
     WHERE guild_id = ? AND user_id = ?
     `;
     const args = [guildId, userId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results;
 };
 
@@ -168,7 +170,7 @@ const getInvasionSubscriptions = async (guildId, userId) => {
     WHERE guild_id = ? AND user_id = ?
     `;
     const args = [guildId, userId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
             result.reward = locale.getPokemonName(result.reward_pokemon_id);
@@ -184,7 +186,7 @@ const getSubscriptionSettings = async (guildId, userId) => {
     WHERE guild_id = ? AND user_id = ?
     `;
     const args = [guildId, userId];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     if (results && results.length > 0) {
         return results[0];
     }
@@ -206,7 +208,7 @@ const setSubscriptionSettings = async (guildId, userId, enabled, distance, latit
         guildId,
         userId
     ];
-    const results = await query(sql, args);
+    const results = await db.query(sql, args);
     return results.affectedRows > 0;
 };
 

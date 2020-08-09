@@ -15,7 +15,7 @@ data.genders = [
 data.leagues = [
     { 'id': 'great', 'name': 'Great' },
     { 'id': 'ultra', 'name': 'Ultra' },
-    //{ 'id': 'master', 'name': 'Ultra' },
+    //{ 'id': 'master', 'name': 'Master' },
 ];
 data.icon_styles = config.iconStyles;
 
