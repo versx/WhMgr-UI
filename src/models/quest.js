@@ -22,7 +22,7 @@ class Quest {
             this.guildId, this.userId,
             this.reward, this.city
         ];
-        const result = await query(sql, args);
+        const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
 
@@ -33,7 +33,7 @@ class Quest {
         WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
-        const results = await query(sql, args);
+        const results = await db.query(sql, args);
         if (results && results.length > 0) {
             const list = [];
             results.forEach(result => {
@@ -57,7 +57,7 @@ class Quest {
         WHERE id = ?
         `;
         const args = [id];
-        const results = await query(sql, args);
+        const results = await db.query(sql, args);
         if (results && results.length > 0) {
             const result = results[0];
             return new Quest(
@@ -79,7 +79,7 @@ class Quest {
         LIMIT 1
         `;
         const args = [guildId, userId, reward, city];
-        const results = await query(sql, args);
+        const results = await db.query(sql, args);
         if (results && results.length > 0) {
             let result = results[0];
             return new Quest(
@@ -99,7 +99,7 @@ class Quest {
         WHERE guild_id = ? AND user_id = ? AND reward = ? AND city = ?
         `;
         const args = [guildId, userId, reward, city];
-        const result = await query(sql, args);
+        const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
 
@@ -109,7 +109,7 @@ class Quest {
         WHERE id = ?
         `;
         const args = [id];
-        const result = await query(sql, args);
+        const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
 
@@ -119,7 +119,7 @@ class Quest {
         WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
-        const result = await query(sql, args);
+        const result = await db.query(sql, args);
         return result.affectedRows > 0;
     }
 
@@ -136,7 +136,7 @@ class Quest {
             userId,
             id
         ];
-        const result = await query(sql, args);
+        const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
 }
