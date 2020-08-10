@@ -1,6 +1,8 @@
 'use strict';
 
-const query = require('../services/db.js');
+const config = require('../config.json');
+const MySQLConnector = require('../services/mysql.js');
+const db = new MySQLConnector(config.db.brock);
 
 class Gym {
     constructor(subscriptionId, guildId, userId, name) {
@@ -9,6 +11,7 @@ class Gym {
         this.userId = userId;
         this.name = name;
     }
+
     async create() {
         const sql = `
         INSERT INTO gyms (subscription_id, guild_id, user_id, name)
@@ -19,9 +22,10 @@ class Gym {
             this.guildId, this.userId,
             this.name
         ];
-        const result = await query(sql, args);
+        const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
+
     static async getAll(guildId, userId) {
         const sql = `
         SELECT subscription_id, guild_id, user_id, name
@@ -29,7 +33,7 @@ class Gym {
         WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
-        const results = await query(sql, args);
+        const results = await db.query(sql, args);
         if (results && results.length > 0) {
             const list = [];
             results.forEach(result => {
@@ -44,6 +48,7 @@ class Gym {
         }
         return null;
     }
+
     static async getByName(guildId, userId, name) {
         const sql = `
         SELECT subscription_id, guild_id, user_id, name
@@ -51,7 +56,7 @@ class Gym {
         WHERE guild_id = ? AND user_id = ? AND name = ?
         `;
         const args = [guildId, userId, name];
-        const results = await query(sql, args);
+        const results = await db.query(sql, args);
         if (results && results.length > 0) {
             const result = results[0];
             return new Gym(
@@ -63,6 +68,7 @@ class Gym {
         }
         return null;
     }
+    
     static async getById(id) {
         const sql = `
         SELECT subscription_id, guild_id, user_id, name
@@ -70,7 +76,7 @@ class Gym {
         WHERE id = ?
         `;
         const args = [id];
-        const results = await query(sql, args);
+        const results = await db.query(sql, args);
         if (results && results.length > 0) {
             const result = results[0];
             return new Gym(
@@ -82,33 +88,37 @@ class Gym {
         }
         return null;
     }
+
     static async delete(guildId, userId, name) {
         const sql = `
         DELETE FROM gyms
         WHERE guild_id = ? AND user_id = ? AND name = ?
         `;
         const args = [guildId, userId, name];
-        const result = await query(sql, args);
+        const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
+
     static async deleteById(id) {
         const sql = `
         DELETE FROM gyms
         WHERE id = ?
         `;
         const args = [id];
-        const result = await query(sql, args);
+        const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
+
     static async deleteAll(guildId, userId) {
         const sql = `
         DELETE FROM gyms
         WHERE guild_id = ? AND user_id = ?
         `;
         const args = [guildId, userId];
-        const result = await query(sql, args);
+        const result = await db.query(sql, args);
         return result.affectedRows > 0;
     }
+
     static async save(id, guildId, userId, name) {
         const sql = `
         UPDATE gyms
@@ -121,7 +131,7 @@ class Gym {
             userId,
             id
         ];
-        const result = await query(sql, args);
+        const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
 }

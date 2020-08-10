@@ -1,6 +1,8 @@
 'use strict';
 
-const query = require('../services/db.js');
+const config = require('../config.json');
+const MySQLConnector = require('../services/mysql.js');
+const db = new MySQLConnector(config.db.brock);
 
 class Quest {
     constructor(subscriptionId, guildId, userId, reward, city) {
@@ -23,6 +25,7 @@ class Quest {
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }
+
     static async getAll(guildId, userId) {
         const sql = `
         SELECT subscription_id, guild_id, user_id, reward, city
@@ -46,6 +49,7 @@ class Quest {
         }
         return null;
     }
+
     static async getById(id) {
         const sql = `
         SELECT subscription_id, guild_id, user_id, reward, city
@@ -66,6 +70,7 @@ class Quest {
         }
         return null;
     }
+    
     static async getByReward(guildId, userId, reward, city) {
         const sql = `
         SELECT subscription_id, guild_id, user_id, reward, city
@@ -87,6 +92,7 @@ class Quest {
         }
         return null;
     }
+
     static async delete(guildId, userId, reward, city) {
         const sql = `
         DELETE FROM quests
@@ -96,6 +102,7 @@ class Quest {
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }
+
     static async deleteById(id) {
         const sql = `
         DELETE FROM quests
@@ -105,6 +112,7 @@ class Quest {
         const result = await query(sql, args);
         return result.affectedRows === 1;
     }
+
     static async deleteAll(guildId, userId) {
         const sql = `
         DELETE FROM quests
@@ -114,6 +122,7 @@ class Quest {
         const result = await query(sql, args);
         return result.affectedRows > 0;
     }
+
     static async save(id, guildId, userId, reward, city) {
         const sql = `
         UPDATE quests

@@ -8,7 +8,7 @@ const svc = new GeofenceService.GeofenceService();
 const config = require('../config.json');
 const grunttypes = require('../../static/data/grunttype.json');
 
-function getPokemonNameIdsList() {
+const getPokemonNameIdsList = () => {
     let pokemon = [];
     for (let i = 1; i < config.maxPokemonId; i++) {
         pokemon.push({
@@ -19,9 +19,9 @@ function getPokemonNameIdsList() {
         });
     }
     return pokemon;
-}
+};
 
-function getGruntRewardIdsList() {
+const getGruntRewardIdsList = () => {
     const grunts = grunttypes;
     const rewards = [];
     const keys = Object.keys(grunts);
@@ -32,6 +32,10 @@ function getGruntRewardIdsList() {
             if (grunt.encounters.first && grunt.encounters.first.length > 0) {
                 const encounter = grunt.encounters.first[0];
                 const pokemonId = parseInt(encounter.split('_')[0]);
+                const exists = rewards.filter(x => x.pokemon_id === pokemonId);
+                if (exists.length > 0) {
+                    continue;
+                }
                 rewards.push({
                     'pokemon_id': pokemonId,
                     'pokemon_id_3': (pokemonId + '').padStart(3, '0'),
@@ -43,6 +47,10 @@ function getGruntRewardIdsList() {
                 if (grunt.encounters.second && grunt.encounters.second.length > 0) {
                     const encounter = grunt.encounters.second[0];
                     const pokemonId = parseInt(encounter.split('_')[0]);
+                    const exists = rewards.filter(x => x.pokemon_id === pokemonId);
+                    if (exists.length > 0) {
+                        continue;
+                    }
                     rewards.push({
                         'pokemon_id': pokemonId,
                         'pokemon_id_3': (pokemonId + '').padStart(3, '0'),
@@ -55,9 +63,9 @@ function getGruntRewardIdsList() {
     }
     rewards.sort((x, y) => x.pokemon_id - y.pokemon_id);
     return rewards;
-}
+};
 
-function buildCityList(guilds) {
+const buildCityList = (guilds) => {
     let cities = [];
     for (let i = 0; i < svc.geofences.length; i++) {
         const geofence = svc.geofences[i];
@@ -73,7 +81,7 @@ function buildCityList(guilds) {
         }
     }
     return cities;
-}
+};
 
 module.exports = {
     getPokemonNameIdsList,
