@@ -20,21 +20,21 @@
                     <input type="hidden" id="pokemon" name="pokemon" />
                     <br>
                     <!--<input type="text" class="form-control" placeholder="Search Name or ID" />-->
-                    <button id="select_all" type="button" class="btn btn-primary btn-sm">Select All</button>
-                    <button id="select_none" type="button" class="btn btn-primary btn-sm">Select None</button>
-                    <button id="select_gen1" type="button" class="btn btn-warning btn-sm">Select Gen1</button>
-                    <button id="select_gen2" type="button" class="btn btn-warning btn-sm">Select Gen2</button>
-                    <button id="select_gen3" type="button" class="btn btn-warning btn-sm">Select Gen3</button>
-                    <button id="select_gen4" type="button" class="btn btn-warning btn-sm">Select Gen4</button>
-                    <button id="select_gen5" type="button" class="btn btn-warning btn-sm">Select Gen5</button>
-                    <button id="select_rare" type="button" class="btn btn-success btn-sm">Select Rare</button>
-                    <button id="select_ultra" type="button" class="btn btn-danger btn-sm">Select Ultra</button>
+		    <button id="select_all" type="button" class="btn btn-primary btn-sm">{{Select All}}</button>
+		    <button id="select_none" type="button" class="btn btn-primary btn-sm">{{Select None}}</button>
+		    <button id="select_gen1" type="button" class="btn btn-warning btn-sm">{{Select Gen1}}</button>
+		    <button id="select_gen2" type="button" class="btn btn-warning btn-sm">{{Select Gen2}}</button>
+		    <button id="select_gen3" type="button" class="btn btn-warning btn-sm">{{Select Gen3}}</button>
+		    <button id="select_gen4" type="button" class="btn btn-warning btn-sm">{{Select Gen4}}</button>
+		    <button id="select_gen5" type="button" class="btn btn-warning btn-sm">{{Select Gen5}}</button>
+		    <button id="select_rare" type="button" class="btn btn-success btn-sm">{{Select Rare}}</button>
+		    <button id="select_ultra" type="button" class="btn btn-danger btn-sm">{{Select Ultra Rare}}</button>
                 </div>
                 <div class="form-group">
                     {{City}}
                     <select name="city" class="custom-select" multiple required>
                         <option value="" selected disabled hidden>{{Choose a City}}</option>
-                        <option value="all">All</option>
+			<option value="all">{{All}}</option>
                         {{#cities}}
                         <option value="{{name}}" id="g_{{guild}}" hidden>{{name}}</option>
                         {{/cities}}
