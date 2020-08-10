@@ -20,6 +20,24 @@ class Pokemon {
         this.city = city;
     }
 
+    async create() {
+        const sql = `
+        INSERT INTO pokemon (subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        const args = [
+            this.subscriptionId,
+            this.guildId, this.userId,
+            this.pokemonId, this.form,
+            this.minCP, this.minIV,
+            JSON.stringify(this.ivList),
+            this.minLvl, this.maxLvl,
+            this.gender, this.city
+        ];
+        const result = await db.query(sql, args);
+        return result.affectedRows === 1;
+    }
+
     static async getAll(guildId, userId) {
         const sql = `
         SELECT subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
