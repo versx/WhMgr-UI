@@ -408,15 +408,19 @@ router.post('/raids/new', async (req, res) => {
     if (cities) {
         for (let i = 0; i < cities.length; i++) {
             const area = cities[i];
-            const exists = await Raid.getByPokemon(guild_id, user_id, pokemon, form, area);
-            if (exists) {
-                // Already exists
-            } else {
-                const raid = new Raid(subscriptionId, guild_id, user_id, pokemon, form, area);
-                const result = await raid.create();
-                if (result) {
-                    // Success
-                    console.log('Raid subscription for Pokemon', pokemon, 'created successfully.');
+            const split = pokemon.split(',');
+            for (let i = 0; i < split.length; i++) {
+                const pokemonId = split[i];
+                const exists = await Raid.getByPokemon(guild_id, user_id, pokemonId, form, area);
+                if (exists) {
+                    // Already exists
+                } else {
+                    const raid = new Raid(subscriptionId, guild_id, user_id, pokemonId, form, area);
+                    const result = await raid.create();
+                    if (result) {
+                        // Success
+                        console.log('Raid subscription for Pokemon', pokemonId, 'created successfully.');
+                    }
                 }
             }
         }
