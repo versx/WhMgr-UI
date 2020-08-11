@@ -12,26 +12,26 @@
         {{#logged_in}}
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/"><i class="fa fa-fw fa-home" aria-hidden="true"></i>&nbsp;Home <span class="sr-only"></span></a>
+                <a class="nav-link" href="/"><i class="fa fa-fw fa-home" aria-hidden="true"></i>&nbsp;{{Home}} <span class="sr-only"></span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/pokemon"><i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>&nbsp;Pokemon</a>
+                <a class="nav-link" href="/pokemon"><i class="fa fa-fw fa-dot-circle-o" aria-hidden="true"></i>&nbsp;{{Pokemon}}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/raids"><i class="fa fa-fw fa-bolt" aria-hidden="true"></i>&nbsp;Raids</a>
+                <a class="nav-link" href="/raids"><i class="fa fa-fw fa-bolt" aria-hidden="true"></i>&nbsp;{{Raids}}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/quests"><i class="fa fa-fw fa-search-plus" aria-hidden="true"></i>&nbsp;Quests</a>
+                <a class="nav-link" href="/quests"><i class="fa fa-fw fa-search-plus" aria-hidden="true"></i>&nbsp;{{Quests}}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/invasions"><i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;Invasions</a>
+                <a class="nav-link" href="/invasions"><i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;{{Invasions}}</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
                 <select class="form-control .server_selector" id="server_selector" name="server_selector" onchange="onServerChanged()">
-                    <option value="" selected disabled hidden>Choose a Server</option>
-                    <!--<option value="all">All</option>-->
+                    <option value="" selected disabled hidden>{{Choose a Server}}</option>
+                    <!--<option value="all">{{All}}</option>-->
                     {{#servers}}
                         <option value="{{id}}" {{#selected}}selected{{/selected}} {{^show}}hidden{{/show}}>{{name}}</option>
                     {{/servers}}
@@ -53,8 +53,8 @@
                     <i class="fa fa-fw fa-user" aria-hidden="true"></i>&nbsp;{{username}}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/settings"><i class="fa fa-fw fa-cog" aria-hidden="true"></i>&nbsp;Settings</a>
-                    <a class="dropdown-item" href="/logout"><i class="fa fa-fw fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a>
+                    <a class="dropdown-item" href="/settings"><i class="fa fa-fw fa-cog" aria-hidden="true"></i>&nbsp;{{Settings}}</a>
+                    <a class="dropdown-item" href="/logout"><i class="fa fa-fw fa-sign-out" aria-hidden="true"></i>&nbsp;{{Logout}}</a>
                 </div>
             </li>
         {{/username}}
