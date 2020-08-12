@@ -120,7 +120,7 @@ async function run() {
             const guilds = req.session.guilds;
             const roles = req.session.roles;
             defaultData.servers.forEach(server => {
-                if (roles.hasOwnProperty(server.id)) {
+                if (roles[server.id]) {
                     const userRoles = roles[server.id];
                     const requiredRoles = config.discord.guilds.filter(x => x.id === server.id);
                     if (requiredRoles.length > 0) {
