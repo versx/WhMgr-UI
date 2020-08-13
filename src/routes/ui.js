@@ -300,7 +300,7 @@ const validateRoles = (req, res) => {
     const roles = req.session.roles;
     let valid = false;
     servers.forEach(server => {
-        if (roles.hasOwnProperty(server.id)) {
+        if (roles[server.id]) {
             const userRoles = roles[server.id];
             const requiredRoles = config.discord.guilds.filter(x => x.id === server.id);
             if (requiredRoles.length > 0) {
