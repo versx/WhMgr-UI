@@ -626,16 +626,20 @@ router.post('/invasions/new', async (req, res) => {
     if (cities) {
         for (let i = 0; i < cities.length; i++) {
             const area = cities[i];
-            const exists = await Invasion.getByReward(guild_id, user_id, pokemon, area);
-            if (exists) {
-                // Already exists
-                console.log('Invasion subscription with reward', pokemon, 'already exists.');
-            } else {
-                const invasion = new Invasion(subscriptionId, guild_id, user_id, pokemon, area);
-                const result = await invasion.create();
-                if (result) {
-                    // Success
-                    console.log('Invasion subscription for reward', pokemon, 'created successfully.');
+            const split = pokemon.split(',');
+            for (let i = 0; i < split.length; i++) {
+                const pokemonId = split[i];
+                const exists = await Invasion.getByReward(guild_id, user_id, pokemonId, area);
+                if (exists) {
+                    // Already exists
+                    console.log('Invasion subscription with reward', pokemonId, 'already exists.');
+                } else {
+                    const invasion = new Invasion(subscriptionId, guild_id, user_id, pokemonId, area);
+                    const result = await invasion.create();
+                    if (result) {
+                        // Success
+                        console.log('Invasion subscription for reward', pokemonId, 'created successfully.');
+                    }
                 }
             }
         }
