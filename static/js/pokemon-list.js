@@ -63,6 +63,13 @@ $('#select_ultra').on('click', function() {
         }
     });
 })
+$('#select_raid5star').on('click', function() {
+    $.each($('.item'), function(index, item) {
+        if (pokemonRarity.raid5star.includes(parseInt(item.id))) {
+            selectItem(item);
+        }
+    });
+})
 function onPokemonClicked(element) {
     if (element.classList.value.includes('active')) {
         element.classList.value = element.classList.value.replace(' active', '');
