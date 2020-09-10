@@ -1,53 +1,47 @@
-<!DOCTYPE html="{{locale}}">
-    {{> header}}
-    <body>
-        {{> navbar}}
-        <br>
-        <h1 align="center" id="header">{{Settings}}</h1>
-        <br>
-        <div class="w-75" style="float: none; margin: 0 auto;">
-            <form action="/api/settings" method="post">
-                <div class="card bg-dark">
-                    <div class="card-body">
-                        <div class="container">
-                            <div class="form-group">
-                                {{Icon Style}}
-                                <select id="icon_style" name="icon_style" class="custom-select" required>
-                                    <option value="" selected disabled hidden>{{Choose an Icon Style}}</option>
-                                    {{#icon_styles}}
-                                    <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
-                                    {{/icon_styles}}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                {{Location}}
-                                <input type="text" class="form-control" id="location" name="location" placeholder="0,0">
-                            </div>
-                            <div class="form-group">
-                                {{Max Distance}}
-                                <input type="number" class="form-control" id="distance" name="distance" placeholder="500" required>
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="enabled" name="enabled">
-                                <label class="form-check-label" for="enabled">{{Enable Subscriptions}}</label>
-                            </div>
-                            <br>
-                            <input type="hidden" id="guild_id" name="guild_id">
-                            <button type="submit" class="btn btn-primary">{{Save}}</button>
-                            <br>
-                        </div>
+{{> header}}
+
+{{> navbar}}
+
+<br>
+<h1 align="center" id="header">{{Settings}}</h1>
+<br>
+<div class="w-75" style="float: none; margin: 0 auto;">
+    <form action="/api/settings" method="post">
+        <div class="card bg-dark">
+            <div class="card-body">
+                <div class="container">
+                    <div class="form-group">
+                        {{Icon Style}}
+                        <select id="icon_style" name="icon_style" class="custom-select" required>
+                            <option value="" selected disabled hidden>{{Choose an Icon Style}}</option>
+                            {{#icon_styles}}
+                            <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                            {{/icon_styles}}
+                        </select>
                     </div>
+                    <div class="form-group">
+                        {{Location}}
+                        <input type="text" class="form-control" id="location" name="location" placeholder="0,0">
+                    </div>
+                    <div class="form-group">
+                        {{Max Distance}}
+                        <input type="number" class="form-control" id="distance" name="distance" placeholder="500" required>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="enabled" name="enabled">
+                        <label class="form-check-label" for="enabled">{{Enable Subscriptions}}</label>
+                    </div>
+                    <br>
+                    <input type="hidden" id="guild_id" name="guild_id">
+                    <button type="submit" class="btn btn-primary">{{Save}}</button>
+                    <br>
                 </div>
-            </form>
+            </div>
         </div>
-    </body>
-</html>
+    </form>
+</div>
 
 <script>
-    if ("{{style}}" === 'dark') {
-        $('body').css('background-color', 'rgb(33, 37, 41)');
-        $('body').css('color', 'rgb(255, 255, 255)');
-    }
     $('#guild_id').val(guildId);
     const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
     if (guilds) {

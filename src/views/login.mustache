@@ -1,19 +1,10 @@
-<!DOCTYPE html="{{locale}}">
-    {{> header}}
-    <body>
-        {{> navbar}}
-        <br>
-        <h1 align="center" id="header">{{Login}}</h1>
-        <br>
-        <div class="w-75" style="float: none; margin: 0 auto;">
-            <a type="button" class="btn btn-primary" href="/api/discord/login">{{Login via Discord}}</a>
-        </div>
-    </body>
-</html>
+{{> header}}
 
-<script>
-    if ("{{style}}" === 'dark') {
-        $('body').css('background-color', 'rgb(33, 37, 41)');
-        $('body').css('color', 'rgb(255, 255, 255)');
-    }
-</script>
+{{> navbar}}
+
+<br>
+<h1 align="center" id="header">{{Login}}</h1>
+<br>
+<div class="w-75" style="float: none; margin: 0 auto;">
+    <a type="button" class="btn btn-primary" href="/api/discord/login">{{Login via Discord}}</a>
+</div>

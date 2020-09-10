@@ -1,0 +1,29 @@
+table.dataTable tbody td {
+    vertical-align: middle;
+}
+
+.theme-dark .card {
+    background-color: #1a1a1a;
+}
+
+.theme-dark .card-body,
+.theme-dark .dropdown-menu,
+.theme-dark .dropdown-item,
+.theme-dark .list-group,
+.theme-dark .list-group-item,
+.theme-dark .modal-content,
+.theme-dark {
+    background-color: rgb(33, 37, 31);
+    color: white;
+}
+
+.theme-dark .list-group-item {
+    border-color: white;
+}
+
+/*
+'.list-group-item').css('background-color', 'rgb(33, 37, 41)');
+$('.darkInvert').css('filter', 'invert(100%)');
+$('body').css('background-color', 'rgb(33, 37, 41)');
+$('body').css('color', 'rgb(255, 255, 255)');
+*/

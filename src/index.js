@@ -23,11 +23,9 @@ const utils = require('./services/utils.js');
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
 // TODO: Update insert if already exists update
-// TODO: Fix issue with city all looping all pokemon/raids causing issues
+// TODO: Cookie sessions
 
-run();
-
-async function run() {
+(async () => {
     // Basic security protections
     app.use(helmet());
 
@@ -53,9 +51,9 @@ async function run() {
     // Register helper as a locals function wrroutered as mustache expects
     app.use((req, res, next) => {
         // Mustache helper
-        res.locals.__ = function() {
+        res.locals.__ = () => {
             /* eslint-disable no-unused-vars */
-            return function(text, render) {
+            return (text, render) => {
             /* eslint-enable no-unused-vars */
                 return i18n.__.routerly(req, arguments);
             };
@@ -84,16 +82,16 @@ async function run() {
     app.use((err, req, res, next) => {
     /* eslint-enable no-unused-vars */
         switch (err.message) {
-        case 'NoCodeProvided':
-            return res.status(400).send({
-                status: 'ERROR',
-                error: err.message,
-            });
-        default:
-            return res.status(500).send({
-                status: 'ERROR',
-                error: err.message,
-            });
+            case 'NoCodeProvided':
+                return res.status(400).send({
+                    status: 'ERROR',
+                    error: err.message,
+                });
+            default:
+                return res.status(500).send({
+                    status: 'ERROR',
+                    error: err.message,
+                });
         }
     });
 
@@ -106,7 +104,7 @@ async function run() {
             return next();
         }
         const session = await getSession(store, req.sessionID);
-        if (session === undefined || session === null) {
+        if (!session) {
             res.redirect('/login');
             return;
         }
@@ -161,9 +159,9 @@ async function run() {
 
     // Start listener
     app.listen(config.port, config.interface, () => console.log(`Listening on port ${config.port}...`));
-}
+})();
 
-async function getSession(store, id) {
+const getSession = async (store, id) => {
     return new Promise((resolve, reject) => {
         store.get(id, (err, session) => {
             if (err) {
@@ -172,4 +170,4 @@ async function getSession(store, id) {
             resolve(session);
         });
     });
-}
+};

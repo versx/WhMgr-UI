@@ -47,6 +47,7 @@ router.get('/callback', catchAsyncErrors(async (req, res) => {
             req.session.guilds = guilds;
             req.session.roles = await buildGuildRoles(DiscordClient, user.id, guilds);
             req.session.valid = true;
+            req.session.save();
             res.redirect(`/?token=${response.data.access_token}`);
             return;
         }

@@ -13,19 +13,25 @@ class Raid {
         this.city = city;
     }
 
-    async create() {
-        const sql = `
-        INSERT INTO raids (subscription_id, guild_id, user_id, pokemon_id, form, city)
-        VALUES (?, ?, ?, ?, ?, ?)
+    static async create(raidSQL) {
+        if (raidSQL.length === 0) {
+            return;
+        }
+        let sql = `
+        INSERT INTO raids (id, subscription_id, guild_id, user_id, pokemon_id, form, city) VALUES
         `;
-        const args = [
-            this.subscriptionId,
-            this.guildId, this.userId,
-            this.pokemonId, this.form,
-            this.city
-        ];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+        sql += raidSQL.join(',');
+        sql += `
+        ON DUPLICATE KEY UPDATE
+            subscription_id=VALUES(subscription_id),
+            guild_id=VALUES(guild_id),
+            user_id=VALUES(user_id),
+            pokemon_id=VALUES(pokemon_id),
+            form=VALUES(form),
+            city=VALUES(city)
+        `;
+        let results = await db.query(sql);
+        console.log('[Raid] Results:', results);
     }
 
     static async getAll(guildId, userId) {
@@ -144,6 +150,20 @@ class Raid {
         ];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;
+    }
+
+    toSql() {
+        return `
+        (
+            ${null},
+            ${this.subscriptionId},
+            ${this.guildId},
+            ${this.userId},
+            ${this.pokemonId},
+            ${this.form ? '"' + this.form + '"' : '""'},
+            ${this.city ? '"' + this.city + '"' : '""'}
+        )
+        `;
     }
 }
 

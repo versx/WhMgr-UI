@@ -1,117 +1,105 @@
-<!DOCTYPE html="{{locale}}">
-    {{> header}}
-    <body>
-        {{> navbar}}
-        <br>
-        <h1 align="center" id="header">{{title}}</h1>
-        <br>
-        <div style="width:90%; margin-left:calc(5%);">
-            <div class="card text-center p-1 m-3">
-                <div class="card-header bg-dark text-light"><b>{{Subscriptions}}</b></div>
-                <div class="card-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md p-1">
-                                <div class="list-group">
-                                    <a class="list-group-item" href="/pokemon">
-                                        <h3 class="pull-right"><img src="./img/pokemon.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading text-light pokemon_count">{{pokemon_count}}</h4>
-                                        <p class="list-group-item-text text-light">{{Pokemon}}</p>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md p-1">
-                                <div class="list-group">
-                                    <a class="list-group-item" href="/pokemon#pvp">
-                                        <h3 class="pull-right"><img src="./img/pvp.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading text-light pvp_count">{{pvp_count}}</h4>
-                                        <p class="list-group-item-text text-light">{{PVP}}</p>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md p-1">
-                                <div class="list-group">
-                                    <a class="list-group-item" href="/raids">
-                                        <h3 class="pull-right"><img src="./img/raids.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading text-light raids_count">{{raids_count}}</h4>
-                                        <p class="list-group-item-text text-light">{{Raids}}</p>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md p-1">
-                                <div class="list-group">
-                                    <a class="list-group-item" href="/raids#gyms">
-                                        <h3 class="pull-right"><img src="./img/gyms.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading text-light gyms_count">{{gyms_count}}</h4>
-                                        <p class="list-group-item-text text-light">{{Gyms}}</p>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md p-1">
-                                <div class="list-group">
-                                    <a class="list-group-item" href="/quests">
-                                        <h3 class="pull-right"><img src="./img/quests.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading text-light quests_count">{{quests_count}}</h4>
-                                        <p class="list-group-item-text text-light">{{Quests}}</p>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md p-1">
-                                <div class="list-group">
-                                    <a class="list-group-item" href="/invasions">
-                                        <h3 class="pull-right"><img src="./img/invasions.png" width="64" height="64"/></h3>
-                                        <h4 class="list-group-item-heading text-light invasions_count">{{invasions_count}}</h4>
-                                        <p class="list-group-item-text text-light">{{Invasions}}</p>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card text-center p-1 m-3">
-                <div class="card-header bg-dark text-light text-center"><b>{{Settings}}</b></div>
-                <div class="card-body">
-                    <div class="container">
-                        <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>{{Name}}</th>
-                                <th>{{Value}}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+{{> header}}
+
+{{> navbar}}
+
+<br>
+<h1 align="center" id="header">{{title}}</h1>
+<br>
+<div style="width:90%; margin-left:calc(5%);">
+    <div class="card text-center p-1 m-3">
+        <div class="card-header bg-dark text-light"><b>{{Subscriptions}}</b></div>
+        <div class="card-body">
             <div class="container">
-                {{Members Online}}:&nbsp;<b><span id="clients_online" name="clients_online" style="color:green;">0</span></b>
+                <div class="row">
+                    <div class="col-md p-1">
+                        <div class="list-group">
+                            <a class="list-group-item" href="/pokemon">
+                                <h3 class="pull-right"><img src="./img/pokemon.png" width="64" height="64"/></h3>
+                                <h4 class="list-group-item-heading text-light pokemon_count">{{pokemon_count}}</h4>
+                                <p class="list-group-item-text text-light">{{Pokemon}}</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md p-1">
+                        <div class="list-group">
+                            <a class="list-group-item" href="/pokemon#pvp">
+                                <h3 class="pull-right"><img src="./img/pvp.png" width="64" height="64"/></h3>
+                                <h4 class="list-group-item-heading text-light pvp_count">{{pvp_count}}</h4>
+                                <p class="list-group-item-text text-light">{{PVP}}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md p-1">
+                        <div class="list-group">
+                            <a class="list-group-item" href="/raids">
+                                <h3 class="pull-right"><img src="./img/raids.png" width="64" height="64"/></h3>
+                                <h4 class="list-group-item-heading text-light raids_count">{{raids_count}}</h4>
+                                <p class="list-group-item-text text-light">{{Raids}}</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md p-1">
+                        <div class="list-group">
+                            <a class="list-group-item" href="/raids#gyms">
+                                <h3 class="pull-right"><img src="./img/gyms.png" width="64" height="64"/></h3>
+                                <h4 class="list-group-item-heading text-light gyms_count">{{gyms_count}}</h4>
+                                <p class="list-group-item-text text-light">{{Gyms}}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md p-1">
+                        <div class="list-group">
+                            <a class="list-group-item" href="/quests">
+                                <h3 class="pull-right"><img src="./img/quests.png" width="64" height="64"/></h3>
+                                <h4 class="list-group-item-heading text-light quests_count">{{quests_count}}</h4>
+                                <p class="list-group-item-text text-light">{{Quests}}</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md p-1">
+                        <div class="list-group">
+                            <a class="list-group-item" href="/invasions">
+                                <h3 class="pull-right"><img src="./img/invasions.png" width="64" height="64"/></h3>
+                                <h4 class="list-group-item-heading text-light invasions_count">{{invasions_count}}</h4>
+                                <p class="list-group-item-text text-light">{{Invasions}}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <br>
-    </body>
-    {{> footer}}
-</html>
+    </div>
+    <div class="card text-center p-1 m-3">
+        <div class="card-header bg-dark text-light text-center"><b>{{Settings}}</b></div>
+        <div class="card-body">
+            <div class="container">
+                <table id="table" class="table table-{{style}} table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>{{Name}}</th>
+                        <th>{{Value}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        {{Members Online}}:&nbsp;<b><span id="clients_online" name="clients_online" style="color:green;">0</span></b>
+    </div>
+</div>
+<br>
+
+{{> footer}}
 
 <script type='text/javascript' src='./js/utils.js'></script>
 <script type='text/javascript'>
-    if ("{{style}}" === 'dark') {
-        $('body').css('background-color', 'rgb(33, 37, 41)');
-        $('body').css('color', 'rgb(255, 255, 255)');
-        $('.modal-content').css('background-color', 'rgb(33, 37, 41)');
-        $('.modal-content').css('color', 'rgb(255, 255, 255)');
-        $('.card').css('background-color', '#1a1a1a');
-        $('.list-group-item').css('background-color', 'rgb(33, 37, 41)');
-        $('.list-group-item').css('border-color', 'white');
-        //$('.darkInvert').css('filter', 'invert(100%)');
-    }
-
     $(document).ready(function() {
         const table = $('#table').DataTable({
             "ajax": {

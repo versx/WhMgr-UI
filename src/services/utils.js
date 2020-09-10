@@ -3,11 +3,11 @@
 const util = require('util');
 const config = require('../config.json');
 
-function generateString() {
+const generateString = () => {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-}
+};
 
-function hasGuild(guilds) {
+const hasGuild = (guilds) => {
     if (config.discord.guilds.length === 0) {
         return true;
     }
@@ -18,9 +18,9 @@ function hasGuild(guilds) {
         }
     }
     return false;
-}
+};
 
-function hasRole(userRoles, requiredRoles) {
+const hasRole = (userRoles, requiredRoles) => {
     if (requiredRoles.length === 0) {
         return true;
     }
@@ -31,9 +31,9 @@ function hasRole(userRoles, requiredRoles) {
         }
     }
     return false;
-}
+};
 
-function inArray(haystack, needle) {
+const inArray = (haystack, needle) => {
     const array = haystack.split(',');
     if (Array.isArray(array)) {
         for (let i = 0; i < array.length; i++) {
@@ -45,17 +45,17 @@ function inArray(haystack, needle) {
         return false;
     }
     return needle.trim().indexOf(haystack.trim()) > -1;
-}
+};
 
-function toHHMMSS(secs) {
+const toHHMMSS = (secs) => {
     const sec_num = parseInt(secs / 1000, 10);
     const minutes = Math.floor(sec_num / 60) % 60;
     //var seconds = sec_num % 60;
     //return `${minutes}m ${seconds}s`;
     return `${minutes}m`;
-}
+};
 
-function formatDate(date) {
+const formatDate = (date) => {
     let d = new Date(date),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
@@ -67,13 +67,13 @@ function formatDate(date) {
         day = '0' + day;
 
     return [year, month, day].join('-');
-}
+};
 
-function getPokemonIcon(pokemonId, formId) {
+const getPokemonIcon = (pokemonId, formId) => {
     const padId = (pokemonId + '').padStart(3, '0');
     const form = formId > 0 ? formId : '00';
     return util.format(config.urls.images.pokemon, padId, form);
-}
+};
 
 module.exports = {
     generateString,
