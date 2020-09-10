@@ -1,39 +1,33 @@
-<!DOCTYPE html="{{locale}}">
-    {{> header}}
-    <body>
-        {{> navbar}}
-        <br>
-        <h1 align="center" id="header">{{New Quest Subscription}}</h1>
-        <br>
-        <div class="w-75" style="float: none; margin: 0 auto;">
-            <form action="/api/quests/new" method="post">
-                <div class="form-group">
-                    {{Reward}}
-                    <input type="text" class="form-control" name="reward" value="" placeholder="i.e. 500 Stardust" required>
-                </div>
-                <div class="form-group">
-                    {{City}}
-                    <select name="city" class="custom-select" multiple required>
-                        <option value="all" selected>All</option>
-                        {{#cities}}
-                        <option value="{{name}}" id="g_{{guild}}" hidden>{{name}}</option>
-                        {{/cities}}
-                    </select>
-                </div>
-                <br>
-                <input type="hidden" id="guild_id" name="guild_id">
-                <button type="submit" class="btn btn-primary">{{Create}}</button>
-                <br>
-            </form>
+{{> header}}
+
+{{> navbar}}
+
+<br>
+<h1 align="center" id="header">{{New Quest Subscription}}</h1>
+<br>
+<div class="w-75" style="float: none; margin: 0 auto;">
+    <form action="/api/quests/new" method="post">
+        <div class="form-group">
+            {{Reward}}
+            <input type="text" class="form-control" name="reward" value="" placeholder="i.e. 500 Stardust" required>
         </div>
-    </body>
-</html>
+        <div class="form-group">
+            {{City}}
+            <select name="city" class="custom-select" multiple required>
+                <option value="all" selected>All</option>
+                {{#cities}}
+                <option value="{{name}}" id="g_{{guild}}" hidden>{{name}}</option>
+                {{/cities}}
+            </select>
+        </div>
+        <br>
+        <input type="hidden" id="guild_id" name="guild_id">
+        <button type="submit" class="btn btn-primary">{{Create}}</button>
+        <br>
+    </form>
+</div>
 
 <script>
-    if ("{{style}}" === 'dark') {
-        $('body').css('background-color', 'rgb(33, 37, 41)');
-        $('body').css('color', 'rgb(255, 255, 255)');
-    }
     $('#guild_id').val(guildId);
     const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
     if (guilds) {

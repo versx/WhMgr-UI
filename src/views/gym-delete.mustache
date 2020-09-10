@@ -1,27 +1,18 @@
-<!DOCTYPE html="{{locale}}">
-    {{> header}}
-    <body>
-        {{> navbar}}
-        <br>
-        <h1 align="center" id="header">{{Delete Gym Subscription}} {{id}} </h1>
-        <br>
-        <div class="w-75" style="float: none; margin: 0 auto;">
-            <form action="/api/gyms/delete/{{id}}" method="post">
-                <div align="center">
-                    <h3 id="message">{{Are you sure that you want to delete gym subscription}} {{id}}?</h3>
-                    <a href="/raids" id="cancel" name="cancel" class="btn btn-secondary">{{Cancel}}</a>
-                    <input type="hidden" id="guild_id" name="guild_id" required>
-                    <button type="submit" class="btn btn-danger">{{Delete}}</button>
-                </div>
-                <br>
-            </form>
-        </div>
-    </body>
-</html>
+{{> header}}
 
-<script>
-    if ("{{style}}" === 'dark') {
-        $('body').css('background-color', 'rgb(33, 37, 41)');
-        $('body').css('color', 'rgb(255, 255, 255)');
-    }
-</script>
+{{> navbar}}
+
+<br>
+<h1 align="center" id="header">{{Delete Gym Subscription}} {{id}} </h1>
+<br>
+<div class="w-75" style="float: none; margin: 0 auto;">
+    <form action="/api/gyms/delete/{{id}}" method="post">
+        <div align="center">
+            <h3 id="message">{{Are you sure that you want to delete gym subscription}} {{id}}?</h3>
+            <a href="/raids" id="cancel" name="cancel" class="btn btn-secondary">{{Cancel}}</a>
+            <input type="hidden" id="guild_id" name="guild_id" required>
+            <button type="submit" class="btn btn-danger">{{Delete}}</button>
+        </div>
+        <br>
+    </form>
+</div>

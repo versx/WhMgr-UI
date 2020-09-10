@@ -4,7 +4,8 @@ const config = require('../config.json');
 const data = require('../../static/locales/' + config.locale + '.json');
 data.title = config.title;
 data.locale = config.locale;
-data.style = config.style == 'dark' ? 'dark' : '';
+data.body_class = config.style === 'dark' ? 'theme-dark' : '';
+data.table_class = config.style === 'dark' ? 'table-dark' : '';
 data.copyright_footer = config.showFooter;
 data.servers = config.discord.guilds;
 data.genders = [
