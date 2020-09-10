@@ -123,7 +123,7 @@ class GeofenceService {
     }
 }
 
-function isLatLngInZone(geofence, lat, lng){
+const isLatLngInZone = (geofence, lat, lng) => {
     const latLngs = geofence.polygon;
     const lngs = []; // TODO: .filter
     const lats = [];
@@ -148,7 +148,7 @@ function isLatLngInZone(geofence, lat, lng){
         }
     }
     return polygonContainsPoint;
-}
+};
 
 /*
 function checkcheck(x, y, cornersX, cornersY) {

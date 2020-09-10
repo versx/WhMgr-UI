@@ -5,7 +5,9 @@ const MySQLConnector = require('../services/mysql.js');
 const db = new MySQLConnector(config.db.brock);
 
 class Pokemon {
-    constructor(subscriptionId, guildId, userId, pokemonId, form, minCP, minIV, ivList, minLvl, maxLvl, gender, city) {
+
+    constructor(id, subscriptionId, guildId, userId, pokemonId, form, minCP, minIV, ivList, minLvl, maxLvl, gender, city) {
+        this.id = id;
         this.subscriptionId = subscriptionId;
         this.guildId = guildId;
         this.userId = userId;
@@ -20,27 +22,36 @@ class Pokemon {
         this.city = city;
     }
 
-    async create() {
-        const sql = `
-        INSERT INTO pokemon (subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    static async create(pokemonSQL) {
+        if (pokemonSQL.length === 0) {
+            return;
+        }
+        let sql = `
+        INSERT INTO pokemon (id, subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city) VALUES
         `;
-        const args = [
-            this.subscriptionId,
-            this.guildId, this.userId,
-            this.pokemonId, this.form,
-            this.minCP, this.minIV,
-            JSON.stringify(this.ivList),
-            this.minLvl, this.maxLvl,
-            this.gender, this.city
-        ];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+        sql += pokemonSQL.join(',');
+        sql += `
+        ON DUPLICATE KEY UPDATE
+            subscription_id=VALUES(subscription_id),
+            guild_id=VALUES(guild_id),
+            user_id=VALUES(user_id),
+            pokemon_id=VALUES(pokemon_id),
+            form=VALUES(form),
+            min_cp=VALUES(min_cp),
+            min_iv=VALUES(min_iv),
+            iv_list=VALUES(iv_list),
+            min_lvl=VALUES(min_lvl),
+            max_lvl=VALUES(max_lvl),
+            gender=VALUES(gender),
+            city=VALUES(city)
+        `;
+        let results = await db.query(sql);
+        console.log('[Pokemon] Results:', results);
     }
 
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
+        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE guild_id = ? AND user_id = ?
         `;
@@ -50,6 +61,7 @@ class Pokemon {
             const list = [];
             results.forEach(result => {
                 list.push(new Pokemon(
+                    result.id,
                     result.subscription_id,
                     result.guild_id,
                     result.user_id,
@@ -71,7 +83,7 @@ class Pokemon {
 
     static async getByPokemon(guildId, userId, pokemonId, form, city) {
         const sql = `
-        SELECT subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
+        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ? AND city = ?
         `;
@@ -80,6 +92,7 @@ class Pokemon {
         if (results && results.length > 0) {
             const result = results[0];
             return new Pokemon(
+                result.id,
                 result.subscription_id,
                 result.guild_id,
                 result.user_id,
@@ -99,7 +112,7 @@ class Pokemon {
     
     static async getById(id) {
         const sql = `
-        SELECT subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
+        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
         WHERE id = ?
         `;
@@ -108,6 +121,7 @@ class Pokemon {
         if (results && results.length > 0) {
             const result = results[0];
             return new Pokemon(
+                result.id,
                 result.subscription_id,
                 result.guild_id,
                 result.user_id,
@@ -167,6 +181,26 @@ class Pokemon {
         ];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;
+    }
+
+    toSql() {
+        return `
+        (
+            ${this.id || 0},
+            ${this.subscriptionId},
+            ${this.guildId},
+            ${this.userId},
+            ${this.pokemonId},
+            '${this.form}',
+            ${this.minCP},
+            ${this.minIV},
+            '${JSON.stringify(this.ivList)}',
+            ${this.minLvl},
+            ${this.maxLvl},
+            '${this.gender}',
+            NULL
+        )
+        `;
     }
 }
 

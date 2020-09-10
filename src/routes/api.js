@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 
+const config = require('../config.json');
 const defaultData = require('../data/default.js');
 const subscriptions = require('../data/subscriptions.js');
 const Pokemon = require('../models/pokemon.js');
@@ -13,9 +14,7 @@ const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const utils = require('../services/utils.js');
 
-const config = require('../config.json');
-
-
+/* eslint-disable no-case-declarations */
 router.post('/server/:guild_id/user/:user_id', async (req, res) => {
     const { guild_id, user_id } = req.params;
     if (guild_id === null) {
@@ -24,125 +23,117 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
     }
     const type = req.query.type;
     switch (type) {
-    case 'subscriptions': {
-        const subscription = await subscriptions.getUserSubscriptionStats(guild_id, user_id);
-        req.sessionStore.length(function(err, length) {
-            if (err) {
-                console.error('Failed to get session store length:', err);
-                return;
+        case 'subscriptions':
+            const subscription = await subscriptions.getUserSubscriptionStats(guild_id, user_id);
+            req.sessionStore.length((err, length) => {
+                if (err) {
+                    console.error('Failed to get session store length:', err);
+                    return;
+                }
+                res.json({ data: { subscriptions: subscription, clients_online: length } });
+            });
+            break;
+        case 'pokemon':
+            const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
+            if (pokemon) {
+                pokemon.forEach(pkmn => {
+                    pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='32'>&nbsp;${pkmn.name}`;
+                    pkmn.iv_list = (pkmn.iv_list || []).length;
+                    pkmn.gender == '*'
+                        ? 'All'
+                        : pkmn.gender == 'm'
+                            ? 'Male Only'
+                            : 'Female Only';
+                    pkmn.gender_name = pkmn.gender === '*' ? 'All' : pkmn.gender;
+                    pkmn.buttons = `
+                    <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                    &nbsp;
+                    <a href='/pokemon/delete/${pkmn.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                    `;
+                });
             }
-            res.json({ data: { subscriptions: subscription, clients_online: length } });
-        });
-        break;
-    }
-    case 'pokemon': {
-        const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
-        if (pokemon) {
-            pokemon.forEach(pkmn => {
-                pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='32'>&nbsp;${pkmn.name}`;
-                pkmn.iv_list = (pkmn.iv_list || []).length;
-                pkmn.gender == '*'
-                    ? 'All'
-                    : pkmn.gender == 'm'
-                        ? 'Male Only'
-                        : 'Female Only';
-                pkmn.gender_name = pkmn.gender === '*' ? 'All' : pkmn.gender;
-                pkmn.buttons = `
-                <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
-                &nbsp;
-                <a href='/pokemon/delete/${pkmn.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                `;
-            });
-        }
-        res.json({ data: { pokemon: pokemon } });
-        break;
-    }
-    case 'pvp': {
-        const pvp = await subscriptions.getPvpSubscriptions(guild_id, user_id);
-        if (pvp) {
-            pvp.forEach(pvpSub => {
-                pvpSub.name = `<img src='${utils.getPokemonIcon(pvpSub.pokemon_id, pvpSub.form)}' width='auto' height='32'>&nbsp;${pvpSub.name}`;
-                pvpSub.buttons = `
-                <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
-                &nbsp;
-                <a href='/pvp/delete/${pvpSub.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                `;
-            });
-        }
-        res.json({ data: { pvp: pvp } });
-        break;
-    }
-    case 'raids': {
-        const raids = await subscriptions.getRaidSubscriptions(guild_id, user_id);
-        if (raids) {
-            raids.forEach(raid => {
-                raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, raid.form)}' width='auto' height='32'>&nbsp;${raid.name}`;
-                raid.buttons = `
-                <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
-                &nbsp;
-                <a href='/raid/delete/${raid.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                `;
-            });
-        }
-        res.json({ data: { raids: raids } });
-        break;
-    }
-    case 'gyms': {
-        const gyms = await subscriptions.getGymSubscriptions(guild_id, user_id);
-        if (gyms) {
-            gyms.forEach(gym => {
-                gym.buttons = `
-                <a href='/gym/delete/${gym.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                `;
-            });
-        }
-        res.json({ data: { gyms: gyms } });
-        break;
-    }
-    case 'quests': {
-        const quests = await subscriptions.getQuestSubscriptions(guild_id, user_id);
-        if (quests) {
-            quests.forEach(quest => {
-                quest.buttons = `
-                <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
-                &nbsp;
-                <a href='/quest/delete/${quest.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                `;
-            });
-        }
-        res.json({ data: { quests: quests } });
-        break;
-    }
-    case 'invasions': {
-        const invasions = await subscriptions.getInvasionSubscriptions(guild_id, user_id);
-        if (invasions) {
-            invasions.forEach(invasion => {
-                invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='32'>&nbsp;${invasion.reward}`;
-                invasion.buttons = `
-                <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
-                &nbsp;
-                <a href='/invasion/delete/${invasion.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
-                `;
-            });
-        }
-        res.json({ data: { invasions: invasions } });
-        break;
-    }
-    case 'settings': {
-        const settings = await subscriptions.getSubscriptionSettings(guild_id, user_id);
-        const formatted = req.query.formatted;
-        if (formatted) {
-            let list = [];
-            const keys = Object.keys(settings);
-            keys.forEach(key => {
-                list.push({ 'name': key.toUpperCase(), 'value': settings[key] });
-            });
-            res.json({ data: { settings: list } });
-        } else {
-            res.json({ data: { settings: settings } });
-        }
-        break;
-    }
+            res.json({ data: { pokemon: pokemon } });
+            break;
+        case 'pvp':
+            const pvp = await subscriptions.getPvpSubscriptions(guild_id, user_id);
+            if (pvp) {
+                pvp.forEach(pvpSub => {
+                    pvpSub.name = `<img src='${utils.getPokemonIcon(pvpSub.pokemon_id, pvpSub.form)}' width='auto' height='32'>&nbsp;${pvpSub.name}`;
+                    pvpSub.buttons = `
+                    <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                    &nbsp;
+                    <a href='/pvp/delete/${pvpSub.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                    `;
+                });
+            }
+            res.json({ data: { pvp: pvp } });
+            break;
+        case 'raids':
+            const raids = await subscriptions.getRaidSubscriptions(guild_id, user_id);
+            if (raids) {
+                raids.forEach(raid => {
+                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, raid.form)}' width='auto' height='32'>&nbsp;${raid.name}`;
+                    raid.buttons = `
+                    <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                    &nbsp;
+                    <a href='/raid/delete/${raid.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                    `;
+                });
+            }
+            res.json({ data: { raids: raids } });
+            break;
+        case 'gyms':
+            const gyms = await subscriptions.getGymSubscriptions(guild_id, user_id);
+            if (gyms) {
+                gyms.forEach(gym => {
+                    gym.buttons = `
+                    <a href='/gym/delete/${gym.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                    `;
+                });
+            }
+            res.json({ data: { gyms: gyms } });
+            break;
+        case 'quests':
+            const quests = await subscriptions.getQuestSubscriptions(guild_id, user_id);
+            if (quests) {
+                quests.forEach(quest => {
+                    quest.buttons = `
+                    <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                    &nbsp;
+                    <a href='/quest/delete/${quest.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                    `;
+                });
+            }
+            res.json({ data: { quests: quests } });
+            break;
+        case 'invasions':
+            const invasions = await subscriptions.getInvasionSubscriptions(guild_id, user_id);
+            if (invasions) {
+                invasions.forEach(invasion => {
+                    invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='32'>&nbsp;${invasion.reward}`;
+                    invasion.buttons = `
+                    <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                    &nbsp;
+                    <a href='/invasion/delete/${invasion.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                    `;
+                });
+            }
+            res.json({ data: { invasions: invasions } });
+            break;
+        case 'settings':
+            const settings = await subscriptions.getSubscriptionSettings(guild_id, user_id);
+            const formatted = req.query.formatted;
+            if (formatted) {
+                let list = [];
+                const keys = Object.keys(settings);
+                keys.forEach(key => {
+                    list.push({ 'name': key.toUpperCase(), 'value': settings[key] });
+                });
+                res.json({ data: { settings: list } });
+            } else {
+                res.json({ data: { settings: settings } });
+            }
+            break;
     }
 });
 
@@ -173,20 +164,24 @@ router.post('/pokemon/new', async (req, res) => {
             cities = [city];
         }
     }
-    if (cities) {
+    //if (cities) {
         const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-        for (let i = 0; i < cities.length; i++) {
-            const area = cities[i];
+        const sql = [];
+        //for (let i = 0; i < cities.length; i++) {
+            const area = '';//cities[i];
             const split = pokemon.split(',');
             for (let i = 0; i < split.length; i++) {
                 const pokemonId = split[i];
-                const exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form, area);
+                let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form, area);
                 if (exists) {
-                    // Already exists
-                    // TODO: Update already existing
-                    console.log('Already exists');
+                    exists.minCP = 0;
+                    exists.minIV = iv;
+                    exists.ivList = iv_list ? iv_list.split('\n') : [];
+                    exists.minLvl = min_lvl || 0;
+                    exists.maxLvl = max_lvl || 35;
+                    exists.gender = gender || '*';
                 } else {
-                    const pkmn = new Pokemon(
+                    exists = new Pokemon(
                         subscriptionId,
                         guild_id,
                         user_id,
@@ -200,15 +195,12 @@ router.post('/pokemon/new', async (req, res) => {
                         gender || '*',
                         area
                     );
-                    const result = await pkmn.create();
-                    if (result) {
-                        // Success
-                        console.log('Pokemon subscription for Pokemon', pokemonId, 'created successfully.');
-                    }
                 }
+                sql.push(exists.toSql());
             }
-        }
-    }
+        //}
+        await Pokemon.create(sql);
+    //}
     res.redirect('/pokemon');
 });
 
@@ -311,26 +303,25 @@ router.post('/pvp/new', async (req, res) => {
             cities = [city];
         }
     }
-    if (cities) {
-        for (let i = 0; i < cities.length; i++) {
-            const area = cities[i];
+    //if (cities) {
+        const sql = [];
+        //for (let i = 0; i < cities.length; i++) {
+            const area = '';//cities[i];
             const split = pokemon.split(',');
             for (let i = 0; i < split.length; i++) {
                 const pokemonId = split[i];
-                const exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemonId, form, league, area);
+                let exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemonId, form, league, area);
                 if (exists) {
-                    // Already exists
+                    exists.minRank = min_rank;
+                    exists.minPercent = min_percent;
                 } else {
-                    const pvp = new PVP(subscriptionId, guild_id, user_id, pokemonId, form, league, min_rank || 25, min_percent || 98, area);
-                    const result = await pvp.create();
-                    if (result) {
-                        // Success
-                        console.log('PVP subscription for Pokemon', pokemonId, 'created successfully.');
-                    }
+                    exists = new PVP(0, subscriptionId, guild_id, user_id, pokemonId, form, league, min_rank || 25, min_percent || 98, area);
                 }
+                sql.push(exists.toSql());
             }
-        }
-    }
+        //}
+        await PVP.create(sql);
+    //}
     res.redirect('/pokemon#pvp');
 });
 
@@ -405,25 +396,21 @@ router.post('/raids/new', async (req, res) => {
             cities = [city];
         }
     }
+    let sql = [];
     if (cities) {
         for (let i = 0; i < cities.length; i++) {
             const area = cities[i];
             const split = pokemon.split(',');
             for (let i = 0; i < split.length; i++) {
                 const pokemonId = split[i];
-                const exists = await Raid.getByPokemon(guild_id, user_id, pokemonId, form, area);
-                if (exists) {
-                    // Already exists
-                } else {
-                    const raid = new Raid(subscriptionId, guild_id, user_id, pokemonId, form, area);
-                    const result = await raid.create();
-                    if (result) {
-                        // Success
-                        console.log('Raid subscription for Pokemon', pokemonId, 'created successfully.');
-                    }
+                let exists = await Raid.getByPokemon(guild_id, user_id, pokemonId, form, area);
+                if (!exists) {
+                    exists = new Raid(subscriptionId, guild_id, user_id, pokemonId, form, area);
                 }
+                sql.push(exists.toSql());
             }
         }
+        await Raid.create(sql);
     }
     res.redirect('/raids');
 });
@@ -719,7 +706,7 @@ router.post('/settings', async (req, res) => {
     res.redirect('/settings');
 });
 
-function isUltraRarePokemon(pokemonId) {
+const isUltraRarePokemon = (pokemonId) => {
     const ultraRareList = [
         201, //Unown
         480, //Uxie
@@ -727,6 +714,6 @@ function isUltraRarePokemon(pokemonId) {
         482 //Azelf
     ];
     return ultraRareList.includes(pokemonId);
-}
+};
 
 module.exports = router;
