@@ -51,3 +51,8 @@ module.exports = {
   ]
 };
 ```
+
+## Previews
+[Main Page](/previews/main.png)  
+[Pokemon Page](/previews/pokemon.png)  
+[Add Pokemon Page](/previews/pokemon_add.png)  
