@@ -149,9 +149,10 @@ router.post('/pokemon/new', async (req, res) => {
         min_lvl,
         max_lvl,
         gender,
-        city
+        //city
     } = req.body;
     const user_id = defaultData.user_id;
+    /*
     let cities;
     if (city === 'all') {
         config.discord.guilds.map(x => {
@@ -164,42 +165,43 @@ router.post('/pokemon/new', async (req, res) => {
             cities = [city];
         }
     }
+    */
     //if (cities) {
-        const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-        const sql = [];
-        //for (let i = 0; i < cities.length; i++) {
-            const area = '';//cities[i];
-            const split = pokemon.split(',');
-            for (let i = 0; i < split.length; i++) {
-                const pokemonId = split[i];
-                let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form, area);
-                if (exists) {
-                    exists.minCP = 0;
-                    exists.minIV = iv;
-                    exists.ivList = iv_list ? iv_list.split('\n') : [];
-                    exists.minLvl = min_lvl || 0;
-                    exists.maxLvl = max_lvl || 35;
-                    exists.gender = gender || '*';
-                } else {
-                    exists = new Pokemon(
-                        subscriptionId,
-                        guild_id,
-                        user_id,
-                        pokemonId,
-                        form,
-                        0,
-                        isUltraRarePokemon(pokemonId) ? 0 : iv || 0,
-                        iv_list ? iv_list.split('\n') : [],
-                        min_lvl || 0,
-                        max_lvl || 35,
-                        gender || '*',
-                        area
-                    );
-                }
-                sql.push(exists.toSql());
-            }
-        //}
-        await Pokemon.create(sql);
+    const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
+    const sql = [];
+    //for (let i = 0; i < cities.length; i++) {
+    const area = '';//cities[i];
+    const split = pokemon.split(',');
+    for (let i = 0; i < split.length; i++) {
+        const pokemonId = split[i];
+        let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form, area);
+        if (exists) {
+            exists.minCP = 0;
+            exists.minIV = iv;
+            exists.ivList = iv_list ? iv_list.split('\n') : [];
+            exists.minLvl = min_lvl || 0;
+            exists.maxLvl = max_lvl || 35;
+            exists.gender = gender || '*';
+        } else {
+            exists = new Pokemon(
+                subscriptionId,
+                guild_id,
+                user_id,
+                pokemonId,
+                form,
+                0,
+                isUltraRarePokemon(pokemonId) ? 0 : iv || 0,
+                iv_list ? iv_list.split('\n') : [],
+                min_lvl || 0,
+                max_lvl || 35,
+                gender || '*',
+                area
+            );
+        }
+        sql.push(exists.toSql());
+    }
+    //}
+    await Pokemon.create(sql);
     //}
     res.redirect('/pokemon');
 });
@@ -219,7 +221,6 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     } = req.body;
     const user_id = defaultData.user_id;
     const pkmn = await Pokemon.getById(id);
-    // TODO: Check if pokemon is rare (Unown, Azelf, etc), set IV value to 0.
     if (pkmn) {
         const result = await Pokemon.save(
             id,
@@ -228,6 +229,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
             pokemon,
             form,
             0,
+            // If pokemon is rare (Unown, Azelf, etc), set IV value to 0
             isUltraRarePokemon(pokemon) ? 0 : iv || 0,
             iv_list ? iv_list.split('\n') : [],
             min_lvl || 0,
@@ -283,7 +285,7 @@ router.post('/pvp/new', async (req, res) => {
         league,
         min_rank,
         min_percent,
-        city
+        //city
     } = req.body;
     const user_id = defaultData.user_id;
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
@@ -291,6 +293,7 @@ router.post('/pvp/new', async (req, res) => {
         console.error('Failed to get user subscription ID for GuildId:', guild_id, 'and UserId:', user_id);
         return;
     }
+    /*
     let cities;
     if (city === 'all') {
         config.discord.guilds.map(x => {
@@ -303,24 +306,25 @@ router.post('/pvp/new', async (req, res) => {
             cities = [city];
         }
     }
+    */
     //if (cities) {
-        const sql = [];
-        //for (let i = 0; i < cities.length; i++) {
-            const area = '';//cities[i];
-            const split = pokemon.split(',');
-            for (let i = 0; i < split.length; i++) {
-                const pokemonId = split[i];
-                let exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemonId, form, league, area);
-                if (exists) {
-                    exists.minRank = min_rank;
-                    exists.minPercent = min_percent;
-                } else {
-                    exists = new PVP(0, subscriptionId, guild_id, user_id, pokemonId, form, league, min_rank || 25, min_percent || 98, area);
-                }
-                sql.push(exists.toSql());
-            }
-        //}
-        await PVP.create(sql);
+    const sql = [];
+    //for (let i = 0; i < cities.length; i++) {
+    const area = '';//cities[i];
+    const split = pokemon.split(',');
+    for (let i = 0; i < split.length; i++) {
+        const pokemonId = split[i];
+        let exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemonId, form, league, area);
+        if (exists) {
+            exists.minRank = min_rank;
+            exists.minPercent = min_percent;
+        } else {
+            exists = new PVP(0, subscriptionId, guild_id, user_id, pokemonId, form, league, min_rank || 25, min_percent || 98, area);
+        }
+        sql.push(exists.toSql());
+    }
+    //}
+    await PVP.create(sql);
     //}
     res.redirect('/pokemon#pvp');
 });
