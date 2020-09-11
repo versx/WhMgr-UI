@@ -105,6 +105,7 @@ const utils = require('./services/utils.js');
         }
         const session = await getSession(store, req.sessionID);
         if (!session) {
+            req.session.current_path = req.path;
             res.redirect('/login');
             return;
         }

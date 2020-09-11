@@ -70,6 +70,7 @@ $('#select_raid5star').on('click', function() {
         }
     });
 })
+
 function onPokemonClicked(element) {
     if (element.classList.value.includes('active')) {
         element.classList.value = element.classList.value.replace(' active', '');
@@ -81,6 +82,13 @@ function onPokemonClicked(element) {
         appendId(element.id);
     }
 }
+
+/*
+function onSearch(element) {
+    console.log('Search:', element.value);
+}
+*/
+
 function selectItem(element) {
     if (!element.classList.value.includes('active')) {
         element.classList.value = element.classList.value += ' active';
@@ -88,6 +96,7 @@ function selectItem(element) {
     element.style.background = 'dodgerblue';
     appendId(element.id);
 }
+
 function unselectItem(element) {
     if (element.classList.value.includes('active')) {
         element.classList.value = element.classList.value.replace(' active', '');
@@ -95,6 +104,7 @@ function unselectItem(element) {
     element.style.background = $('.pokemon-list').css('background-color');
     removeId(element.id);
 }
+
 function appendId(id) {
     const value = $('#pokemon').val();
     if (value === '') {
@@ -109,6 +119,7 @@ function appendId(id) {
         }
     }
 }
+
 function removeId(id) {
     const value = $('#pokemon').val();
     $('#pokemon').val(value.replace(id + ',', '').replace(id, ''));
