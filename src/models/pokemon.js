@@ -191,14 +191,14 @@ class Pokemon {
             ${this.guildId},
             ${this.userId},
             ${this.pokemonId},
-            '${this.form}',
+            ${this.form ? '"' + this.form + '"' : '""'},
             ${this.minCP},
             ${this.minIV},
             '${JSON.stringify(this.ivList)}',
             ${this.minLvl},
             ${this.maxLvl},
             '${this.gender}',
-            NULL
+            ${this.city ? '"' + this.city + '"' : '""'}
         )
         `;
     }

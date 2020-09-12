@@ -184,6 +184,7 @@ router.post('/pokemon/new', async (req, res) => {
             exists.gender = gender || '*';
         } else {
             exists = new Pokemon(
+                0,
                 subscriptionId,
                 guild_id,
                 user_id,
@@ -195,7 +196,7 @@ router.post('/pokemon/new', async (req, res) => {
                 min_lvl || 0,
                 max_lvl || 35,
                 gender || '*',
-                area
+                area || null
             );
         }
         sql.push(exists.toSql());
