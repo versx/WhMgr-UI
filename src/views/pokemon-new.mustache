@@ -64,12 +64,12 @@
                 {{/genders}}
             </select>
         </div>
-        <div class="form-group" hidden>
+        <div class="form-group">
             {{City}}
             <select name="city" class="custom-select" multiple required>
                 <option value="all" selected>{{All}}</option>
                 {{#cities}}
-                <option value="{{name}}" id="g_{{guild}}" hidden>{{name}}</option>
+                <option value="{{name}}" id="g_{{guild}}">{{name}}</option>
                 {{/cities}}
             </select>
         </div>
