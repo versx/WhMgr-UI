@@ -80,7 +80,7 @@ class Invasion {
         WHERE guild_id = ? AND user_id = ? AND reward_pokemon_id = ?
         LIMIT 1
         `;
-        const args = [guildId, userId, reward, city];
+        const args = [guildId, userId, reward];
         const results = await db.query(sql, args);
         if (results && results.length > 0) {
             const result = results[0];

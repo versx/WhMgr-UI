@@ -152,7 +152,7 @@ router.post('/pokemon/new', async (req, res) => {
         city
     } = req.body;
     const user_id = defaultData.user_id;
-    const areas = getAreas(city);
+    const areas = getAreas(guild_id, city);
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
     const sql = [];
     const split = pokemon.split(',');
@@ -205,7 +205,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     } = req.body;
     const user_id = defaultData.user_id;
     const pkmn = await Pokemon.getById(id);
-    const areas = getAreas(city);
+    const areas = getAreas(guild_id, city);
     if (pkmn) {
         const result = await Pokemon.save(
             id,
@@ -278,7 +278,7 @@ router.post('/pvp/new', async (req, res) => {
         console.error('Failed to get user subscription ID for GuildId:', guild_id, 'and UserId:', user_id);
         return;
     }
-    const areas = getAreas(city);
+    const areas = getAreas(guild_id, city);
     const sql = [];
     const split = pokemon.split(',');
     for (let i = 0; i < split.length; i++) {
@@ -311,7 +311,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
     const user_id = defaultData.user_id;
     const exists = await PVP.getById(id);
     if (exists) {
-        const areas = getAreas(city);
+        const areas = getAreas(guild_id, city);
         const result = await PVP.save(id, guild_id, user_id, pokemon, form, league, min_rank || 25, min_percent || 98, areas);
         if (result) {
             // Success
@@ -357,7 +357,7 @@ router.post('/raids/new', async (req, res) => {
     const { guild_id, pokemon, form, city } = req.body;
     const user_id = defaultData.user_id;
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-    const areas = getAreas(city);
+    const areas = getAreas(guild_id, city);
     let sql = [];
     const split = pokemon.split(',');
     for (let i = 0; i < split.length; i++) {
@@ -378,7 +378,7 @@ router.post('/raids/edit/:id', async (req, res) => {
     const user_id = defaultData.user_id;
     const exists = await Raid.getByPokemon(guild_id, user_id, pokemon, form);
     if (exists) {
-        const areas = getAreas(city);
+        const areas = getAreas(guild_id, city);
         const result = await Raid.save(id, guild_id, user_id, pokemon, form, areas);
         if (result) {
             // Success
@@ -474,7 +474,7 @@ router.post('/quests/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
     const user_id = defaultData.user_id;
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-    const areas = getAreas(city);
+    const areas = getAreas(guild_id, city);
     const exists = await Quest.getByReward(guild_id, user_id, reward);
     if (exists) {
         // Already exists
@@ -496,7 +496,7 @@ router.post('/quests/edit/:id', async (req, res) => {
     const user_id = defaultData.user_id;
     const quest = await Quest.getById(id);
     if (quest) {
-        const areas = getAreas(city);
+        const areas = getAreas(guild_id, city);
         const result = await Quest.save(id, guild_id, user_id, reward, areas);
         if (result) {
             // Success
@@ -542,7 +542,7 @@ router.post('/invasions/new', async (req, res) => {
     const { guild_id, pokemon, city } = req.body;
     const user_id = defaultData.user_id;
     const subscriptionId = await subscriptions.getUserSubscriptionId(guild_id, user_id);
-    const areas = getAreas(city);
+    const areas = getAreas(guild_id, city);
     const split = pokemon.split(',');
     for (let i = 0; i < split.length; i++) {
         const pokemonId = split[i];
@@ -569,7 +569,7 @@ router.post('/invasions/edit/:id', async (req, res) => {
     const user_id = defaultData.user_id;
     const invasion = await Invasion.getById(id);
     if (invasion) {
-        const areas = getAreas(city);
+        const areas = getAreas(guild_id, city);
         const result = await Invasion.save(id, guild_id, user_id, reward, areas);
         if (result) {
             // Success
@@ -650,11 +650,11 @@ const isUltraRarePokemon = (pokemonId) => {
     return ultraRareList.includes(pokemonId);
 };
 
-const getAreas = (city) => {
+const getAreas = (guildId, city) => {
     let areas;
     if (city === 'all') {
         config.discord.guilds.map(x => {
-            if (x.id === guild_id) {
+            if (x.id === guildId) {
                 areas = x.geofences;
             }
         });

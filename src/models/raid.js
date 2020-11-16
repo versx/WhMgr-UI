@@ -109,7 +109,7 @@ class Raid {
         DELETE FROM raids
         WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ?
         `;
-        const args = [guildId, userId, pokemonId, form, city];
+        const args = [guildId, userId, pokemonId, form];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
