@@ -64,7 +64,7 @@ class PVP {
                     result.league,
                     result.min_rank,
                     result.min_percent,
-                    result.city
+                    JSON.parse(result.city || '[]'),
                 ));
             });
             return list;
@@ -72,13 +72,13 @@ class PVP {
         return null;
     }
     
-    static async getPokemonByLeague(guildId, userId, pokemonId, form, league, city) {
+    static async getPokemonByLeague(guildId, userId, pokemonId, form, league) {
         const sql = `
         SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, league, min_rank, min_percent, city
         FROM pvp
-        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND (form = ? OR form IS NULL) AND league = ? AND (city = ? OR city IS NULL)
+        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND (form = ? OR form IS NULL) AND league = ?
         `;
-        const args = [guildId, userId, pokemonId, form, league, city];
+        const args = [guildId, userId, pokemonId, form, league];
         const results = await db.query(sql, args);
         if (results && results.length > 0) {
             const result = results[0];
@@ -92,7 +92,7 @@ class PVP {
                 result.league,
                 result.min_rank,
                 result.min_percent,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
@@ -118,7 +118,7 @@ class PVP {
                 result.league,
                 result.min_rank,
                 result.min_percent,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
@@ -156,7 +156,7 @@ class PVP {
             league,
             minRank,
             minPercent,
-            city,
+            JSON.stringify(city),
             guildId,
             userId,
             id
@@ -177,7 +177,7 @@ class PVP {
             '${this.league}',
             ${this.minRank},
             ${this.minPercent},
-            ${this.city ? '"' + this.city + '"' : '""'}
+            '${JSON.stringify(this.city)}'
         )
         `;
     }

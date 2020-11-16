@@ -25,6 +25,9 @@ const utils = require('./services/utils.js');
 // TODO: Update insert if already exists update
 // TODO: Cookie sessions
 
+// TODO: Change Edit pages to allow multiple city selection
+// TODO: Disable server selector when in edit pages
+
 (async () => {
     // Basic security protections
     app.use(helmet());

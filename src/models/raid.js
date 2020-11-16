@@ -51,7 +51,7 @@ class Raid {
                     result.user_id,
                     result.pokemonId,
                     result.form,
-                    result.city
+                    JSON.parse(result.city || '[]'),
                 ));
             });
             return list;
@@ -75,20 +75,20 @@ class Raid {
                 result.user_id,
                 result.pokemon_id,
                 result.form,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
     }
 
-    static async getByPokemon(guildId, userId, pokemonId, form, city) {
+    static async getByPokemon(guildId, userId, pokemonId, form) {
         const sql = `
         SELECT subscription_id, guild_id, user_id, pokemon_id, form, city
         FROM raids
-        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ?
         LIMIT 1
         `;
-        const args = [guildId, userId, pokemonId, form, city];
+        const args = [guildId, userId, pokemonId, form];
         const results = await db.query(sql, args);
         if (results && results.length > 0) {
             let result = results[0];
@@ -98,16 +98,16 @@ class Raid {
                 result.user_id,
                 result.pokemonId,
                 result.form,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
     }
 
-    static async delete(guildId, userId, pokemonId, form, city) {
+    static async delete(guildId, userId, pokemonId, form) {
         const sql = `
         DELETE FROM raids
-        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ?
         `;
         const args = [guildId, userId, pokemonId, form, city];
         const result = await db.query(sql, args);
@@ -143,7 +143,7 @@ class Raid {
         const args = [
             pokemonId,
             form,
-            city,
+            JSON.stringify(city),
             guildId,
             userId,
             id
@@ -161,7 +161,7 @@ class Raid {
             ${this.userId},
             ${this.pokemonId},
             ${this.form ? '"' + this.form + '"' : '""'},
-            ${this.city ? '"' + this.city + '"' : '""'}
+            '${JSON.stringify(this.city)}'
         )
         `;
     }

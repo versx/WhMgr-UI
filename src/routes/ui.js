@@ -68,8 +68,9 @@ router.get('/pokemon/edit/:id', async (req, res) => {
         data.selected = gender.id === pokemon.gender;
     });
     data.cities = map.buildCityList(req.session.guilds);
+    const areas = pokemon.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {
-        city.selected = city.name === pokemon.city;
+        city.selected = areas.includes(city.name.toLowerCase());
     });
     res.render('pokemon-edit', data);
 });
@@ -113,8 +114,9 @@ router.get('/pvp/edit/:id', async (req, res) => {
     data.min_rank = pvp.minRank;
     data.min_percent = pvp.minPercent;
     data.cities = map.buildCityList(req.session.guilds);
+    const areas = pvp.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {
-        city.selected = city.name === pvp.city;
+        city.selected = areas.includes(city.name.toLowerCase());
     });
     res.render('pvp-edit', data);
 });
@@ -159,8 +161,9 @@ router.get('/raid/edit/:id', async (req, res) => {
         pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
     });
     data.cities = map.buildCityList(req.session.guilds);
+    const areas = raid.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {
-        city.selected = city.name === raid.city;
+        city.selected = areas.includes(city.name.toLowerCase());
     });
     res.render('raid-edit', data);
 });
@@ -223,8 +226,9 @@ router.get('/quest/edit/:id', async (req, res) => {
     const quest = await Quest.getById(id);
     data.reward = quest.reward;
     data.cities = map.buildCityList(req.session.guilds);
+    const areas = quest.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {
-        city.selected = city.name === quest.city;
+        city.selected = areas.includes(city.name.toLowerCase());
     });
     res.render('quest-edit', data);
 });
@@ -269,8 +273,9 @@ router.get('/invasion/edit/:id', async (req, res) => {
         reward.selected = reward.pokemon_id === invasion.rewardPokemonId;
     });
     data.cities = map.buildCityList(req.session.guilds);
+    const areas = invasion.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {
-        city.selected = city.name === invasion.city;
+        city.selected = areas.includes(city.name.toLowerCase());
     });
     res.render('invasion-edit', data);
 });

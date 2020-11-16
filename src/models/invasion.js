@@ -21,7 +21,8 @@ class Invasion {
         const args = [
             this.subscriptionId,
             this.guildId, this.userId,
-            this.rewardPokemonId, this.city
+            this.rewardPokemonId,
+            JSON.stringify(this.city || []),
         ];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;
@@ -43,7 +44,7 @@ class Invasion {
                     result.guild_id,
                     result.user_id,
                     result.reward_pokemon_id,
-                    result.city
+                    JSON.parse(result.city || '[]'),
                 ));
             });
             return list;
@@ -66,17 +67,17 @@ class Invasion {
                 result.guild_id,
                 result.user_id,
                 result.reward_pokemon_id,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
     }
 
-    static async getByReward(guildId, userId, reward, city) {
+    static async getByReward(guildId, userId, reward) {
         const sql = `
         SELECT subscription_id, guild_id, user_id, reward_pokemon_id, city
         FROM invasions
-        WHERE guild_id = ? AND user_id = ? AND reward_pokemon_id = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND reward_pokemon_id = ?
         LIMIT 1
         `;
         const args = [guildId, userId, reward, city];
@@ -88,18 +89,18 @@ class Invasion {
                 result.guild_id,
                 result.user_id,
                 result.reward_pokemon_id,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
     }
     
-    static async delete(guildId, userId, rewardPokemonId, city) {
+    static async delete(guildId, userId, rewardPokemonId) {
         const sql = `
         DELETE FROM invasions
-        WHERE guild_id = ? AND user_id = ? AND reward_pokemon_id = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND reward_pokemon_id = ?
         `;
-        const args = [guildId, userId, rewardPokemonId, city];
+        const args = [guildId, userId, rewardPokemonId];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
@@ -132,7 +133,7 @@ class Invasion {
         `;
         const args = [
             reward,
-            city,
+            JSON.stringify(city),
             guildId,
             userId,
             id

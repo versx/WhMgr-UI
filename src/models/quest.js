@@ -20,7 +20,8 @@ class Quest {
         const args = [
             this.subscriptionId,
             this.guildId, this.userId,
-            this.reward, this.city
+            this.reward,
+            JSON.stringify(this.city || []),
         ];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;
@@ -42,7 +43,7 @@ class Quest {
                     result.guild_id,
                     result.user_id,
                     result.reward,
-                    result.city
+                    JSON.parse(result.city || '[]'),
                 ));
             });
             return list;
@@ -65,20 +66,20 @@ class Quest {
                 result.guild_id,
                 result.user_id,
                 result.reward,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
     }
     
-    static async getByReward(guildId, userId, reward, city) {
+    static async getByReward(guildId, userId, reward) {
         const sql = `
         SELECT subscription_id, guild_id, user_id, reward, city
         FROM quests
-        WHERE guild_id = ? AND user_id = ? AND reward = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND reward = ?
         LIMIT 1
         `;
-        const args = [guildId, userId, reward, city];
+        const args = [guildId, userId, reward];
         const results = await db.query(sql, args);
         if (results && results.length > 0) {
             let result = results[0];
@@ -87,18 +88,18 @@ class Quest {
                 result.guild_id,
                 result.user_id,
                 result.reward,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
     }
 
-    static async delete(guildId, userId, reward, city) {
+    static async delete(guildId, userId, reward) {
         const sql = `
         DELETE FROM quests
-        WHERE guild_id = ? AND user_id = ? AND reward = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND reward = ?
         `;
-        const args = [guildId, userId, reward, city];
+        const args = [guildId, userId, reward];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;
     }
@@ -131,7 +132,7 @@ class Quest {
         `;
         const args = [
             reward,
-            city,
+            JSON.stringify(city),
             guildId,
             userId,
             id

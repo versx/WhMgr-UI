@@ -23,9 +23,8 @@
         </div>
         <div class="form-group">
             {{City}}
-            <select name="city" class="custom-select" required>
-                <option value="" selected disabled hidden>{{Choose a City}}</option>
-                <!--<option value="all">All</option>-->
+            <select name="city" class="custom-select" multiple required>
+                <option value="all" >{{All}}</option>
                 {{#cities}}
                 <option value="{{name}}" id="g_{{guild}}" {{#selected}}selected{{/selected}} hidden>{{name}}</option>
                 {{/cities}}
