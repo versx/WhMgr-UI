@@ -8,10 +8,14 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/invasions/new" method="post">
         <div class="form-group">
+            <div class="form-group">
+                Search
+                <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
+            </div>
             {{Reward}}
             <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
             {{#rewards}}
-                <div class="pokemon-icon-sprite item" id="{{pokemon_id}}" name="{{pokemon_id}}" data-value="{{pokemon_id}}" onclick="onPokemonClicked(this)">
+                <div class="pokemon-icon-sprite item" id="{{pokemon_id}}" name="{{name}}" data-value="{{pokemon_id}}" onclick="onPokemonClicked(this)">
                     <img src="{{image_url}}" width="auto" height="48" />
                     <span class="caption">#{{pokemon_id}}</span>
                 </div>

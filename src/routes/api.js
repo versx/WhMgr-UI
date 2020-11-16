@@ -13,6 +13,7 @@ const Gym = require('../models/gym.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const utils = require('../services/utils.js');
+const { locale } = require('../data/default.js');
 
 /* eslint-disable no-case-declarations */
 router.post('/server/:guild_id/user/:user_id', async (req, res) => {
@@ -45,6 +46,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                             ? 'Male Only'
                             : 'Female Only';
                     pkmn.gender_name = pkmn.gender === '*' ? 'All' : pkmn.gender;
+                    pkmn.city = formatAreas(guild_id, pkmn.city);
                     pkmn.buttons = `
                     <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -59,6 +61,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (pvp) {
                 pvp.forEach(pvpSub => {
                     pvpSub.name = `<img src='${utils.getPokemonIcon(pvpSub.pokemon_id, pvpSub.form)}' width='auto' height='32'>&nbsp;${pvpSub.name}`;
+                    pvpSub.city = formatAreas(guild_id, pvpSub.city);
                     pvpSub.buttons = `
                     <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -73,6 +76,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (raids) {
                 raids.forEach(raid => {
                     raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, raid.form)}' width='auto' height='32'>&nbsp;${raid.name}`;
+                    raid.city = formatAreas(guild_id, raid.city);
                     raid.buttons = `
                     <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -97,6 +101,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const quests = await subscriptions.getQuestSubscriptions(guild_id, user_id);
             if (quests) {
                 quests.forEach(quest => {
+                    quest.city = formatAreas(guild_id, quest.city);
                     quest.buttons = `
                     <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -111,6 +116,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (invasions) {
                 invasions.forEach(invasion => {
                     invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='32'>&nbsp;${invasion.reward}`;
+                    invasion.city = formatAreas(guild_id, invasion.city);
                     invasion.buttons = `
                     <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -664,6 +670,12 @@ const getAreas = (guildId, city) => {
         }
     }
     return areas;
+};
+
+const formatAreas = (guildId, subscriptionAreas) => {
+    return utils.arraysEqual(subscriptionAreas, config.discord.guilds.filter(x => x.id === guildId)[0].geofences)
+        ? 'All' // TODO: Localize
+        : subscriptionAreas.join(',');
 };
 
 module.exports = router;

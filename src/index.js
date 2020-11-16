@@ -25,8 +25,8 @@ const utils = require('./services/utils.js');
 // TODO: Update insert if already exists update
 // TODO: Cookie sessions
 
-// TODO: Change Edit pages to allow multiple city selection
 // TODO: Disable server selector when in edit pages
+// TODO: Check if subscribed cities are for all available, if so show `All` instead of list of cities
 
 (async () => {
     // Basic security protections

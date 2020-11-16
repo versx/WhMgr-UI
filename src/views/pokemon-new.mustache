@@ -10,7 +10,7 @@
         <div class="form-group">
             <div class="form-group">
                 Search
-                <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu" onkeyup="onSearchChanged()">
+                <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
             </div>
             {{Pokemon}}
             <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
@@ -23,7 +23,6 @@
             </div>
             <input type="hidden" id="pokemon" name="pokemon" />
             <br>
-            <!--<input type="text" class="form-control" onkeyup="onSearch(this);" placeholder="Search Name or ID" /><br>-->
             <button id="select_all" type="button" class="btn btn-primary btn-sm">{{Select All}}</button>
             <button id="select_none" type="button" class="btn btn-primary btn-sm">{{Select None}}</button>
             <button id="select_gen1" type="button" class="btn btn-warning btn-sm">{{Select Gen1}}</button>
@@ -90,14 +89,5 @@
     const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
-    }
-    function onSearchChanged() {
-        const pokemon = $('#pokemon-list').children();
-        const search = $('#search').val().toLowerCase();
-        for (let element of pokemon) {
-            const name = element.getAttribute('name');
-            const matches = !name.toLowerCase().includes(search) && search;
-            element.hidden = matches;
-        }
     }
 </script>
