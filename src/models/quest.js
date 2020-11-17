@@ -20,7 +20,8 @@ class Quest {
         `;
         const args = [
             this.subscriptionId,
-            this.guildId, this.userId,
+            this.guildId,
+            this.userId,
             this.reward,
             JSON.stringify(this.city || []),
         ];

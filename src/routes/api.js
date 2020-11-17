@@ -536,7 +536,7 @@ router.post('/quests/new', async (req, res) => {
         exists.city = utils.arrayUnique(exists.city.concat(areas || []));
         result = await exists.save();
     } else {
-        exists = new Quest(subscriptionId, guild_id, user_id, reward, areas);
+        exists = new Quest(0, subscriptionId, guild_id, user_id, reward, areas);
         result = await exists.create();
     }
     if (result) {
