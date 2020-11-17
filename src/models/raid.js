@@ -4,7 +4,8 @@ const MySQLConnector = require('../services/mysql.js');
 const db = new MySQLConnector(config.db.brock);
 
 class Raid {
-    constructor(subscriptionId, guildId, userId, pokemonId, form, city) {
+    constructor(id, subscriptionId, guildId, userId, pokemonId, form, city) {
+        this.id = id;
         this.subscriptionId = subscriptionId;
         this.guildId = guildId;
         this.userId = userId;
@@ -36,7 +37,7 @@ class Raid {
 
     static async getAll(guildId, userId) {
         const sql = `
-        SELECT subscription_id, guild_id, user_id, pokemon_id, form, city
+        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, city
         FROM raids
         WHERE guild_id = ? AND user_id = ?
         `;
@@ -46,6 +47,7 @@ class Raid {
             const list = [];
             results.forEach(result => {
                 list.push(new Raid(
+                    result.id,
                     result.subscription_id,
                     result.guild_id,
                     result.user_id,
@@ -61,7 +63,7 @@ class Raid {
 
     static async getById(id) {
         const sql = `
-        SELECT subscription_id, guild_id, user_id, pokemon_id, form, city
+        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, city
         FROM raids
         WHERE id = ?
         `;
@@ -70,6 +72,7 @@ class Raid {
         if (results && results.length > 0) {
             const result = results[0];
             return new Raid(
+                result.id,
                 result.subscription_id,
                 result.guild_id,
                 result.user_id,
@@ -83,9 +86,9 @@ class Raid {
 
     static async getByPokemon(guildId, userId, pokemonId, form) {
         const sql = `
-        SELECT subscription_id, guild_id, user_id, pokemon_id, form, city
+        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, city
         FROM raids
-        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ?
+        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND (form = ? OR form IS NULL)
         LIMIT 1
         `;
         const args = [guildId, userId, pokemonId, form];
@@ -93,10 +96,11 @@ class Raid {
         if (results && results.length > 0) {
             let result = results[0];
             return new Raid(
+                result.id,
                 result.subscription_id,
                 result.guild_id,
                 result.user_id,
-                result.pokemonId,
+                result.pokemon_id,
                 result.form,
                 JSON.parse(result.city || '[]'),
             );
@@ -134,19 +138,19 @@ class Raid {
         return result.affectedRows > 0;
     }
 
-    static async save(id, guildId, userId, pokemonId, form, city) {
+    async save() {
         const sql = `
         UPDATE raids
         SET pokemon_id = ?, form = ?, city = ?
         WHERE guild_id = ? AND user_id = ? AND id = ?
         `;
         const args = [
-            pokemonId,
-            form,
-            JSON.stringify(city),
-            guildId,
-            userId,
-            id
+            this.pokemonId,
+            this.form,
+            JSON.stringify(this.city),
+            this.guildId,
+            this.userId,
+            this.id,
         ];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;
@@ -155,7 +159,7 @@ class Raid {
     toSql() {
         return `
         (
-            ${null},
+            ${this.id || 0},
             ${this.subscriptionId},
             ${this.guildId},
             ${this.userId},

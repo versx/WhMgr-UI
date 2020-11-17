@@ -5,7 +5,6 @@ const MySQLConnector = require('../services/mysql.js');
 const db = new MySQLConnector(config.db.brock);
 
 class PVP {
-
     constructor(id, subscriptionId, guildId, userId, pokemonId, form, league, minRank, minPercent, city) {
         this.id = id;
         this.subscriptionId = subscriptionId;
@@ -144,22 +143,22 @@ class PVP {
         return result.affectedRows > 0;
     }
 
-    static async save(id, guildId, userId, pokemonId, form, league, minRank, minPercent, city) {
+    async save() {
         const sql = `
         UPDATE pvp
         SET pokemon_id = ?, form = ?, league = ?, min_rank = ?, min_percent = ?, city = ?
         WHERE guild_id = ? AND user_id = ? AND id = ?
         `;
         const args = [
-            pokemonId,
-            form,
-            league,
-            minRank,
-            minPercent,
-            JSON.stringify(city),
-            guildId,
-            userId,
-            id
+            this.pokemonId,
+            this.form,
+            this.league,
+            this.minRank,
+            this.minPercent,
+            JSON.stringify(this.city),
+            this.guildId,
+            this.userId,
+            this.id,
         ];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;

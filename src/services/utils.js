@@ -95,6 +95,18 @@ const arraysEqual = (array1, array2) => {
     return true;
 };
 
+function arrayUnique(array) {
+    var newArray = array.concat();
+    for (let i = 0; i < newArray.length; i++) {
+        for (let j = i + 1; j < newArray.length; j++) {
+            if (newArray[i] === newArray[j]) {
+                newArray.splice(j--, 1);
+            }
+        }
+    }
+    return newArray;
+};
+
 module.exports = {
     generateString,
     hasGuild,
@@ -103,5 +115,6 @@ module.exports = {
     toHHMMSS,
     formatDate,
     getPokemonIcon,
-    arraysEqual
+    arraysEqual,
+    arrayUnique,
 };

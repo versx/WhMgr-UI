@@ -18,15 +18,11 @@ const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');
 const utils = require('./services/utils.js');
 
-// TODO: Group quests and invasion cities when listing
 // TODO: Convert to typescript
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
-// TODO: Update insert if already exists update
 // TODO: Cookie sessions
-
 // TODO: Disable server selector when in edit pages
-// TODO: Check if subscribed cities are for all available, if so show `All` instead of list of cities
 
 (async () => {
     // Basic security protections
