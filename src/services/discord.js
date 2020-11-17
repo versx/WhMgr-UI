@@ -13,17 +13,9 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
   
-client.on('message', (msg) => {
-    if (msg.content === 'ping') {
-        msg.reply('pong');
-    }
-});
-  
 client.login(config.discord.botToken);
 
 class DiscordClient {
-    //static instance = new DiscordClient();
-
     constructor(accessToken) {
         this.accessToken = accessToken;
     }
@@ -60,4 +52,4 @@ class DiscordClient {
     }
 }
 
-module.exports = new DiscordClient();
+module.exports = DiscordClient;
