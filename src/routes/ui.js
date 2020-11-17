@@ -186,7 +186,6 @@ router.get('/raids/delete_all', (req, res) => {
 router.get('/gym/new', (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    //data.cities = map.buildCityList(req.session.guilds);
     res.render('gym-new', data);
 });
 
