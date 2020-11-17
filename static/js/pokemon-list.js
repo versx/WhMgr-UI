@@ -89,7 +89,7 @@ function onPokemonSearch() {
     for (let element of pokemon) {
         const name = element.getAttribute('name');
         const id = element.getAttribute('id');
-        const matches = !name.toLowerCase().includes(search) && !id.toLowerCase().includes(search) && search;
+        const matches = !name.toLowerCase().includes(search) && !id.includes(search) && search;
         element.hidden = matches;
     }
 }
