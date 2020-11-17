@@ -13,7 +13,6 @@ const Gym = require('../models/gym.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const utils = require('../services/utils.js');
-const { locale } = require('../data/default.js');
 
 /* eslint-disable no-case-declarations */
 router.post('/server/:guild_id/user/:user_id', async (req, res) => {
@@ -405,7 +404,7 @@ router.post('/raids/new', async (req, res) => {
 
 router.post('/raids/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, pokemon, form, city } = req.body;
+    const { guild_id, /*pokemon,*/ form, city } = req.body;
     //const user_id = defaultData.user_id;
     const exists = await Raid.getById(id);
     if (exists) {
@@ -551,7 +550,7 @@ router.post('/quests/new', async (req, res) => {
 
 router.post('/quests/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, reward, city } = req.body;
+    const { guild_id, /*reward,*/ city } = req.body;
     //const user_id = defaultData.user_id;
     const quest = await Quest.getById(id);
     if (quest) {
@@ -640,7 +639,7 @@ router.post('/invasions/new', async (req, res) => {
 
 router.post('/invasions/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, reward, city } = req.body;
+    const { guild_id, /*reward,*/ city } = req.body;
     //const user_id = defaultData.user_id;
     const invasion = await Invasion.getById(id);
     if (invasion) {
