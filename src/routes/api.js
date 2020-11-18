@@ -479,7 +479,7 @@ router.post('/gyms/new', async (req, res) => {
             console.error('Failed to create Gym subscription', name);
         }
     }
-    res.redirect('/raids');
+    res.redirect('/raids#gyms');
 });
 
 router.post('/gyms/delete/:id', async (req, res) => {
