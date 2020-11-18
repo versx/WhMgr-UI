@@ -170,7 +170,7 @@ router.post('/pokemon/new', async (req, res) => {
         if (exists) {
             exists.minCP = 0;
             exists.minIV = iv || 0;
-            exists.ivList = iv_list ? iv_list.split('\n') : [];
+            exists.ivList = iv_list ? iv_list.split('\r\n') : [];
             exists.minLvl = min_lvl || 0;
             exists.maxLvl = max_lvl || 35;
             exists.gender = gender || '*';
@@ -185,7 +185,7 @@ router.post('/pokemon/new', async (req, res) => {
                 form || null,
                 0,
                 isUltraRarePokemon(pokemonId) ? 0 : iv || 0,
-                iv_list ? iv_list.split('\n') : [],
+                iv_list ? iv_list.split('\r\n') : [],
                 min_lvl || 0,
                 max_lvl || 35,
                 gender || '*',
@@ -219,9 +219,8 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         pkmn.form = form;
         pkmn.minCP = 0;
         // If pokemon is rare (Unown, Azelf, etc), set IV value to 0
-        //pkmn.minIV = isUltraRarePokemon(pokemon) ? 0 : iv || 0;
-        pkmn.minIV = iv || 0; // TODO: Check if Pokemon ultra rare
-        pkmn.ivList = iv_list ? iv_list.split('\n') : [];
+        pkmn.minIV = isUltraRarePokemon(pokemon) ? 0 : iv || 100;
+        pkmn.ivList = iv_list ? iv_list.split('\r\n') : [];
         pkmn.minLvl = min_lvl || 0;
         pkmn.maxLvl = max_lvl || 35;
         pkmn.gender = gender || '*';
