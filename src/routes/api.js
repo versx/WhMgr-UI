@@ -219,7 +219,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         pkmn.form = form;
         pkmn.minCP = 0;
         // If pokemon is rare (Unown, Azelf, etc), set IV value to 0
-        pkmn.minIV = isUltraRarePokemon(pokemon) ? 0 : iv || 100;
+        pkmn.minIV = isUltraRarePokemon(pkmn) ? 0 : iv || 100;
         pkmn.ivList = iv_list ? iv_list.split('\r\n') : [];
         pkmn.minLvl = min_lvl || 0;
         pkmn.maxLvl = max_lvl || 35;
