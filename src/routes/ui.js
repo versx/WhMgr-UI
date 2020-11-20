@@ -256,7 +256,7 @@ router.get('/invasions', (req, res) => {
 router.get('/invasion/new', (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    data.rewards = map.getGruntRewardIdsList();
+    data.rewards = map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('invasion-new', data);
 });
@@ -267,9 +267,9 @@ router.get('/invasion/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const invasion = await Invasion.getById(id);
-    data.rewards = map.getGruntRewardIdsList();
+    data.rewards = map.getPokemonNameIdsList();
     data.rewards.forEach(reward => {
-        reward.selected = reward.pokemon_id === invasion.rewardPokemonId;
+        reward.selected = reward.id === invasion.rewardPokemonId;
     });
     data.cities = map.buildCityList(req.session.guilds);
     const areas = invasion.city.map(x => x.toLowerCase());

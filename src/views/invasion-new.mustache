@@ -15,15 +15,14 @@
             {{Reward}}
             <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
             {{#rewards}}
-                <div class="pokemon-icon-sprite item" id="{{pokemon_id}}" name="{{name}}" data-value="{{pokemon_id}}" onclick="onPokemonClicked(this)">
+                <div class="pokemon-icon-sprite item" id="{{id}}" name="{{name}}" data-value="{{id}}" onclick="onPokemonClicked(this)">
                     <img src="{{image_url}}" width="auto" height="48" />
-                    <span class="caption">#{{pokemon_id}}</span>
+                    <span class="caption">#{{id}}</span>
                 </div>
             {{/rewards}}
             </div>
             <input type="hidden" id="pokemon" name="pokemon" />
             <br>
-            <!--<input type="text" class="form-control" placeholder="Search Name or ID" />-->
             <button id="select_all" type="button" class="btn btn-primary btn-sm">{{Select All}}</button>
             <button id="select_none" type="button" class="btn btn-primary btn-sm">{{Select None}}</button>
             <button id="select_gen1" type="button" class="btn btn-warning btn-sm">{{Select Gen1}}</button>

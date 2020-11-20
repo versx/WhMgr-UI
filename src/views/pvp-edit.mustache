@@ -7,17 +7,6 @@
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/pvp/edit/{{id}}" method="post">
-        <!--
-        <div class="form-group">
-            {{Pokemon}}
-            <select name="pokemon" class="custom-select" required>
-                <option value="" selected disabled hidden>{{Choose a Pokemon}}</option>
-                {{#pokemon}}
-                <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
-                {{/pokemon}}
-            </select>
-        </div>
-        -->
         <div class="form-group">
             {{Form}}
             <input type="text" class="form-control" name="form" value="{{form}}" placeholder="i.e. Sunny">
