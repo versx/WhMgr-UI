@@ -11,13 +11,15 @@ const hasGuild = (guilds) => {
     if (config.discord.guilds.length === 0) {
         return true;
     }
+    let result = false;
     for (let i = 0; i < guilds.length; i++) {
         const guild = guilds[i];
         if (config.discord.guilds.find(x => x.id === guild)) {
-            return true;
+            result = true;
+            break;
         }
     }
-    return false;
+    return result;
 };
 
 const hasRole = (userRoles, requiredRoles) => {

@@ -23,7 +23,8 @@ const utils = require('./services/utils.js');
 // TODO: Copy subscriptions to other discord server options
 // TODO: Cookie sessions
 // TODO: Disable server selector when in edit pages
-// TODO: Display all Pokemon for invasions not just what's available
+// TODO: Add proper error messages
+// TODO: Add checkbox to only show available invasion rewards
 
 (async () => {
     // Basic security protections

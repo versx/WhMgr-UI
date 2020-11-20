@@ -305,7 +305,7 @@ const validateRoles = (req, res) => {
     const guilds = req.session.guilds;
     const roles = req.session.roles;
     let valid = false;
-    servers.forEach(server => {
+    for (let server of servers) {
         if (roles[server.id]) {
             const userRoles = roles[server.id];
             const requiredRoles = config.discord.guilds.filter(x => x.id === server.id);
@@ -320,12 +320,12 @@ const validateRoles = (req, res) => {
         } else {
             server.show = false;
         }
-        if (!valid) {
-            console.error('Access not granted...');
-            res.redirect('/login');
-            return null;
-        }
-    });
+    }
+    if (!valid) {
+        console.error('Access not granted...');
+        res.redirect('/login');
+        return null;
+    }
     return servers;
 };
 
