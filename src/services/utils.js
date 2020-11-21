@@ -71,12 +71,6 @@ const formatDate = (date) => {
     return [year, month, day].join('-');
 };
 
-const getPokemonIcon = (pokemonId, formId) => {
-    const padId = (pokemonId + '').padStart(3, '0');
-    const form = formId > 0 ? formId : '00';
-    return util.format(config.urls.images.pokemon, padId, form);
-};
-
 const arraysEqual = (array1, array2) => {
     if (array1 === array2) return true;
     if (array1 == null || array2 == null) return false;
@@ -116,7 +110,6 @@ module.exports = {
     inArray,
     toHHMMSS,
     formatDate,
-    getPokemonIcon,
     arraysEqual,
     arrayUnique,
 };

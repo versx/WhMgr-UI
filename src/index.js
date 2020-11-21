@@ -25,6 +25,7 @@ const utils = require('./services/utils.js');
 // TODO: Disable server selector when in edit pages
 // TODO: Add proper error messages
 // TODO: Add checkbox to only show available invasion rewards
+// TODO: Lookup form name to id and show proper icon
 
 (async () => {
     // Basic security protections

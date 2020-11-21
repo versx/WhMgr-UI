@@ -42,10 +42,10 @@ router.get('/pokemon', (req, res) => {
     res.render('pokemon', data);
 });
 
-router.get('/pokemon/new', (req, res) => {
+router.get('/pokemon/new', async (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pokemon-new', data);
 });
@@ -56,7 +56,7 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const pokemon = await Pokemon.getById(id);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pokemon.pokemonId;
     });
@@ -90,10 +90,10 @@ router.get('/pokemon/delete_all', (req, res) => {
 
 
 // PVP routes
-router.get('/pvp/new', (req, res) => {
+router.get('/pvp/new', async (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pvp-new', data);
 });
@@ -104,7 +104,7 @@ router.get('/pvp/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const pvp = await PVP.getById(id);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pvp.pokemonId;
     });
@@ -142,10 +142,10 @@ router.get('/raids', (req, res) => {
     res.render('raids', data);
 });
 
-router.get('/raid/new', (req, res) => {
+router.get('/raid/new', async (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('raid-new', data);
 });
@@ -156,7 +156,7 @@ router.get('/raid/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const raid = await Raid.getById(id);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
     });
@@ -253,10 +253,10 @@ router.get('/invasions', (req, res) => {
     res.render('invasions', data);
 });
 
-router.get('/invasion/new', (req, res) => {
+router.get('/invasion/new', async (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    data.rewards = map.getPokemonNameIdsList();
+    data.rewards = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('invasion-new', data);
 });
@@ -267,7 +267,7 @@ router.get('/invasion/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const invasion = await Invasion.getById(id);
-    data.rewards = map.getPokemonNameIdsList();
+    data.rewards = await map.getPokemonNameIdsList();
     data.rewards.forEach(reward => {
         reward.selected = reward.id === invasion.rewardPokemonId;
     });

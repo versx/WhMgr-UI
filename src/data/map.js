@@ -1,27 +1,27 @@
 'use strict';
 
-const locale = require('../services/locale.js');
-const utils = require('../services/utils.js');
+const Localizer = require('../services/locale.js');
 const GeofenceService = require('../services/geofence.js');
 
 const svc = new GeofenceService.GeofenceService();
 const config = require('../config.json');
 const grunttypes = require('../../static/data/grunttype.json');
 
-const getPokemonNameIdsList = () => {
+const getPokemonNameIdsList = async () => {
     let pokemon = [];
     for (let i = 1; i < config.maxPokemonId; i++) {
+        const pkmnIcon = await Localizer.instance.getPokemonIcon(i);
         pokemon.push({
             'id': i,
             'id_3': (i + '').padStart(3, '0'),
-            'name': locale.getPokemonName(i),
-            'image_url': utils.getPokemonIcon(i, 0)
+            'name': Localizer.instance.getPokemonName(i),
+            'image_url': pkmnIcon,
         });
     }
     return pokemon;
 };
 
-const getGruntRewardIdsList = () => {
+const getGruntRewardIdsList = async () => {
     const grunts = grunttypes;
     const rewards = [];
     const keys = Object.keys(grunts);
@@ -36,11 +36,12 @@ const getGruntRewardIdsList = () => {
                 if (exists.length > 0) {
                     continue;
                 }
+                const pkmnIcon = await Localizer.instance.getPokemonIcon(pokemonId);
                 rewards.push({
                     'pokemon_id': pokemonId,
                     'pokemon_id_3': (pokemonId + '').padStart(3, '0'),
-                    'name': locale.getPokemonName(pokemonId),
-                    'image_url': utils.getPokemonIcon(pokemonId, 0)
+                    'name': Localizer.instance.getPokemonName(pokemonId),
+                    'image_url': pkmnIcon,
                 });
             }
             if (grunt.second_reward) {
@@ -51,11 +52,12 @@ const getGruntRewardIdsList = () => {
                     if (exists.length > 0) {
                         continue;
                     }
+                    const pkmnIcon = await Localizer.instance.getPokemonIcon(pokemonId);
                     rewards.push({
                         'pokemon_id': pokemonId,
                         'pokemon_id_3': (pokemonId + '').padStart(3, '0'),
-                        'name': locale.getPokemonName(pokemonId),
-                        'image_url': utils.getPokemonIcon(pokemonId, 0)
+                        'name': Localizer.instance.getPokemonName(pokemonId),
+                        'image_url': pkmnIcon,
                     });
                 }
             }
@@ -75,7 +77,7 @@ const buildCityList = (guilds) => {
             if (guilds.includes(configGuild.id) && configGuild.geofences.includes(geofence.name)) {
                 cities.push({
                     'name': geofence.name,
-                    'guild': configGuild.id
+                    'guild': configGuild.id,
                 });
             }
         }

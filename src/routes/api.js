@@ -12,6 +12,7 @@ const Raid = require('../models/raid.js');
 const Gym = require('../models/gym.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
+const Localizer = require('../services/locale.js');
 const utils = require('../services/utils.js');
 
 /* eslint-disable no-case-declarations */
@@ -36,10 +37,11 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
         case 'pokemon':
             const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
             if (pokemon) {
-                pokemon.forEach(pkmn => {
-                    pkmn.name = `<img src='${utils.getPokemonIcon(pkmn.pokemon_id, pkmn.form)}' width='auto' height='32'>&nbsp;${pkmn.name}`;
+                for (let pkmn of pokemon) {
+                    const pkmnIcon = await Localizer.instance.getPokemonIcon(pkmn.pokemon_id);
+                    pkmn.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pkmn.name}`;
                     pkmn.iv_list = (pkmn.iv_list || []).length;
-                    pkmn.gender == '*'
+                    pkmn.gender = pkmn.gender === '*'
                         ? 'All'
                         : pkmn.gender == 'm'
                             ? 'Male Only'
@@ -51,77 +53,80 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     &nbsp;
                     <a href='/pokemon/delete/${pkmn.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
-                });
+                }
             }
             res.json({ data: { pokemon: pokemon } });
             break;
         case 'pvp':
             const pvp = await subscriptions.getPvpSubscriptions(guild_id, user_id);
             if (pvp) {
-                pvp.forEach(pvpSub => {
-                    pvpSub.name = `<img src='${utils.getPokemonIcon(pvpSub.pokemon_id, pvpSub.form)}' width='auto' height='32'>&nbsp;${pvpSub.name}`;
+                for (let pvpSub of pvp) {
+                    const pkmnIcon = await Localizer.instance.getPokemonIcon(pvpSub.pokemon_id);
+                    pvpSub.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pvpSub.name}`;
                     pvpSub.city = formatAreas(guild_id, pvpSub.city);
                     pvpSub.buttons = `
                     <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
                     <a href='/pvp/delete/${pvpSub.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
-                });
+                }
             }
             res.json({ data: { pvp: pvp } });
             break;
         case 'raids':
             const raids = await subscriptions.getRaidSubscriptions(guild_id, user_id);
             if (raids) {
-                raids.forEach(raid => {
-                    raid.name = `<img src='${utils.getPokemonIcon(raid.pokemon_id, raid.form)}' width='auto' height='32'>&nbsp;${raid.name}`;
+                for (let raid of raids) {
+                    const pkmnIcon = await Localizer.instance.getPokemonIcon(raid.pokemon_id);
+                    raid.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${raid.name}`;
                     raid.city = formatAreas(guild_id, raid.city);
                     raid.buttons = `
                     <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
                     <a href='/raid/delete/${raid.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
-                });
+                }
             }
             res.json({ data: { raids: raids } });
             break;
         case 'gyms':
             const gyms = await subscriptions.getGymSubscriptions(guild_id, user_id);
             if (gyms) {
-                gyms.forEach(gym => {
+                for (let gym of gyms) {
                     gym.buttons = `
                     <a href='/gym/delete/${gym.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
-                });
+                }
             }
             res.json({ data: { gyms: gyms } });
             break;
         case 'quests':
             const quests = await subscriptions.getQuestSubscriptions(guild_id, user_id);
             if (quests) {
-                quests.forEach(quest => {
+                for (let quest of quests) {
                     quest.city = formatAreas(guild_id, quest.city);
                     quest.buttons = `
                     <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
                     <a href='/quest/delete/${quest.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
-                });
+                }
             }
             res.json({ data: { quests: quests } });
             break;
         case 'invasions':
             const invasions = await subscriptions.getInvasionSubscriptions(guild_id, user_id);
             if (invasions) {
-                invasions.forEach(invasion => {
-                    invasion.reward = `<img src='${utils.getPokemonIcon(invasion.reward_pokemon_id, 0)}' width='auto' height='32'>&nbsp;${invasion.reward}`;
+                for (let invasion of invasions) {
+                    const pkmnIcon = await Localizer.instance.getPokemonIcon(invasion.reward_pokemon_id);
+                    invasion.reward = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${invasion.reward}`;
                     invasion.city = formatAreas(guild_id, invasion.city);
                     invasion.buttons = `
                     <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
                     <a href='/invasion/delete/${invasion.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
-                });
+                }
             }
             res.json({ data: { invasions: invasions } });
             break;
