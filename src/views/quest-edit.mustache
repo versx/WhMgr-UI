@@ -8,14 +8,9 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/quests/edit/{{id}}" method="post">
         <div class="form-group">
-            {{Reward}}
-            <input type="text" class="form-control" name="reward" value="{{reward}}" placeholder="i.e. 500 Stardust" required>
-        </div>
-        <div class="form-group">
             {{City}}
-            <select name="city" class="custom-select" required>
-                <option value="" selected disabled hidden>{{Choose a City}}</option>
-                <!--<option value="all">All</option>-->
+            <select name="city" class="custom-select" multiple required>
+                <option value="all" >{{All}}</option>
                 {{#cities}}
                 <option value="{{name}}" id="g_{{guild}}" {{#selected}}selected{{/selected}} hidden>{{name}}</option>
                 {{/cities}}

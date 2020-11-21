@@ -119,17 +119,17 @@ class Gym {
         return result.affectedRows > 0;
     }
 
-    static async save(id, guildId, userId, name) {
+    async save() {
         const sql = `
         UPDATE gyms
         SET name = ?
         WHERE guild_id = ? AND user_id = ? AND id = ?
         `;
         const args = [
-            name,
-            guildId,
-            userId,
-            id
+            this.name,
+            this.guildId,
+            this.userId,
+            this.id
         ];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;

@@ -11,16 +11,6 @@
             {{Gym Name}}
             <input type="text" class="form-control" name="name" value="" placeholder="i.e. Starbucks">
         </div>
-        <div class="form-group">
-            {{City}}
-            <select name="city" class="custom-select" multiple required>
-                <option value="" selected disabled hidden>{{Choose a City}}</option>
-                <option value="all">All</option>
-                {{#cities}}
-                <option value="{{name}}" id="g_{{guild}}" hidden>{{name}}</option>
-                {{/cities}}
-            </select>
-        </div>
         <br>
         <input type="hidden" id="guild_id" name="guild_id">
         <button type="submit" class="btn btn-primary">{{Create}}</button>
@@ -28,11 +18,6 @@
     </form>
 </div>
 
-<script type='text/javascript' src="/js/pokemon-list.js"></script>
 <script type='text/javascript'>
     $('#guild_id').val(guildId);
-    const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
-    if (guilds) {
-        guilds.forEach(guild => guild.hidden = false);
-    }
 </script>

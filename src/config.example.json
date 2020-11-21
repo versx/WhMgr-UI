@@ -61,8 +61,8 @@
     ],
     "urls": {
         "images": {
-            "pokemon": "https://cdn.example.com/images/original/monsters/%s_%s.png",
-            "eggs": "../img/original/eggs/%s.png"
+            "pokemon": "https://mygod.github.io/pokicons/v2",
+            "eggs": "/img/eggs/%s.png"
         },
         "map": "",
         "paypal": ""

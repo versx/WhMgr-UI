@@ -3,7 +3,7 @@
 const config = require('../config.json');
 const MySQLConnector = require('../services/mysql.js');
 const db = new MySQLConnector(config.db.brock);
-const locale = require('../services/locale.js');
+const Localizer = require('../services/locale.js');
 
 // TODO: Move to model classes
 
@@ -96,12 +96,12 @@ const getPokemonSubscriptions = async (guildId, userId) => {
     const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.name = locale.getPokemonName(result.pokemon_id);
+            result.name = Localizer.getPokemonName(result.pokemon_id);
             result.cp = `${result.min_cp}-4096`;
             result.iv = result.min_iv;
             result.iv_list = JSON.parse(result.iv_list || '[]');
             result.lvl = `${result.min_lvl}-${result.max_lvl}`;
-            //result.city = result.city;
+            result.city = JSON.parse(result.city || '[]');
         });
     }
     return results;
@@ -117,9 +117,9 @@ const getPvpSubscriptions = async (guildId, userId) => {
     const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.name = locale.getPokemonName(result.pokemon_id);
+            result.name = Localizer.getPokemonName(result.pokemon_id);
             //result.min_rank = result.min_rank;
-            //result.city = result.city;
+            result.city = JSON.parse(result.city || '[]');
         });
     }
     return results;
@@ -135,7 +135,8 @@ const getRaidSubscriptions = async (guildId, userId) => {
     const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.name = locale.getPokemonName(result.pokemon_id);
+            result.name = Localizer.getPokemonName(result.pokemon_id);
+            result.city = JSON.parse(result.city || '[]');
         });
     }
     return results;
@@ -160,6 +161,11 @@ const getQuestSubscriptions = async (guildId, userId) => {
     `;
     const args = [guildId, userId];
     const results = await db.query(sql, args);
+    if (results) {
+        results.forEach(result => {
+            result.city = JSON.parse(result.city || '[]');
+        });
+    }
     return results;
 };
 
@@ -173,7 +179,8 @@ const getInvasionSubscriptions = async (guildId, userId) => {
     const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.reward = locale.getPokemonName(result.reward_pokemon_id);
+            result.reward = Localizer.getPokemonName(result.reward_pokemon_id);
+            result.city = JSON.parse(result.city || '[]');
         });
     }
     return results;

@@ -35,17 +35,17 @@ router.get('/callback', catchAsyncErrors(async (req, res) => {
     axios.post('https://discord.com/api/oauth2/token', data, {
         headers: headers
     }).then(async (response) => {
-        //const client = new DiscordClient(response.data.access_token);
-        DiscordClient.setAccessToken(response.data.access_token);
-        const user = await DiscordClient.getUser();
-        const guilds = await DiscordClient.getGuilds();
+        const client = new DiscordClient(response.data.access_token);
+        client.setAccessToken(response.data.access_token);
+        const user = await client.getUser();
+        const guilds = await client.getGuilds();
         if (config.discord.userIdWhitelist.length > 0 && config.discord.userIdWhitelist.includes(user.id)) {
             console.log(`Discord user ${user.id} in whitelist, skipping role and guild check...`);
             req.session.logged_in = true;
             req.session.user_id = user.id;
             req.session.username = `${user.username}#${user.discriminator}`;
             req.session.guilds = guilds;
-            req.session.roles = await buildGuildRoles(DiscordClient, user.id, guilds);
+            req.session.roles = await buildGuildRoles(client, user.id, guilds);
             req.session.valid = true;
             req.session.save();
             res.redirect(`/?token=${response.data.access_token}`);
@@ -56,7 +56,7 @@ router.get('/callback', catchAsyncErrors(async (req, res) => {
         req.session.user_id = user.id;
         req.session.username = `${user.username}#${user.discriminator}`;
         req.session.guilds = guilds;
-        req.session.roles = await buildGuildRoles(DiscordClient, user.id, guilds);
+        req.session.roles = await buildGuildRoles(client, user.id, guilds);
         req.session.valid = utils.hasGuild(guilds);
         req.session.save();
         if (req.session.valid) {

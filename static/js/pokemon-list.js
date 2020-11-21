@@ -83,11 +83,16 @@ function onPokemonClicked(element) {
     }
 }
 
-/*
-function onSearch(element) {
-    console.log('Search:', element.value);
+function onPokemonSearch() {
+    const pokemon = $('#pokemon-list').children();
+    const search = $('#search').val().toLowerCase();
+    for (let element of pokemon) {
+        const name = element.getAttribute('name');
+        const id = element.getAttribute('id');
+        const matches = !name.toLowerCase().includes(search) && !id.includes(search) && search;
+        element.hidden = matches;
+    }
 }
-*/
 
 function selectItem(element) {
     if (!element.classList.value.includes('active')) {

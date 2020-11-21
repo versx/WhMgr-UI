@@ -150,36 +150,6 @@ const isLatLngInZone = (geofence, lat, lng) => {
     return polygonContainsPoint;
 };
 
-/*
-function checkcheck(x, y, cornersX, cornersY) {
-    var i, j=cornersX.length-1 ;
-    var odd = false;
-    var pX = cornersX;
-    var pY = cornersY;
-    for (i=0; i<cornersX.length; i++) {
-        if ((pY[i]< y && pY[j]>=y ||  pY[j]< y && pY[i]>=y)
-            && (pX[i]<=x || pX[j]<=x)) {
-              odd ^= (pX[i] + (y-pY[i])*(pX[j]-pX[i])/(pY[j]-pY[i])) < x; 
-        }
-        j=i; 
-    }
-    return odd;
-}
-
-function matchPointAndPolygon(point,polygon) {
-    const bbox = poly => poly.reduce((b,[x,y]) =>
-     ({"miX":Math.min(x,b.miX),"maX":Math.max(x,b.maX),"miY":Math.min(y,b.miY),"maY":Math.max(y,b.maY)}),
-     {"miX":poly[0][0],"maX":poly[0][0], "miY":poly[0][1],"maY":poly[0][1]});
-    const inBBox = ([x,y], box) => !(x < box.miX || x > box.maX || y < box.miY || y > box.maY);
-    const intersect = (xi,yi, xj,yj, u,v) =>
-     ((yi > v) != (yj > v)) && (u < (xj - xi) * (v - yi) / (yj - yi) + xi);
-    const nex = (i,t) => i===0? t.length-1 : i-1;
-    const insideWN = ([x,y], vs) => !!(vs.reduce((s,p,i,t) =>
-      s + intersect(p[0],p[1], t[nex(i,t)][0],t[nex(i,t)][1], x,y), 0));
-    return inBBox(point, bbox(polygon)) && insideWN(point, polygon);
-}
-*/
-
 module.exports = {
     Geofence,
     GeofenceService

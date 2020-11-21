@@ -5,7 +5,6 @@ const MySQLConnector = require('../services/mysql.js');
 const db = new MySQLConnector(config.db.brock);
 
 class PVP {
-
     constructor(id, subscriptionId, guildId, userId, pokemonId, form, league, minRank, minPercent, city) {
         this.id = id;
         this.subscriptionId = subscriptionId;
@@ -64,7 +63,7 @@ class PVP {
                     result.league,
                     result.min_rank,
                     result.min_percent,
-                    result.city
+                    JSON.parse(result.city || '[]'),
                 ));
             });
             return list;
@@ -72,13 +71,13 @@ class PVP {
         return null;
     }
     
-    static async getPokemonByLeague(guildId, userId, pokemonId, form, league, city) {
+    static async getPokemonByLeague(guildId, userId, pokemonId, form, league) {
         const sql = `
         SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, league, min_rank, min_percent, city
         FROM pvp
-        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND (form = ? OR form IS NULL) AND league = ? AND (city = ? OR city IS NULL)
+        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND (form = ? OR form IS NULL) AND league = ?
         `;
-        const args = [guildId, userId, pokemonId, form, league, city];
+        const args = [guildId, userId, pokemonId, form, league];
         const results = await db.query(sql, args);
         if (results && results.length > 0) {
             const result = results[0];
@@ -92,7 +91,7 @@ class PVP {
                 result.league,
                 result.min_rank,
                 result.min_percent,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
@@ -118,7 +117,7 @@ class PVP {
                 result.league,
                 result.min_rank,
                 result.min_percent,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
@@ -144,22 +143,22 @@ class PVP {
         return result.affectedRows > 0;
     }
 
-    static async save(id, guildId, userId, pokemonId, form, league, minRank, minPercent, city) {
+    async save() {
         const sql = `
         UPDATE pvp
         SET pokemon_id = ?, form = ?, league = ?, min_rank = ?, min_percent = ?, city = ?
         WHERE guild_id = ? AND user_id = ? AND id = ?
         `;
         const args = [
-            pokemonId,
-            form,
-            league,
-            minRank,
-            minPercent,
-            city,
-            guildId,
-            userId,
-            id
+            this.pokemonId,
+            this.form,
+            this.league,
+            this.minRank,
+            this.minPercent,
+            JSON.stringify(this.city),
+            this.guildId,
+            this.userId,
+            this.id,
         ];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;
@@ -177,7 +176,7 @@ class PVP {
             '${this.league}',
             ${this.minRank},
             ${this.minPercent},
-            ${this.city ? '"' + this.city + '"' : '""'}
+            '${JSON.stringify(this.city)}'
         )
         `;
     }

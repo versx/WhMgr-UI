@@ -8,18 +8,21 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/raids/new" method="post">
         <div class="form-group">
+            <div class="form-group">
+                Search
+                <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
+            </div>
             {{Pokemon}}
             <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
             {{#pokemon}}
-                <div class="pokemon-icon-sprite item" id="{{id}}" name="{{id}}" data-value="{{id}}" onclick="onPokemonClicked(this)">
-                    <img src="{{image_url}}" width="auto" height="48" />
+                <div class="pokemon-icon-sprite item" id="{{id}}" name="{{name}}" data-value="{{id}}" onclick="onPokemonClicked(this)">
+                    <img src="{{image_url}}" width="48" height="48" />
                     <span class="caption">#{{id}}</span>
                 </div>
             {{/pokemon}}
             </div>
             <input type="hidden" id="pokemon" name="pokemon" />
             <br>
-            <!--<input type="text" class="form-control" placeholder="Search Name or ID" />-->
             <button id="select_all" type="button" class="btn btn-primary btn-sm">{{Select All}}</button>
             <button id="select_none" type="button" class="btn btn-primary btn-sm">{{Select None}}</button>
             <button id="select_gen1" type="button" class="btn btn-warning btn-sm">{{Select Gen1}}</button>

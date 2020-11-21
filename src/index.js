@@ -18,12 +18,14 @@ const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');
 const utils = require('./services/utils.js');
 
-// TODO: Group quests and invasion cities when listing
 // TODO: Convert to typescript
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
-// TODO: Update insert if already exists update
 // TODO: Cookie sessions
+// TODO: Disable server selector when in edit pages
+// TODO: Add proper error messages
+// TODO: Add checkbox to only show available invasion rewards
+// TODO: Lookup form name to id and show proper icon
 
 (async () => {
     // Basic security protections

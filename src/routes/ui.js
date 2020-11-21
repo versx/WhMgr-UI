@@ -42,10 +42,10 @@ router.get('/pokemon', (req, res) => {
     res.render('pokemon', data);
 });
 
-router.get('/pokemon/new', (req, res) => {
+router.get('/pokemon/new', async (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pokemon-new', data);
 });
@@ -56,7 +56,7 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const pokemon = await Pokemon.getById(id);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pokemon.pokemonId;
     });
@@ -68,8 +68,9 @@ router.get('/pokemon/edit/:id', async (req, res) => {
         data.selected = gender.id === pokemon.gender;
     });
     data.cities = map.buildCityList(req.session.guilds);
+    const areas = pokemon.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {
-        city.selected = city.name === pokemon.city;
+        city.selected = areas.includes(city.name.toLowerCase());
     });
     res.render('pokemon-edit', data);
 });
@@ -89,10 +90,10 @@ router.get('/pokemon/delete_all', (req, res) => {
 
 
 // PVP routes
-router.get('/pvp/new', (req, res) => {
+router.get('/pvp/new', async (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pvp-new', data);
 });
@@ -103,7 +104,7 @@ router.get('/pvp/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const pvp = await PVP.getById(id);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pvp.pokemonId;
     });
@@ -113,8 +114,9 @@ router.get('/pvp/edit/:id', async (req, res) => {
     data.min_rank = pvp.minRank;
     data.min_percent = pvp.minPercent;
     data.cities = map.buildCityList(req.session.guilds);
+    const areas = pvp.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {
-        city.selected = city.name === pvp.city;
+        city.selected = areas.includes(city.name.toLowerCase());
     });
     res.render('pvp-edit', data);
 });
@@ -140,10 +142,10 @@ router.get('/raids', (req, res) => {
     res.render('raids', data);
 });
 
-router.get('/raid/new', (req, res) => {
+router.get('/raid/new', async (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('raid-new', data);
 });
@@ -154,13 +156,14 @@ router.get('/raid/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const raid = await Raid.getById(id);
-    data.pokemon = map.getPokemonNameIdsList();
+    data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
     });
     data.cities = map.buildCityList(req.session.guilds);
+    const areas = raid.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {
-        city.selected = city.name === raid.city;
+        city.selected = areas.includes(city.name.toLowerCase());
     });
     res.render('raid-edit', data);
 });
@@ -183,7 +186,6 @@ router.get('/raids/delete_all', (req, res) => {
 router.get('/gym/new', (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    //data.cities = map.buildCityList(req.session.guilds);
     res.render('gym-new', data);
 });
 
@@ -223,8 +225,9 @@ router.get('/quest/edit/:id', async (req, res) => {
     const quest = await Quest.getById(id);
     data.reward = quest.reward;
     data.cities = map.buildCityList(req.session.guilds);
+    const areas = quest.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {
-        city.selected = city.name === quest.city;
+        city.selected = areas.includes(city.name.toLowerCase());
     });
     res.render('quest-edit', data);
 });
@@ -250,10 +253,10 @@ router.get('/invasions', (req, res) => {
     res.render('invasions', data);
 });
 
-router.get('/invasion/new', (req, res) => {
+router.get('/invasion/new', async (req, res) => {
     const data = defaultData;
     data.servers = validateRoles(req, res);
-    data.rewards = map.getGruntRewardIdsList();
+    data.rewards = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('invasion-new', data);
 });
@@ -264,13 +267,14 @@ router.get('/invasion/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const invasion = await Invasion.getById(id);
-    data.rewards = map.getGruntRewardIdsList();
+    data.rewards = await map.getPokemonNameIdsList();
     data.rewards.forEach(reward => {
-        reward.selected = reward.pokemon_id === invasion.rewardPokemonId;
+        reward.selected = reward.id === invasion.rewardPokemonId;
     });
     data.cities = map.buildCityList(req.session.guilds);
+    const areas = invasion.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {
-        city.selected = city.name === invasion.city;
+        city.selected = areas.includes(city.name.toLowerCase());
     });
     res.render('invasion-edit', data);
 });
@@ -301,7 +305,7 @@ const validateRoles = (req, res) => {
     const guilds = req.session.guilds;
     const roles = req.session.roles;
     let valid = false;
-    servers.forEach(server => {
+    for (let server of servers) {
         if (roles[server.id]) {
             const userRoles = roles[server.id];
             const requiredRoles = config.discord.guilds.filter(x => x.id === server.id);
@@ -316,12 +320,12 @@ const validateRoles = (req, res) => {
         } else {
             server.show = false;
         }
-        if (!valid) {
-            console.error('Access not granted...');
-            res.redirect('/login');
-            return null;
-        }
-    });
+    }
+    if (!valid) {
+        console.error('Access not granted...');
+        res.redirect('/login');
+        return null;
+    }
     return servers;
 };
 

@@ -73,7 +73,7 @@ class Pokemon {
                     result.min_lvl,
                     result.max_lvl,
                     result.gender,
-                    result.city
+                    JSON.parse(result.city || '[]'),
                 ));
             });
             return list;
@@ -81,13 +81,13 @@ class Pokemon {
         return null;
     }
 
-    static async getByPokemon(guildId, userId, pokemonId, form, city) {
+    static async getByPokemon(guildId, userId, pokemonId, form) {
         const sql = `
         SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
         FROM pokemon
-        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ? AND city = ?
+        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ?
         `;
-        const args = [guildId, userId, pokemonId, form, city];
+        const args = [guildId, userId, pokemonId, form];
         const results = await db.query(sql, args);
         if (results && results.length > 0) {
             const result = results[0];
@@ -104,7 +104,7 @@ class Pokemon {
                 result.min_lvl,
                 result.max_lvl,
                 result.gender,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
@@ -133,7 +133,7 @@ class Pokemon {
                 result.min_lvl,
                 result.max_lvl,
                 result.gender,
-                result.city
+                JSON.parse(result.city || '[]'),
             );
         }
         return null;
@@ -159,25 +159,25 @@ class Pokemon {
         return result.affectedRows > 0;
     }
 
-    static async save(id, guildId, userId, pokemonId, form, minCP, minIV, ivList, minLvl, maxLvl, gender, city) {
+    async save() {
         const sql = `
         UPDATE pokemon
         SET pokemon_id = ?, form = ?, min_cp = ?, min_iv = ?, iv_list = ?, min_lvl = ?, max_lvl = ?, gender = ?, city = ?
         WHERE guild_id = ? AND user_id = ? AND id = ?
         `;
         const args = [
-            pokemonId,
-            form,
-            minCP,
-            minIV,
-            JSON.stringify(ivList),
-            minLvl,
-            maxLvl,
-            gender,
-            city,
-            guildId,
-            userId,
-            id
+            this.pokemonId,
+            this.form,
+            this.minCP,
+            this.minIV,
+            JSON.stringify(this.ivList),
+            this.minLvl,
+            this.maxLvl,
+            this.gender,
+            JSON.stringify(this.city),
+            this.guildId,
+            this.userId,
+            this.id
         ];
         const result = await db.query(sql, args);
         return result.affectedRows === 1;
@@ -198,7 +198,7 @@ class Pokemon {
             ${this.minLvl},
             ${this.maxLvl},
             '${this.gender}',
-            ${this.city ? '"' + this.city + '"' : '""'}
+            '${JSON.stringify(this.city)}'
         )
         `;
     }

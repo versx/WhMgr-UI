@@ -110,7 +110,7 @@ config.json
 logs
 
 # No geofences
-#geofences/*
+geofences/*
 
 # No icons
 static/img/pokemon/
