@@ -1,6 +1,5 @@
 'use strict';
 
-const util = require('util');
 const config = require('../config.json');
 
 const generateString = () => {

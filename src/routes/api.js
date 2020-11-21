@@ -38,7 +38,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const pokemon = await subscriptions.getPokemonSubscriptions(guild_id, user_id);
             if (pokemon) {
                 for (let pkmn of pokemon) {
-                    const pkmnIcon = await Localizer.instance.getPokemonIcon(pkmn.pokemon_id);
+                    const pkmnIcon = await Localizer.getPokemonIcon(pkmn.pokemon_id);
                     pkmn.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pkmn.name}`;
                     pkmn.iv_list = (pkmn.iv_list || []).length;
                     pkmn.gender = pkmn.gender === '*'
@@ -61,7 +61,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const pvp = await subscriptions.getPvpSubscriptions(guild_id, user_id);
             if (pvp) {
                 for (let pvpSub of pvp) {
-                    const pkmnIcon = await Localizer.instance.getPokemonIcon(pvpSub.pokemon_id);
+                    const pkmnIcon = await Localizer.getPokemonIcon(pvpSub.pokemon_id);
                     pvpSub.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pvpSub.name}`;
                     pvpSub.city = formatAreas(guild_id, pvpSub.city);
                     pvpSub.buttons = `
@@ -77,7 +77,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const raids = await subscriptions.getRaidSubscriptions(guild_id, user_id);
             if (raids) {
                 for (let raid of raids) {
-                    const pkmnIcon = await Localizer.instance.getPokemonIcon(raid.pokemon_id);
+                    const pkmnIcon = await Localizer.getPokemonIcon(raid.pokemon_id);
                     raid.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${raid.name}`;
                     raid.city = formatAreas(guild_id, raid.city);
                     raid.buttons = `
@@ -118,7 +118,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const invasions = await subscriptions.getInvasionSubscriptions(guild_id, user_id);
             if (invasions) {
                 for (let invasion of invasions) {
-                    const pkmnIcon = await Localizer.instance.getPokemonIcon(invasion.reward_pokemon_id);
+                    const pkmnIcon = await Localizer.getPokemonIcon(invasion.reward_pokemon_id);
                     invasion.reward = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${invasion.reward}`;
                     invasion.city = formatAreas(guild_id, invasion.city);
                     invasion.buttons = `

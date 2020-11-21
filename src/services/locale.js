@@ -17,7 +17,7 @@ i18n.configure({
 i18n.setLocale('en');
 
 class Localizer {
-    static instance = new Localizer();
+    //static instance = new Localizer();
 
     constructor() {
         this.availablePokemon = (async () => {
@@ -82,4 +82,4 @@ class Localizer {
     }
 }
 
-module.exports = Localizer;
+module.exports = new Localizer();

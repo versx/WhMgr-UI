@@ -10,11 +10,11 @@ const grunttypes = require('../../static/data/grunttype.json');
 const getPokemonNameIdsList = async () => {
     let pokemon = [];
     for (let i = 1; i < config.maxPokemonId; i++) {
-        const pkmnIcon = await Localizer.instance.getPokemonIcon(i);
+        const pkmnIcon = await Localizer.getPokemonIcon(i);
         pokemon.push({
             'id': i,
             'id_3': (i + '').padStart(3, '0'),
-            'name': Localizer.instance.getPokemonName(i),
+            'name': Localizer.getPokemonName(i),
             'image_url': pkmnIcon,
         });
     }
@@ -36,11 +36,11 @@ const getGruntRewardIdsList = async () => {
                 if (exists.length > 0) {
                     continue;
                 }
-                const pkmnIcon = await Localizer.instance.getPokemonIcon(pokemonId);
+                const pkmnIcon = await Localizer.getPokemonIcon(pokemonId);
                 rewards.push({
                     'pokemon_id': pokemonId,
                     'pokemon_id_3': (pokemonId + '').padStart(3, '0'),
-                    'name': Localizer.instance.getPokemonName(pokemonId),
+                    'name': Localizer.getPokemonName(pokemonId),
                     'image_url': pkmnIcon,
                 });
             }
@@ -52,11 +52,11 @@ const getGruntRewardIdsList = async () => {
                     if (exists.length > 0) {
                         continue;
                     }
-                    const pkmnIcon = await Localizer.instance.getPokemonIcon(pokemonId);
+                    const pkmnIcon = await Localizer.getPokemonIcon(pokemonId);
                     rewards.push({
                         'pokemon_id': pokemonId,
                         'pokemon_id_3': (pokemonId + '').padStart(3, '0'),
-                        'name': Localizer.instance.getPokemonName(pokemonId),
+                        'name': Localizer.getPokemonName(pokemonId),
                         'image_url': pkmnIcon,
                     });
                 }

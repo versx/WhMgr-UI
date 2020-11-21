@@ -96,7 +96,7 @@ const getPokemonSubscriptions = async (guildId, userId) => {
     const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.name = Localizer.instance.getPokemonName(result.pokemon_id);
+            result.name = Localizer.getPokemonName(result.pokemon_id);
             result.cp = `${result.min_cp}-4096`;
             result.iv = result.min_iv;
             result.iv_list = JSON.parse(result.iv_list || '[]');
@@ -117,7 +117,7 @@ const getPvpSubscriptions = async (guildId, userId) => {
     const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.name = Localizer.instance.getPokemonName(result.pokemon_id);
+            result.name = Localizer.getPokemonName(result.pokemon_id);
             //result.min_rank = result.min_rank;
             result.city = JSON.parse(result.city || '[]');
         });
@@ -135,7 +135,7 @@ const getRaidSubscriptions = async (guildId, userId) => {
     const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.name = Localizer.instance.getPokemonName(result.pokemon_id);
+            result.name = Localizer.getPokemonName(result.pokemon_id);
             result.city = JSON.parse(result.city || '[]');
         });
     }
@@ -179,7 +179,7 @@ const getInvasionSubscriptions = async (guildId, userId) => {
     const results = await db.query(sql, args);
     if (results) {
         results.forEach(result => {
-            result.reward = Localizer.instance.getPokemonName(result.reward_pokemon_id);
+            result.reward = Localizer.getPokemonName(result.reward_pokemon_id);
             result.city = JSON.parse(result.city || '[]');
         });
     }
