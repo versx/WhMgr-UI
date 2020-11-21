@@ -1,4 +1,5 @@
 ![Node.js CI](https://github.com/versx/WhMgr-UI/workflows/Node.js%20CI/badge.svg)
+[![GitHub Release](https://img.shields.io/github/release/versx/WhMgr-UI.svg)](https://github.com/versx/WhMgr-UI/releases/)
 [![GitHub Contributors](https://img.shields.io/github/contributors/versx/WhMgr-UI.svg)](https://github.com/versx/WhMgr-UI/graphs/contributors/)
 [![Discord](https://img.shields.io/discord/552003258000998401.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zZ9h9Xa)  
 # Webhook Manager User Interface  
