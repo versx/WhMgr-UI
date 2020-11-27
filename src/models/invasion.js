@@ -1,6 +1,6 @@
 'use strict';
 
-const { DataTypes, Model, Op, Sequelize } = require('sequelize');
+const { DataTypes, Model, } = require('sequelize');
 const sequelize = require('../services/sequelize.js');
 
 class Invasion extends Model {
@@ -18,7 +18,7 @@ class Invasion extends Model {
         if (invasions.length === 0) {
             return;
         }
-        const results = await Invasion.bulkCreate(raids, {
+        const results = await Invasion.bulkCreate(invasions, {
             updateOnDuplicate: Invasion.fromInvasionFields,
         });
         console.log('[Invasion] Results:', results);

@@ -32,7 +32,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 quests: await Quest.getCount(guild_id, user_id),
                 invasions: await Invasion.getCount(guild_id, user_id),
                 gyms: await Gym.getCount(guild_id, user_id),
-            }
+            };
             req.sessionStore.length((err, length) => {
                 if (err) {
                     console.error('Failed to get session store length:', err);
@@ -344,7 +344,7 @@ router.post('/pokemon/delete_all', async (req, res) => {
             return;
         }
     } else {
-        showError(res, 'pokemon-delete-all', `Guild ID or User ID not set, failed to delete all pokemon subscriptions for user.`);
+        showError(res, 'pokemon-delete-all', 'Guild ID or User ID not set, failed to delete all pokemon subscriptions for user.');
         return;
     }
     res.redirect('/pokemon');
@@ -464,7 +464,7 @@ router.post('/pvp/delete_all', async (req, res) => {
             return;
         }
     } else {
-        showError(res, 'pvp-delete-all', `Guild ID or User ID not set, failed to delete all PVP subscriptions for user.`);
+        showError(res, 'pvp-delete-all', 'Guild ID or User ID not set, failed to delete all PVP subscriptions for user.');
         return;
     }
     res.redirect('/pokemon#pvp');
@@ -557,7 +557,7 @@ router.post('/raids/delete_all', async (req, res) => {
             console.log('All raid subscriptions deleted for guild:', guild_id, 'user:', user_id);
         }
     } else {
-        showError(res, 'raids-delete-all', `Guild ID or User ID not set, failed to delete all raid subscriptions for user.`);
+        showError(res, 'raids-delete-all', 'Guild ID or User ID not set, failed to delete all raid subscriptions for user.');
         return;
     }
     res.redirect('/raids');
@@ -632,7 +632,7 @@ router.post('/gyms/delete_all', async (req, res) => {
         }
     } else {
         console.error('');
-        showError(res, 'gyms-delete-all', `Guild ID or User ID not set, failed to delete all gym subscriptions for user.`);
+        showError(res, 'gyms-delete-all', 'Guild ID or User ID not set, failed to delete all gym subscriptions for user.');
         return;
     }
     res.redirect('/raids#gyms');
@@ -728,7 +728,7 @@ router.post('/quests/delete_all', async (req, res) => {
             return;
         }
     } else {
-        showError(res, 'quests-delete-all', `Guild ID or User ID not set, failed to delete all quest subscriptions for user.`);
+        showError(res, 'quests-delete-all', 'Guild ID or User ID not set, failed to delete all quest subscriptions for user.');
         return;
     }
     res.redirect('/quests');

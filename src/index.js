@@ -57,7 +57,7 @@ const utils = require('./services/utils.js');
             /* eslint-disable no-unused-vars */
             return (text, render) => {
             /* eslint-enable no-unused-vars */
-                return i18n.__.routerly(req, arguments);
+                return i18n.__.routerly(req, {});
             };
         };
         next();

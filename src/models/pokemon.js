@@ -1,6 +1,6 @@
 'use strict';
 
-const { DataTypes, Model, Op, Sequelize } = require('sequelize');
+const { DataTypes, Model, Op, } = require('sequelize');
 const sequelize = require('../services/sequelize.js');
 
 class Pokemon extends Model {

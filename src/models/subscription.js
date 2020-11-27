@@ -1,6 +1,6 @@
 'use strict';
 
-const { DataTypes, Model, Op, Sequelize } = require('sequelize');
+const { DataTypes, Model, } = require('sequelize');
 const sequelize = require('../services/sequelize.js');
 
 class Subscription extends Model {
