@@ -25,3 +25,21 @@ function getTodaysDate() {
     today = `${yyyy}-${mm}-${dd}`;
     return today;
 }
+
+function onServerChanged() {
+    const guildId = $("#server_selector").val();
+    if (guildId) {
+        set('guild_id', guildId);
+        try {
+            $('#guild_id').val(guildId);
+            refreshData();
+            location.reload();
+        } catch { }
+    }
+}
+function showError(message) {
+    if ($('#server_selector').val() === null) {
+        $('#error').html(`<strong>Error!</strong> ${message}`);
+        $('.alert').removeClass('d-none');
+    }
+}

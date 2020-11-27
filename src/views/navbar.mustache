@@ -76,16 +76,4 @@
         var pathname = window.location.pathname;
         $('#navbar > ul > li > a[href="'+pathname+'"]').parent().addClass('active');
     });
-
-    function onServerChanged() {
-        const guildId = document.getElementById("server_selector").value;
-        if (guildId) {
-            set('guild_id', guildId);
-            try {
-                $('#guild_id').val(guildId);
-                refreshData();
-                location.reload();
-            } catch { }
-        }
-    }
 </script>

@@ -3,10 +3,9 @@
 {{> navbar}}
 
 <br>
-<div class="alert alert-danger w-75 {{^show_error}}d-none{{/show_error}}" style="float: none; margin: 0 auto;">
-    <div><div id="error"><strong>Error!</strong> {{error}}</div></div>
+<div class="alert alert-danger w-75 d-none" style="float: none; margin: 0 auto;">
+    <div id="error"></div>
 </div>
-{{#show_error}}<br>{{/show_error}}
 
 <h1 align="center" id="header">{{title}}</h1>
 <br>
@@ -139,11 +138,7 @@
                 updateCounter(".invasions_count", result.data.subscriptions.invasions);
                 $('#clients_online').text(result.data.clients_online);
 
-                if ($('#server_selector').val() === null) {
-                    $('#error').html('<strong>Error!</strong> Please select a server from the dropdown!');
-                    $('.alert').removeClass('d-none');
-                    return;
-                }
+                showError('Please select a server from the dropdown menu!');
             }
         });
     }
