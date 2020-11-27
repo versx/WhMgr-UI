@@ -115,12 +115,13 @@ Subscription.init({
 });
 
 /*
-Subscription.hasMany(Pokemon);
-Subscription.hasMany(PVP);
-Subscription.hasMany(Raid);
-Subscription.hasMany(Quest);
-Subscription.hasMany(Invasion);
-Subscription.hasMany(Gym);
+//Pokemon.Subscription = Pokemon.belongsTo(Subscription);
+Subscription.Pokemon = Subscription.hasMany(Pokemon);
+Subscription.PVP = Subscription.hasMany(PVP);
+Subscription.Raids = Subscription.hasMany(Raid);
+Subscription.Quests = Subscription.hasMany(Quest);
+Subscription.Invasions = Subscription.hasMany(Invasion);
+Subscription.Gyms = Subscription.hasMany(Gym);
 */
 
 // Export the class

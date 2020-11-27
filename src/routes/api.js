@@ -298,7 +298,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         pkmn.minLvl = min_lvl || 0;
         pkmn.maxLvl = max_lvl || 35;
         pkmn.gender = gender || '*';
-        pkmn.city = utils.arrayUnique(pkmn.city.concat(areas));
+        pkmn.city = areas;
         const result = await pkmn.save();
         if (result) {
             // Success
@@ -413,12 +413,11 @@ router.post('/pvp/edit/:id', async (req, res) => {
     const exists = await PVP.getById(id);
     if (exists) {
         const areas = getAreas(guild_id, city);
-        const mergedAreas = utils.arrayUnique(exists.city.concat(areas));
         exists.form = form;
         exists.league = league;
         exists.minRank = min_rank || 25;
         exists.minPercent = min_percent || 98;
-        exists.city = mergedAreas;
+        exists.city = areas;
         const result = await exists.save();
         if (result) {
             // Success
@@ -511,9 +510,8 @@ router.post('/raids/edit/:id', async (req, res) => {
     const exists = await Raid.getById(id);
     if (exists) {
         const areas = getAreas(guild_id, city);
-        const mergedAreas = utils.arrayUnique(exists.city.concat(areas));
         exists.form = form;
-        exists.city = mergedAreas;
+        exists.city = areas;
         const result = await exists.save();
         if (result) {
             // Success
@@ -681,8 +679,7 @@ router.post('/quests/edit/:id', async (req, res) => {
     const quest = await Quest.getById(id);
     if (quest) {
         const areas = getAreas(guild_id, city);
-        const mergedAreas = utils.arrayUnique(quest.city.concat(areas));
-        quest.city = mergedAreas;
+        quest.city = areas;
         const result = await quest.save();
         if (result) {
             // Success
@@ -781,8 +778,7 @@ router.post('/invasions/edit/:id', async (req, res) => {
     const invasion = await Invasion.getById(id);
     if (invasion) {
         const areas = getAreas(guild_id, city);
-        const mergedAreas = utils.arrayUnique(invasion.city.concat(areas));
-        invasion.city = mergedAreas;
+        invasion.city = areas;
         const result = invasion.save();
         if (result) {
             // Success
