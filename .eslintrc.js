@@ -11,9 +11,6 @@ module.exports = {
     },
     "parser": "babel-eslint",
     'parserOptions': {
-        "ecmaFeatures": {
-            "experimentalObjectRestSpread": true
-        },
         'ecmaVersion': 2020
     },
     'rules': {
