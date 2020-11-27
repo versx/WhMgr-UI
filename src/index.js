@@ -23,9 +23,9 @@ const utils = require('./services/utils.js');
 // TODO: Copy subscriptions to other discord server options
 // TODO: Cookie sessions
 // TODO: Disable server selector when in edit pages
-// TODO: Add proper error messages
 // TODO: Add checkbox to only show available invasion rewards
 // TODO: Lookup form name to id and show proper icon
+// TODO: Form validation
 
 (async () => {
     // Basic security protections

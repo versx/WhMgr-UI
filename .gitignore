@@ -117,3 +117,6 @@ static/img/pokemon/
 
 # No docker-compose.yml files
 docker-compose.yml
+
+static/locales/*.json
+!static/locales/_*

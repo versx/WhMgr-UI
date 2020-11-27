@@ -1,207 +1,207 @@
 'use strict';
 
-const config = require('../config.json');
-const MySQLConnector = require('../services/mysql.js');
-const db = new MySQLConnector(config.db.brock);
+const { DataTypes, Model, Op, Sequelize } = require('sequelize');
+const sequelize = require('../services/sequelize.js');
 
-class Pokemon {
+class Pokemon extends Model {
 
-    constructor(id, subscriptionId, guildId, userId, pokemonId, form, minCP, minIV, ivList, minLvl, maxLvl, gender, city) {
-        this.id = id;
-        this.subscriptionId = subscriptionId;
-        this.guildId = guildId;
-        this.userId = userId;
-        this.pokemonId = pokemonId;
-        this.form = form;
-        this.minCP = minCP;
-        this.minIV = minIV;
-        this.ivList = ivList;
-        this.minLvl = minLvl;
-        this.maxLvl = maxLvl;
-        this.gender = gender;
-        this.city = city;
+    static fromPokemonFields = [
+        //'id',
+        'guildId',
+        'userId',
+        'subscriptionId',
+        'pokemonId',
+        'form',
+        'minCp',
+        'minIv',
+        'ivList',
+        'minLvl',
+        'maxLvl',
+        'gender',
+        'city',
+    ];
+
+    static getCount(guildId, userId) {
+        return Pokemon.count({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 
-    static async create(pokemonSQL) {
-        if (pokemonSQL.length === 0) {
+    static async create(pokemon) {
+        if (pokemon.length === 0) {
             return;
         }
-        let sql = `
-        INSERT INTO pokemon (id, subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city) VALUES
-        `;
-        sql += pokemonSQL.join(',');
-        sql += `
-        ON DUPLICATE KEY UPDATE
-            subscription_id=VALUES(subscription_id),
-            guild_id=VALUES(guild_id),
-            user_id=VALUES(user_id),
-            pokemon_id=VALUES(pokemon_id),
-            form=VALUES(form),
-            min_cp=VALUES(min_cp),
-            min_iv=VALUES(min_iv),
-            iv_list=VALUES(iv_list),
-            min_lvl=VALUES(min_lvl),
-            max_lvl=VALUES(max_lvl),
-            gender=VALUES(gender),
-            city=VALUES(city)
-        `;
-        let results = await db.query(sql);
+        const results = await Pokemon.bulkCreate(pokemon, {
+            updateOnDuplicate: Pokemon.fromPokemonFields,
+        });
         console.log('[Pokemon] Results:', results);
     }
 
-    static async getAll(guildId, userId) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
-        FROM pokemon
-        WHERE guild_id = ? AND user_id = ?
-        `;
-        const args = [guildId, userId];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            const list = [];
-            results.forEach(result => {
-                list.push(new Pokemon(
-                    result.id,
-                    result.subscription_id,
-                    result.guild_id,
-                    result.user_id,
-                    result.pokemon_id,
-                    result.form,
-                    result.min_cp,
-                    result.min_iv,
-                    JSON.parse(result.iv_list || '[]'),
-                    result.min_lvl,
-                    result.max_lvl,
-                    result.gender,
-                    JSON.parse(result.city || '[]'),
-                ));
-            });
-            return list;
-        }
-        return null;
+    static getAll(guildId, userId) {
+        return Pokemon.findAll({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 
-    static async getByPokemon(guildId, userId, pokemonId, form) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
-        FROM pokemon
-        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ?
-        `;
-        const args = [guildId, userId, pokemonId, form];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            const result = results[0];
-            return new Pokemon(
-                result.id,
-                result.subscription_id,
-                result.guild_id,
-                result.user_id,
-                result.pokemon_id,
-                result.form,
-                result.min_cp,
-                result.min_iv,
-                JSON.parse(result.iv_list || '[]'),
-                result.min_lvl,
-                result.max_lvl,
-                result.gender,
-                JSON.parse(result.city || '[]'),
-            );
-        }
-        return null;
-    }
-    
-    static async getById(id) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, min_cp, min_iv, iv_list, min_lvl, max_lvl, gender, city
-        FROM pokemon
-        WHERE id = ?
-        `;
-        const args = [id];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            const result = results[0];
-            return new Pokemon(
-                result.id,
-                result.subscription_id,
-                result.guild_id,
-                result.user_id,
-                result.pokemon_id,
-                result.form,
-                result.min_cp,
-                result.min_iv,
-                JSON.parse(result.iv_list || '[]'),
-                result.min_lvl,
-                result.max_lvl,
-                result.gender,
-                JSON.parse(result.city || '[]'),
-            );
-        }
-        return null;
+    static getByPokemon(guildId, userId, pokemonId, form) {
+        return Pokemon.findOne({
+            where: {
+                guild_id: guildId,
+                user_id: userId,
+                pokemonId: pokemonId,
+                form: {
+                    [Op.or]: [null, form],
+                },
+            }
+        });
     }
 
-    static async deleteById(id) {
-        const sql = `
-        DELETE FROM pokemon
-        WHERE id = ?
-        `;
-        const args = [id];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+    static getById(id) {
+        return Pokemon.findByPk(id);
     }
 
-    static async deleteAll(guildId, userId) {
-        const sql = `
-        DELETE FROM pokemon
-        WHERE guild_id = ? AND user_id = ?
-        `;
-        const args = [guildId, userId];
-        const result = await db.query(sql, args);
-        return result.affectedRows > 0;
+    static deleteById(id) {
+        return Pokemon.destroy({
+            where: {
+                id: id,
+            }
+        });
+    }
+
+    static deleteAll(guildId, userId) {
+        return Pokemon.destroy({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 
     async save() {
-        const sql = `
-        UPDATE pokemon
-        SET pokemon_id = ?, form = ?, min_cp = ?, min_iv = ?, iv_list = ?, min_lvl = ?, max_lvl = ?, gender = ?, city = ?
-        WHERE guild_id = ? AND user_id = ? AND id = ?
-        `;
-        const args = [
-            this.pokemonId,
-            this.form,
-            this.minCP,
-            this.minIV,
-            JSON.stringify(this.ivList),
-            this.minLvl,
-            this.maxLvl,
-            this.gender,
-            JSON.stringify(this.city),
-            this.guildId,
-            this.userId,
-            this.id
-        ];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
-    }
-
-    toSql() {
-        return `
-        (
-            ${this.id || 0},
-            ${this.subscriptionId},
-            ${this.guildId},
-            ${this.userId},
-            ${this.pokemonId},
-            ${this.form ? '"' + this.form + '"' : '""'},
-            ${this.minCP},
-            ${this.minIV},
-            '${JSON.stringify(this.ivList)}',
-            ${this.minLvl},
-            ${this.maxLvl},
-            '${this.gender}',
-            '${JSON.stringify(this.city)}'
-        )
-        `;
+        const results = Pokemon.update({
+            pokemonId: this.pokemonId,
+            form: this.form,
+            minCp: this.minCp,
+            minIv: this.minIv,
+            ivList: this.ivList,
+            minLvl: this.minLvl,
+            maxLvl: this.maxLvl,
+            gender: this.gender,
+            city: this.city,
+        }, {
+            where: {
+                id: this.id,
+                //guildId: this.guildId,
+                //userId: this.userId,
+            }
+        });
+        return results;
     }
 }
 
+Pokemon.init({
+    id: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    subscriptionId: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    guildId: {
+        type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+    },
+    userId: {
+        type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+    },
+    pokemonId: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        allowNull: false,
+    },
+    form: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        defaultValue: null,
+    },
+    minCp: {
+        type: DataTypes.INTEGER(11),
+        allowNull: false,
+        defaultValue: 0,
+    },
+    minIv: {
+        type: DataTypes.INTEGER(11),
+        allowNull: false,
+        defaultValue: 0,
+    },
+    minLvl: {
+        type: DataTypes.INTEGER(11),
+        allowNull: false,
+        defaultValue: 0,
+    },
+    maxLvl: {
+        type: DataTypes.INTEGER(11),
+        allowNull: false,
+        defaultValue: 35,
+    },
+    gender: {
+        type: DataTypes.STRING(1),
+        allowNull: false,
+        defaultValue: '*',
+    },
+    ivList: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: '[]',
+        get() {
+            var data = this.getDataValue('iv_list');
+            return Array.isArray(data)
+                ? data
+                : JSON.parse(data || '[]');
+        },
+        /*
+        set(val) {
+            this.setDataValue('iv_list', JSON.stringify(val || []));
+        }
+        */
+    },
+    city: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: '[]',
+        get() {
+            var data = this.getDataValue('city');
+            return Array.isArray(data)
+                ? data
+                : JSON.parse(data || '[]');
+        },
+        /*
+        set(val) {
+            this.setDataValue('city', JSON.stringify(val || []));
+        }
+        */
+    },
+}, {
+    sequelize,
+    timestamps: false,
+    underscored: true,
+    indexes: [
+        {
+            name: 'FK_pokemon_subscriptions_subscription_id',
+            fields: ['subscription_id'],
+        },
+    ],
+    tableName: 'pokemon',
+});
+
+// Export the class
 module.exports = Pokemon;

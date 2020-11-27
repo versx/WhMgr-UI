@@ -3,6 +3,11 @@
 {{> navbar}}
 
 <br>
+<div class="alert alert-danger w-75 {{^show_error}}d-none{{/show_error}}" style="float: none; margin: 0 auto;">
+    <div id="error"><strong>Error!</strong> {{error}}</div>
+</div>
+{{#show_error}}<br>{{/show_error}}
+
 <h1 align="center" id="header">{{Edit Pokemon Subscription}} {{id}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
@@ -67,4 +72,6 @@
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
+    $('#server_selector').prop('disabled', true);
+    console.log('server:', $('#server_selector').val());
 </script>

@@ -1,151 +1,125 @@
 'use strict';
 
-const config = require('../config.json');
-const MySQLConnector = require('../services/mysql.js');
-const db = new MySQLConnector(config.db.brock);
+const { DataTypes, Model, Op, Sequelize } = require('sequelize');
+const sequelize = require('../services/sequelize.js');
 
-class Invasion {
-    constructor(id, subscriptionId, guildId, userId, rewardPokemonId, city) {
-        this.id = id;
-        this.subscriptionId = subscriptionId;
-        this.guildId = guildId;
-        this.userId = userId;
-        this.rewardPokemonId = rewardPokemonId;
-        this.city = city;
+class Invasion extends Model {
+
+    static getCount(guildId, userId) {
+        return Invasion.count({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 
-    async create() {
-        const sql = `
-        INSERT INTO invasions (subscription_id, guild_id, user_id, reward_pokemon_id, city)
-        VALUES (?, ?, ?, ?, ?)
-        `;
-        const args = [
-            this.subscriptionId,
-            this.guildId,
-            this.userId,
-            this.rewardPokemonId,
-            JSON.stringify(this.city || []),
-        ];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
-    }
-
-    static async getAll(guildId, userId) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, reward_pokemon_id, city
-        FROM invasions
-        WHERE guild_id = ? AND user_id = ?
-        `;
-        const args = [guildId, userId];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            const list = [];
-            results.forEach(result => {
-                list.push(new Invasion(
-                    result.id,
-                    result.subscription_id,
-                    result.guild_id,
-                    result.user_id,
-                    result.reward_pokemon_id,
-                    JSON.parse(result.city || '[]'),
-                ));
-            });
-            return list;
+    static async create(invasions) {
+        if (invasions.length === 0) {
+            return;
         }
-        return null;
+        const results = await Invasion.bulkCreate(raids, {
+            updateOnDuplicate: Invasion.fromInvasionFields,
+        });
+        console.log('[Invasion] Results:', results);
     }
 
-    static async getById(id) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, reward_pokemon_id, city
-        FROM invasions
-        WHERE id = ?
-        `;
-        const args = [id];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            const result = results[0];
-            return new Invasion(
-                result.id,
-                result.subscription_id,
-                result.guild_id,
-                result.user_id,
-                result.reward_pokemon_id,
-                JSON.parse(result.city || '[]'),
-            );
-        }
-        return null;
+    static getAll(guildId, userId) {
+        return Invasion.findAll({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 
-    static async getByReward(guildId, userId, reward) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, reward_pokemon_id, city
-        FROM invasions
-        WHERE guild_id = ? AND user_id = ? AND reward_pokemon_id = ?
-        LIMIT 1
-        `;
-        const args = [guildId, userId, reward];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            const result = results[0];
-            return new Invasion(
-                result.id,
-                result.subscription_id,
-                result.guild_id,
-                result.user_id,
-                result.reward_pokemon_id,
-                JSON.parse(result.city || '[]'),
-            );
-        }
-        return null;
-    }
-    
-    static async delete(guildId, userId, rewardPokemonId) {
-        const sql = `
-        DELETE FROM invasions
-        WHERE guild_id = ? AND user_id = ? AND reward_pokemon_id = ?
-        `;
-        const args = [guildId, userId, rewardPokemonId];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+    static getById(id) {
+        return Invasion.findByPk(id);
     }
 
-    static async deleteById(id) {
-        const sql = `
-        DELETE FROM invasions
-        WHERE id = ?
-        `;
-        const args = [id];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+    static getByReward(guildId, userId, rewardPokemonId) {
+        return Invasion.findOne({
+            where: {
+                guild_id: guildId,
+                user_id: userId,
+                rewardPokemonId: rewardPokemonId,
+            }
+        });
     }
 
-    static async deleteAll(guildId, userId) {
-        const sql = `
-        DELETE FROM invasions
-        WHERE guild_id = ? AND user_id = ?
-        `;
-        const args = [guildId, userId];
-        const result = await db.query(sql, args);
-        return result.affectedRows > 0;
+    static delete(guildId, userId, rewardPokemonId) {
+        return Invasion.destroy({
+            where: {
+                guildId: guildId,
+                userId: userId,
+                rewardPokemonId: rewardPokemonId,
+            }
+        });
     }
 
-    async save() {
-        const sql = `
-        UPDATE invasions
-        SET reward_pokemon_id = ?, city = ?
-        WHERE guild_id = ? AND user_id = ? AND id = ?
-        `;
-        const args = [
-            this.rewardPokemonId,
-            JSON.stringify(this.city),
-            this.guildId,
-            this.userId,
-            this.id
-        ];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+    static deleteById(id) {
+        return Invasion.destroy({
+            where: {
+                id: id,
+            }
+        });
+    }
+
+    static deleteAll(guildId, userId) {
+        return Invasion.destroy({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 }
+
+Invasion.init({
+    id: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    subscriptionId: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    guildId: {
+        type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+    },
+    userId: {
+        type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+    },
+    rewardPokemonId: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        allowNull: false,
+    },
+    city: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: '[]',
+        get() {
+            var data = this.getDataValue('city');
+            return Array.isArray(data)
+                ? data
+                : JSON.parse(data || '[]');
+        },
+    },
+}, {
+    sequelize,
+    timestamps: false,
+    underscored: true,
+    indexes: [
+        {
+            name: 'FK_invasion_subscriptions_subscription_id',
+            fields: ['subscription_id'],
+        },
+    ],
+    tableName: 'invasions',
+});
 
 module.exports = Invasion;

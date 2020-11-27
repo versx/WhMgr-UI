@@ -8,22 +8,12 @@
     "lastNestMigration": "2019-03-07T01:00:00Z",
     "showFooter": true,
     "db": {
-        "brock": {
-            "host": "127.0.0.1",
-            "port": 3306,
-            "username": "user",
-            "password": "pass123!",
-            "database": "brock3",
-            "charset": "utf8mb4"
-        },
-        "scanner": {
-            "host": "127.0.0.1",
-            "port": 3306,
-            "username": "user",
-            "password": "pass123!",
-            "database": "rdmdb",
-            "charset": "utf8mb4"
-        }
+        "host": "127.0.0.1",
+        "port": 3306,
+        "username": "user",
+        "password": "pass123!",
+        "database": "brockdb",
+        "charset": "utf8mb4"
     },
     "discord": {
         "botToken": "",

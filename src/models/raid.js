@@ -1,174 +1,159 @@
 'use strict';
-const config = require('../config.json');
-const MySQLConnector = require('../services/mysql.js');
-const db = new MySQLConnector(config.db.brock);
 
-class Raid {
-    constructor(id, subscriptionId, guildId, userId, pokemonId, form, city) {
-        this.id = id;
-        this.subscriptionId = subscriptionId;
-        this.guildId = guildId;
-        this.userId = userId;
-        this.pokemonId = pokemonId;
-        this.form = form;
-        this.city = city;
+const { DataTypes, Model, Op, Sequelize } = require('sequelize');
+const sequelize = require('../services/sequelize.js');
+
+class Raid extends Model {
+
+    static fromGymFields = [
+        //'id',
+        'guildId',
+        'userId',
+        'subscriptionId',
+        'pokemonId',
+        'form',
+        'city',
+    ];
+
+    static getCount(guildId, userId) {
+        return Raid.count({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 
-    static async create(raidSQL) {
-        if (raidSQL.length === 0) {
+    static async create(raids) {
+        if (raids.length === 0) {
             return;
         }
-        let sql = `
-        INSERT INTO raids (id, subscription_id, guild_id, user_id, pokemon_id, form, city) VALUES
-        `;
-        sql += raidSQL.join(',');
-        sql += `
-        ON DUPLICATE KEY UPDATE
-            subscription_id=VALUES(subscription_id),
-            guild_id=VALUES(guild_id),
-            user_id=VALUES(user_id),
-            pokemon_id=VALUES(pokemon_id),
-            form=VALUES(form),
-            city=VALUES(city)
-        `;
-        let results = await db.query(sql);
+        const results = await Raid.bulkCreate(raids, {
+            updateOnDuplicate: Raid.fromGymFields,
+        });
         console.log('[Raid] Results:', results);
     }
 
-    static async getAll(guildId, userId) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, city
-        FROM raids
-        WHERE guild_id = ? AND user_id = ?
-        `;
-        const args = [guildId, userId];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            const list = [];
-            results.forEach(result => {
-                list.push(new Raid(
-                    result.id,
-                    result.subscription_id,
-                    result.guild_id,
-                    result.user_id,
-                    result.pokemonId,
-                    result.form,
-                    JSON.parse(result.city || '[]'),
-                ));
-            });
-            return list;
-        }
-        return null;
+    static getAll(guildId, userId) {
+        return Raid.findAll({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 
-    static async getById(id) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, city
-        FROM raids
-        WHERE id = ?
-        `;
-        const args = [id];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            const result = results[0];
-            return new Raid(
-                result.id,
-                result.subscription_id,
-                result.guild_id,
-                result.user_id,
-                result.pokemon_id,
-                result.form,
-                JSON.parse(result.city || '[]'),
-            );
-        }
-        return null;
+    static getById(id) {
+        return Raid.findByPk(id);
     }
 
-    static async getByPokemon(guildId, userId, pokemonId, form) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, pokemon_id, form, city
-        FROM raids
-        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND (form = ? OR form IS NULL)
-        LIMIT 1
-        `;
-        const args = [guildId, userId, pokemonId, form];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            let result = results[0];
-            return new Raid(
-                result.id,
-                result.subscription_id,
-                result.guild_id,
-                result.user_id,
-                result.pokemon_id,
-                result.form,
-                JSON.parse(result.city || '[]'),
-            );
-        }
-        return null;
+    static getByPokemon(guildId, userId, pokemonId, form) {
+        return Raid.findOne({
+            where: {
+                guild_id: guildId,
+                user_id: userId,
+                pokemonId: pokemonId,
+                form: {
+                    [Op.or]: [null, form],
+                },
+            }
+        });
     }
 
-    static async delete(guildId, userId, pokemonId, form) {
-        const sql = `
-        DELETE FROM raids
-        WHERE guild_id = ? AND user_id = ? AND pokemon_id = ? AND form = ?
-        `;
-        const args = [guildId, userId, pokemonId, form];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+    static delete(guildId, userId, pokemonId, form) {
+        return Raid.destroy({
+            where: {
+                guildId: guildId,
+                userId: userId,
+                pokemonId: pokemonId,
+                form: form,
+            }
+        });
     }
 
-    static async deleteById(id) {
-        const sql = `
-        DELETE FROM raids
-        WHERE id = ?
-        `;
-        const args = [id];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+    static deleteById(id) {
+        return Raid.destroy({
+            where: {
+                id: id,
+            }
+        });
     }
-    
-    static async deleteAll(guildId, userId) {
-        const sql = `
-        DELETE FROM raids
-        WHERE guild_id = ? AND user_id = ?
-        `;
-        const args = [guildId, userId];
-        const result = await db.query(sql, args);
-        return result.affectedRows > 0;
+
+    static deleteAll(guildId, userId) {
+        return Raid.destroy({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 
     async save() {
-        const sql = `
-        UPDATE raids
-        SET pokemon_id = ?, form = ?, city = ?
-        WHERE guild_id = ? AND user_id = ? AND id = ?
-        `;
-        const args = [
-            this.pokemonId,
-            this.form,
-            JSON.stringify(this.city),
-            this.guildId,
-            this.userId,
-            this.id,
-        ];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
-    }
-
-    toSql() {
-        return `
-        (
-            ${this.id || 0},
-            ${this.subscriptionId},
-            ${this.guildId},
-            ${this.userId},
-            ${this.pokemonId},
-            ${this.form ? '"' + this.form + '"' : '""'},
-            '${JSON.stringify(this.city)}'
-        )
-        `;
+        const results = Raid.update({
+            pokemonId: this.pokemonId,
+            form: this.form,
+            city: this.city,
+        }, {
+            where: {
+                id: this.id,
+                //guildId: this.guildId,
+                //userId: this.userId,
+            }
+        });
+        return results;
     }
 }
+
+Raid.init({
+    id: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    subscriptionId: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    guildId: {
+        type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+    },
+    userId: {
+        type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+    },
+    pokemonId: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        allowNull: false,
+    },
+    form: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        defaultValue: null,
+    },
+    city: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: '[]',
+        get() {
+            var data = this.getDataValue('city');
+            return Array.isArray(data)
+                ? data
+                : JSON.parse(data || '[]');
+        },
+    },
+}, {
+    sequelize,
+    timestamps: false,
+    underscored: true,
+    indexes: [
+        {
+            name: 'FK_raid_subscriptions_subscription_id',
+            fields: ['subscription_id'],
+        },
+    ],
+    tableName: 'raids',
+});
 
 module.exports = Raid;

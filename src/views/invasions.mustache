@@ -3,6 +3,11 @@
 {{> navbar}}
 
 <br>
+<div class="alert alert-danger w-75 {{^show_error}}d-none{{/show_error}}" style="float: none; margin: 0 auto;">
+    <div><div id="error"><strong>Error!</strong> {{error}}</div></div>
+</div>
+{{#show_error}}<br>{{/show_error}}
+
 <h1 align="center" id="header">{{Invasions}}</h1>
 <br>
 <div style="width:90%; margin-left:calc(5%);">
@@ -26,6 +31,11 @@
 {{> footer}}
 
 <script type='text/javascript'>
+    if ($('#server_selector').val() === null) {
+        $('#error').html('<strong>Error!</strong> Please select a server from the dropdown!');
+        $('.alert').removeClass('d-none');
+        //return;
+    }
     const table = $('#table').DataTable({
         "ajax": {
             "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=invasions",
