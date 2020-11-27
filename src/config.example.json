@@ -14,7 +14,8 @@
         "username": "user",
         "password": "pass123!",
         "database": "brockdb",
-        "charset": "utf8mb4"
+        "charset": "utf8mb4",
+        "connectionLimit": "10"
     },
     "discord": {
         "botToken": "",
