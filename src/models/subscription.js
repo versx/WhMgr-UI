@@ -6,12 +6,7 @@ const sequelize = require('../services/sequelize.js');
 class Subscription extends Model {
 
     static async getSubscriptionId(guildId, userId) {
-        const subscription = await Subscription.findOne({
-            where: {
-                guildId: guildId,
-                userId: userId,
-            }
-        });
+        const subscription = await this.getSubscription(guildId, userId);
         if (subscription.id > 0) {
             return subscription.id;
         }
