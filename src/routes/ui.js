@@ -60,7 +60,7 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pokemon.pokemonId;
     });
-    data.iv = pokemon.minIV;
+    data.iv = pokemon.minIv;
     data.iv_list = (pokemon.ivList || []).join('\n');
     data.min_lvl = pokemon.minLvl;
     data.max_lvl = pokemon.maxLvl;

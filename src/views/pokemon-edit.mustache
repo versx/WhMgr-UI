@@ -18,7 +18,7 @@
         </div>
         <div class="form-group">
             {{IV}}
-            <input type="text" class="form-control" name="iv" value="{{iv}}" placeholder="i.e. 100">
+            <input type="text" class="form-control" name="iv" value="{{iv}}" pattern="^[0-9][0-9]?$|^100$" placeholder="i.e. 100">
         </div>
         <div class="form-group">
             {{IV List}}
@@ -28,13 +28,13 @@
             <div class="col">
                 <div class="form-group">
                     {{Minimum Level}}
-                    <input type="text" class="form-control" name="min_lvl" value="{{min_lvl}}" placeholder="i.e. 0">
+                    <input type="text" class="form-control" name="min_lvl" value="{{min_lvl}}" pattern="^[0-9][0-9]?$|^35$" placeholder="i.e. 0">
                 </div>
             </div>
             <div class="col">
                 <div class="form-group">
                     {{Maximum Level}}
-                    <input type="text" class="form-control" name="max_lvl" value="{{max_lvl}}" placeholder="i.e. 35">
+                    <input type="text" class="form-control" name="max_lvl" value="{{max_lvl}}" pattern="^[0-9][0-9]?$|^35$" placeholder="i.e. 35">
                 </div>
             </div>
         </div>
