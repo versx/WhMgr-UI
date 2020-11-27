@@ -15,7 +15,7 @@ const utils = require('../services/utils.js');
 
 
 router.get(['/', '/index'], async (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.user_id = req.session.user_id;
     data.servers = validateRoles(req, res);
     res.render('index', data);
@@ -37,13 +37,13 @@ router.get('/logout', (req, res) => {
 
 // Pokemon routes
 router.get('/pokemon', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('pokemon', data);
 });
 
 router.get('/pokemon/new', async (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.pokemon = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
@@ -51,7 +51,7 @@ router.get('/pokemon/new', async (req, res) => {
 });
 
 router.get('/pokemon/edit/:id', async (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     const id = req.params.id;
     data.id = id;
@@ -77,14 +77,14 @@ router.get('/pokemon/edit/:id', async (req, res) => {
 });
 
 router.get('/pokemon/delete/:id', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('pokemon-delete', data);
 });
 
 router.get('/pokemon/delete_all', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('pokemon-delete-all', data);
 });
@@ -92,7 +92,7 @@ router.get('/pokemon/delete_all', (req, res) => {
 
 // PVP routes
 router.get('/pvp/new', async (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.pokemon = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
@@ -100,7 +100,7 @@ router.get('/pvp/new', async (req, res) => {
 });
 
 router.get('/pvp/edit/:id', async (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     const id = req.params.id;
     data.id = id;
@@ -124,14 +124,14 @@ router.get('/pvp/edit/:id', async (req, res) => {
 });
 
 router.get('/pvp/delete/:id', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('pvp-delete', data);
 });
 
 router.get('/pvp/delete_all', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('pvp-delete-all', data);
 });
@@ -139,13 +139,13 @@ router.get('/pvp/delete_all', (req, res) => {
 
 // Raid routes
 router.get('/raids', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('raids', data);
 });
 
 router.get('/raid/new', async (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.pokemon = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
@@ -153,7 +153,7 @@ router.get('/raid/new', async (req, res) => {
 });
 
 router.get('/raid/edit/:id', async (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     const id = req.params.id;
     data.id = id;
@@ -172,14 +172,14 @@ router.get('/raid/edit/:id', async (req, res) => {
 });
 
 router.get('/raid/delete/:id', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('raid-delete', data);
 });
 
 router.get('/raids/delete_all', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('raids-delete-all', data);
 });
@@ -187,20 +187,20 @@ router.get('/raids/delete_all', (req, res) => {
 
 // Gym routes
 router.get('/gym/new', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('gym-new', data);
 });
 
 router.get('/gym/delete/:id', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('gym-delete', data);
 });
 
 router.get('/gyms/delete_all', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('gyms-delete-all', data);
 });
@@ -208,20 +208,20 @@ router.get('/gyms/delete_all', (req, res) => {
 
 // Quest routes
 router.get('/quests', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('quests', data);
 });
 
 router.get('/quest/new', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.cities = map.buildCityList(req.session.guilds);
     res.render('quest-new', data);
 });
 
 router.get('/quest/edit/:id', async (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     const id = req.params.id;
     data.id = id;
@@ -236,14 +236,14 @@ router.get('/quest/edit/:id', async (req, res) => {
 });
 
 router.get('/quest/delete/:id', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('quest-delete', data);
 });
 
 router.get('/quests/delete_all', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('quests-delete-all', data);
 });
@@ -251,13 +251,13 @@ router.get('/quests/delete_all', (req, res) => {
 
 // Invasion routes
 router.get('/invasions', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('invasions', data);
 });
 
 router.get('/invasion/new', async (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.rewards = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
@@ -265,7 +265,7 @@ router.get('/invasion/new', async (req, res) => {
 });
 
 router.get('/invasion/edit/:id', async (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     const id = req.params.id;
     data.id = id;
@@ -283,14 +283,14 @@ router.get('/invasion/edit/:id', async (req, res) => {
 });
 
 router.get('/invasion/delete/:id', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
     res.render('invasion-delete', data);
 });
 
 router.get('/invasions/delete_all', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('invasions-delete-all', data);
 });
@@ -298,7 +298,7 @@ router.get('/invasions/delete_all', (req, res) => {
 
 // Settings routes
 router.get('/settings', (req, res) => {
-    const data = defaultData;
+    const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('settings', data);
 });
