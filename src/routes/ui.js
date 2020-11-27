@@ -60,6 +60,7 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pokemon.pokemonId;
     });
+    data.form = pokemon.form;
     data.iv = pokemon.minIv;
     data.iv_list = (pokemon.ivList || []).join('\n');
     data.min_lvl = pokemon.minLvl;
@@ -108,6 +109,7 @@ router.get('/pvp/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pvp.pokemonId;
     });
+    data.form = pvp.form;
     data.leagues.forEach(league => {
         league.selected = league.name === pvp.league;
     });
@@ -160,6 +162,7 @@ router.get('/raid/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
     });
+    data.form = raid.form;
     data.cities = map.buildCityList(req.session.guilds);
     const areas = raid.city.map(x => x.toLowerCase());
     data.cities.forEach(city => {

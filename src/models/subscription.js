@@ -3,6 +3,15 @@
 const { DataTypes, Model, } = require('sequelize');
 const sequelize = require('../services/sequelize.js');
 
+/*
+const Pokemon = require('./pokemon.js');
+const PVP = require('./pvp.js');
+const Raid = require('./raid.js');
+const Quest = require('./quest.js');
+const Invasion = require('./invasion.js');
+const Gym = require('./gym.js');
+*/
+
 class Subscription extends Model {
 
     static async getSubscriptionId(guildId, userId) {
@@ -104,6 +113,15 @@ Subscription.init({
     underscored: true,
     tableName: 'subscriptions',
 });
+
+/*
+Subscription.hasMany(Pokemon);
+Subscription.hasMany(PVP);
+Subscription.hasMany(Raid);
+Subscription.hasMany(Quest);
+Subscription.hasMany(Invasion);
+Subscription.hasMany(Gym);
+*/
 
 // Export the class
 module.exports = Subscription;
