@@ -30,6 +30,8 @@ function onServerChanged() {
     const guildId = $("#server_selector").val();
     if (guildId) {
         set('guild_id', guildId);
+        // Show hidden nav pages since guild/server is selected
+        $('.nav-pages').prop('hidden', false);
         try {
             $('#guild_id').val(guildId);
             refreshData();

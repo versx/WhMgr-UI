@@ -10,7 +10,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbar">
         {{#logged_in}}
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav mr-auto nav-pages">
             <li class="nav-item">
                 <a class="nav-link" href="/"><i class="fa fa-fw fa-home" aria-hidden="true"></i>&nbsp;{{Home}} <span class="sr-only"></span></a>
             </li>
@@ -76,4 +76,9 @@
         var pathname = window.location.pathname;
         $('#navbar > ul > li > a[href="'+pathname+'"]').parent().addClass('active');
     });
+    const server = $("#server_selector").val();
+    if (!server || server === '') {
+        // If no server/guild selected hide subscription pages
+        $('.nav-pages').prop('hidden', true);
+    }
 </script>
