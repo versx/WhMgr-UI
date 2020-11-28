@@ -6,6 +6,7 @@ data.title = config.title;
 data.locale = config.locale;
 data.body_class = config.style === 'dark' ? 'theme-dark' : '';
 data.table_class = config.style === 'dark' ? 'table-dark' : '';
+data.favicon = config.favicon;
 data.copyright_footer = config.showFooter;
 data.servers = config.discord.guilds;
 data.genders = [

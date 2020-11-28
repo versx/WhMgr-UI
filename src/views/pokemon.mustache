@@ -10,6 +10,10 @@
 {{> navbar}}
 
 <br>
+<div class="alert alert-danger w-75 d-none" style="float: none; margin: 0 auto;">
+    <div id="error"></div>
+</div>
+
 <h1 align="center" id="header">{{Pokemon}}</h1>
 <br>
 <div style="width:90%; margin-left:calc(5%);">
@@ -78,6 +82,7 @@
         $('html,body').scrollTop(scrollmem);
     });
 
+    showError('Please select a server from the dropdown menu!');
     const table = $('#table').DataTable({
         "ajax": {
             "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pokemon",
@@ -108,14 +113,14 @@
         "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
         "pageLength": 100,
         "columns": [
-            { "data": "pokemon_id" },
+            { "data": "pokemonId" },
             { "data": "name" },
             { "data": "form" },
             { "data": "cp" },
             { "data": "iv" },
-            { "data": "iv_list" },
+            { "data": "ivList" },
             { "data": "lvl" },
-            { "data": "gender_name" },
+            { "data": "genderName" },
             { "data": "city" },
             { "data": "buttons" }
         ],
@@ -159,12 +164,12 @@
         "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
         "pageLength": 100,
         "columns": [
-            { "data": "pokemon_id" },
+            { "data": "pokemonId" },
             { "data": "name" },
             { "data": "form" },
             { "data": "league" },
-            { "data": "min_rank" },
-            { "data": "min_percent" },
+            { "data": "minRank" },
+            { "data": "minPercent" },
             { "data": "city" },
             { "data": "buttons" }
         ],

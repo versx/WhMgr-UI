@@ -3,6 +3,10 @@
 {{> navbar}}
 
 <br>
+<div class="alert alert-danger w-75 d-none" style="float: none; margin: 0 auto;">
+    <div id="error"></div>
+</div>
+
 <h1 align="center" id="header">{{title}}</h1>
 <br>
 <div style="width:90%; margin-left:calc(5%);">
@@ -133,6 +137,8 @@
                 updateCounter(".quests_count", result.data.subscriptions.quests);
                 updateCounter(".invasions_count", result.data.subscriptions.invasions);
                 $('#clients_online').text(result.data.clients_online);
+
+                showError('Please select a server from the dropdown menu!');
             }
         });
     }

@@ -22,8 +22,6 @@ const utils = require('./services/utils.js');
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
 // TODO: Cookie sessions
-// TODO: Disable server selector when in edit pages
-// TODO: Add proper error messages
 // TODO: Add checkbox to only show available invasion rewards
 // TODO: Lookup form name to id and show proper icon
 
@@ -57,7 +55,7 @@ const utils = require('./services/utils.js');
             /* eslint-disable no-unused-vars */
             return (text, render) => {
             /* eslint-enable no-unused-vars */
-                return i18n.__.routerly(req, arguments);
+                return i18n.__.routerly(req, {});
             };
         };
         next();

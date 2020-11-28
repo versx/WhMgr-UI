@@ -3,6 +3,11 @@
 {{> navbar}}
 
 <br>
+<div class="alert alert-danger w-75 {{^show_error}}d-none{{/show_error}}" style="float: none; margin: 0 auto;">
+    <div id="error"><strong>Error!</strong> {{error}}</div>
+</div>
+{{#show_error}}<br>{{/show_error}}
+
 <h1 align="center" id="header">{{Edit Pokemon Subscription}} {{id}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
@@ -13,7 +18,7 @@
         </div>
         <div class="form-group">
             {{IV}}
-            <input type="text" class="form-control" name="iv" value="{{iv}}" placeholder="i.e. 100">
+            <input type="text" class="form-control" name="iv" value="{{iv}}" pattern="^[0-9][0-9]?$|^100$" placeholder="i.e. 100">
         </div>
         <div class="form-group">
             {{IV List}}
@@ -23,13 +28,13 @@
             <div class="col">
                 <div class="form-group">
                     {{Minimum Level}}
-                    <input type="text" class="form-control" name="min_lvl" value="{{min_lvl}}" placeholder="i.e. 0">
+                    <input type="number" class="form-control" name="min_lvl" value="{{min_lvl}}" min=0 max=35 placeholder="i.e. 0">
                 </div>
             </div>
             <div class="col">
                 <div class="form-group">
                     {{Maximum Level}}
-                    <input type="text" class="form-control" name="max_lvl" value="{{max_lvl}}" placeholder="i.e. 35">
+                    <input type="number" class="form-control" name="max_lvl" value="{{max_lvl}}" min=0 max=35 placeholder="i.e. 35">
                 </div>
             </div>
         </div>
@@ -67,4 +72,5 @@
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
+    $('#server_selector').prop('disabled', true);
 </script>

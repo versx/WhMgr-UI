@@ -12,6 +12,7 @@ i18n.configure({
     autoReload: true,
     directory: path.resolve(__dirname, '../../static/locales'),
     defaultLocale: 'en',
+    extension: '.json',
     locales: ['en', 'de', 'es'],          
 });
 i18n.setLocale('en');
@@ -44,7 +45,9 @@ class Localizer {
     }
 
     getPokemonName(pokemonId) {
-        return i18n.__('poke_' + pokemonId);
+        const key = 'poke_' + pokemonId;
+        const name = i18n.__(key);
+        return name;
     }
 
     /* eslint-enable no-unused-vars */

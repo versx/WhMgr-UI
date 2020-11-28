@@ -3,6 +3,10 @@
 {{> navbar}}
 
 <br>
+<div class="alert alert-danger w-75 d-none" style="float: none; margin: 0 auto;">
+    <div id="error"></div>
+</div>
+
 <h1 align="center" id="header">{{Raids}}</h1>
 <br>
 <div style="width:90%; margin-left:calc(5%);">
@@ -66,6 +70,7 @@
         $('html,body').scrollTop(scrollmem);
     });
 
+    showError('Please select a server from the dropdown menu!');
     const table = $('#table').DataTable({
         "ajax": {
             "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=raids",

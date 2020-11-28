@@ -1,150 +1,116 @@
 'use strict';
 
-const config = require('../config.json');
-const MySQLConnector = require('../services/mysql.js');
-const db = new MySQLConnector(config.db.brock);
+const { DataTypes, Model } = require('sequelize');
+const sequelize = require('../services/sequelize.js');
 
-class Quest {
-    constructor(id, subscriptionId, guildId, userId, reward, city) {
-        this.id = id;
-        this.subscriptionId = subscriptionId;
-        this.guildId = guildId;
-        this.userId = userId;
-        this.reward = reward;
-        this.city = city;
-    }
-    async create() {
-        const sql = `
-        INSERT INTO quests (subscription_id, guild_id, user_id, reward, city)
-        VALUES (?, ?, ?, ?, ?)
-        `;
-        const args = [
-            this.subscriptionId,
-            this.guildId,
-            this.userId,
-            this.reward,
-            JSON.stringify(this.city || []),
-        ];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+class Quest extends Model {
+
+    static getCount(guildId, userId) {
+        return Quest.count({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 
-    static async getAll(guildId, userId) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, reward, city
-        FROM quests
-        WHERE guild_id = ? AND user_id = ?
-        `;
-        const args = [guildId, userId];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            const list = [];
-            results.forEach(result => {
-                list.push(new Quest(
-                    result.id,
-                    result.subscription_id,
-                    result.guild_id,
-                    result.user_id,
-                    result.reward,
-                    JSON.parse(result.city || '[]'),
-                ));
-            });
-            return list;
-        }
-        return null;
+    static getAll(guildId, userId) {
+        return Quest.findAll({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 
-    static async getById(id) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, reward, city
-        FROM quests
-        WHERE id = ?
-        `;
-        const args = [id];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            const result = results[0];
-            return new Quest(
-                result.id,
-                result.subscription_id,
-                result.guild_id,
-                result.user_id,
-                result.reward,
-                JSON.parse(result.city || '[]'),
-            );
-        }
-        return null;
-    }
-    
-    static async getByReward(guildId, userId, reward) {
-        const sql = `
-        SELECT id, subscription_id, guild_id, user_id, reward, city
-        FROM quests
-        WHERE guild_id = ? AND user_id = ? AND reward = ?
-        LIMIT 1
-        `;
-        const args = [guildId, userId, reward];
-        const results = await db.query(sql, args);
-        if (results && results.length > 0) {
-            let result = results[0];
-            return new Quest(
-                result.id,
-                result.subscription_id,
-                result.guild_id,
-                result.user_id,
-                result.reward,
-                JSON.parse(result.city || '[]'),
-            );
-        }
-        return null;
+    static getById(id) {
+        return Quest.findByPk(id);
     }
 
-    static async delete(guildId, userId, reward) {
-        const sql = `
-        DELETE FROM quests
-        WHERE guild_id = ? AND user_id = ? AND reward = ?
-        `;
-        const args = [guildId, userId, reward];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+    static getByReward(guildId, userId, reward) {
+        return Quest.findOne({
+            where: {
+                guild_id: guildId,
+                user_id: userId,
+                reward: reward,
+            }
+        });
     }
 
-    static async deleteById(id) {
-        const sql = `
-        DELETE FROM quests
-        WHERE id = ?
-        `;
-        const args = [id];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+    static delete(guildId, userId, pokemonId, form) {
+        return Quest.destroy({
+            where: {
+                guildId: guildId,
+                userId: userId,
+                pokemonId: pokemonId,
+                form: form,
+            }
+        });
     }
 
-    static async deleteAll(guildId, userId) {
-        const sql = `
-        DELETE FROM quests
-        WHERE guild_id = ? AND user_id = ?
-        `;
-        const args = [guildId, userId];
-        const result = await db.query(sql, args);
-        return result.affectedRows > 0;
+    static deleteById(id) {
+        return Quest.destroy({
+            where: {
+                id: id,
+            }
+        });
     }
 
-    async save() {
-        const sql = `
-        UPDATE quests
-        SET reward = ?, city = ?
-        WHERE guild_id = ? AND user_id = ? AND id = ?
-        `;
-        const args = [
-            this.reward,
-            JSON.stringify(this.city),
-            this.guildId,
-            this.userId,
-            this.id
-        ];
-        const result = await db.query(sql, args);
-        return result.affectedRows === 1;
+    static deleteAll(guildId, userId) {
+        return Quest.destroy({
+            where: {
+                guildId: guildId,
+                userId: userId,
+            }
+        });
     }
 }
+
+Quest.init({
+    id: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    subscriptionId: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    guildId: {
+        type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+    },
+    userId: {
+        type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+    },
+    reward: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+    },
+    city: {
+        type: DataTypes.JSONTEXT,
+        allowNull: false,
+        defaultValue: '[]',
+        get() {
+            const data = this.getDataValue('city');
+            return Array.isArray(data)
+                ? data
+                : JSON.parse(data || '[]');
+        }
+    },
+}, {
+    sequelize,
+    timestamps: false,
+    underscored: true,
+    indexes: [
+        {
+            name: 'FK_quest_subscriptions_subscription_id',
+            fields: ['subscription_id'],
+        },
+    ],
+    tableName: 'quests',
+});
 
 module.exports = Quest;

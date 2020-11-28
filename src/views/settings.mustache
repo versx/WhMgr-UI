@@ -3,6 +3,10 @@
 {{> navbar}}
 
 <br>
+<div class="alert alert-danger w-75 d-none" style="float: none; margin: 0 auto;">
+    <div id="error"></div>
+</div>
+
 <h1 align="center" id="header">{{Settings}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
@@ -21,11 +25,15 @@
                     </div>
                     <div class="form-group">
                         {{Location}}
-                        <input type="text" class="form-control" id="location" name="location" placeholder="0,0">
+                        <input type="text" class="form-control" id="location" name="location" pattern="^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$" placeholder="i.e. 8.0034,4.9011">
                     </div>
                     <div class="form-group">
                         {{Max Distance}}
-                        <input type="number" class="form-control" id="distance" name="distance" placeholder="500" required>
+                        <input type="number" class="form-control" id="distance" name="distance" min=0 max=99999 placeholder="i.e. 500 (meters)" required>
+                    </div>
+                    <div class="form-group">
+                        {{Phone Number}}
+                        <input type="text" class="form-control" id="phone_number" name="phone_number" pattern="[0-9]{10}" placeholder="i.e 8001234567">
                     </div>
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="enabled" name="enabled">
@@ -49,14 +57,16 @@
     }
 
     function refreshData() {
+        showError('Please select a server from the dropdown menu!');
         $.ajax({
             url: "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=settings",
             method: "POST",
             type: "json",
             success: function(result) {
-                $('#icon_style').val(result.data.settings.icon_style);
+                $('#icon_style').val(result.data.settings.iconStyle);
                 $('#distance').val(result.data.settings.distance);
                 $('#location').val(`${result.data.settings.latitude},${result.data.settings.longitude}`);
+                $('#phone_number').val(result.data.settings.phoneNumber);
                 $('#enabled').prop('checked', result.data.settings.enabled);
             }
         });
