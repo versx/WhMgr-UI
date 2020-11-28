@@ -10,8 +10,13 @@ module.exports = {
         'SharedArrayBuffer': 'readonly'
     },
     "parser": "babel-eslint",
-    'parserOptions': {
-        'ecmaVersion': 2020
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "modules": true,
+            "experimentalObjectRestSpread": true
+        }
     },
     'rules': {
         'indent': [
