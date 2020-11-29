@@ -16,7 +16,7 @@ class Subscription extends Model {
 
     static async getSubscriptionId(guildId, userId) {
         const subscription = await this.getSubscription(guildId, userId);
-        if (subscription.id > 0) {
+        if (subscription && subscription.id > 0) {
             return subscription.id;
         }
         return await this.createUserSubscription(guildId, userId);
