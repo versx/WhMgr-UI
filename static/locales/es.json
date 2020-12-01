@@ -6,7 +6,7 @@
   "poke_4": "Charmander",
   "poke_5": "Charmeleon",
   "poke_6": "Charizard",
-  "poke_7": "poke_7",
+  "poke_7": "Squirtle",
   "poke_8": "Wartortle",
   "poke_9": "Blastoise",
   "poke_10": "Caterpie",
@@ -24,7 +24,7 @@
   "poke_22": "Fearow",
   "poke_23": "Ekans",
   "poke_24": "Arbok",
-  "poke_25": "poke_25",
+  "poke_25": "Pikachu",
   "poke_26": "Raichu",
   "poke_27": "Sandshrew",
   "poke_28": "Sandslash",
@@ -131,7 +131,7 @@
   "poke_129": "Magikarp",
   "poke_130": "Gyarados",
   "poke_131": "Lapras",
-  "poke_132": "poke_132",
+  "poke_132": "Ditto",
   "poke_133": "Eevee",
   "poke_134": "Vaporeon",
   "poke_135": "Jolteon",
@@ -3646,5 +3646,7 @@
   "Location": "Location",
   "Max Distance": "Max Distance",
   "Phone Number": "Phone Number",
-  "Value": "Value"
+  "Value": "Value",
+  "Server Selector": "Server Selector",
+  "None": "None"
 }

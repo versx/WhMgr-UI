@@ -194,7 +194,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             const settings = (await Subscription.getSubscription(guild_id, user_id)).toJSON();
             const formatted = req.query.formatted;
             if (formatted) {
-                let list = [];
+                const list = [];
                 const keys = Object.keys(settings);
                 const ignoreKeys = ['id', 'guildId', 'userId'];
                 keys.forEach(key => {
@@ -226,9 +226,9 @@ router.post('/pokemon/new', async (req, res) => {
     } = req.body;
     const user_id = defaultData.user_id;
     const areas = getAreas(guild_id, city);
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
-        showError(res, 'pokemon-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
+        showError(res, 'pokemon-new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     const sql = [];
@@ -246,7 +246,7 @@ router.post('/pokemon/new', async (req, res) => {
         } else {
             exists = Pokemon.build({
                 id: 0,
-                subscriptionId: subscriptionId,
+                subscriptionId: subscription.id,
                 guildId: guild_id,
                 userId: user_id,
                 pokemonId: pokemonId,
@@ -363,9 +363,9 @@ router.post('/pvp/new', async (req, res) => {
         city
     } = req.body;
     const user_id = defaultData.user_id;
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
-        showError(res, 'pvp-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
+        showError(res, 'pvp-new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     const areas = getAreas(guild_id, city);
@@ -381,7 +381,7 @@ router.post('/pvp/new', async (req, res) => {
         } else {
             exists = PVP.build({
                 id: 0,
-                subscriptionId: subscriptionId,
+                subscriptionId: subscription.id,
                 guildId: guild_id,
                 userId: user_id,
                 pokemonId: pokemonId,
@@ -474,9 +474,9 @@ router.post('/pvp/delete_all', async (req, res) => {
 router.post('/raids/new', async (req, res) => {
     const { guild_id, pokemon, form, city } = req.body;
     const user_id = defaultData.user_id;
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
-        showError(res, 'raid-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
+        showError(res, 'raid-new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     const areas = getAreas(guild_id, city);
@@ -487,7 +487,7 @@ router.post('/raids/new', async (req, res) => {
         if (!exists) {
             exists = Raid.build({
                 id: 0,
-                subscriptionId: subscriptionId,
+                subscriptionId: subscription.id,
                 guildId: guild_id,
                 userId: user_id,
                 pokemonId: pokemonId,
@@ -566,9 +566,9 @@ router.post('/raids/delete_all', async (req, res) => {
 router.post('/gyms/new', async (req, res) => {
     const { guild_id, name } = req.body;
     const user_id = defaultData.user_id;
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
-        showError(res, 'gym-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
+        showError(res, 'gym-new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     const exists = await Gym.getByName(guild_id, user_id, name);
@@ -579,7 +579,7 @@ router.post('/gyms/new', async (req, res) => {
     } else {
         const gym = Gym.build({
             id: 0,
-            subscriptionId: subscriptionId,
+            subscriptionId: subscription.id,
             guildId: guild_id,
             userId: user_id,
             name: name,
@@ -641,9 +641,9 @@ router.post('/gyms/delete_all', async (req, res) => {
 router.post('/quests/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
     const user_id = defaultData.user_id;
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
-        showError(res, 'quest-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
+        showError(res, 'quest-new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     const areas = getAreas(guild_id, city);
@@ -654,7 +654,7 @@ router.post('/quests/new', async (req, res) => {
     } else {
         exists = Quest.build({
             id: 0,
-            subscriptionId: subscriptionId,
+            subscriptionId: subscription.id,
             guildId: guild_id,
             userId: user_id,
             reward: reward,
@@ -736,9 +736,9 @@ router.post('/quests/delete_all', async (req, res) => {
 router.post('/invasions/new', async (req, res) => {
     const { guild_id, pokemon, city } = req.body;
     const user_id = defaultData.user_id;
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
-        showError(res, 'invasions', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
+        showError(res, 'invasions', `Failed to get user subscription for GuildId: ${guild_id} user: ${user_id}`);
         return;
     }
     const areas = getAreas(guild_id, city);
@@ -752,7 +752,7 @@ router.post('/invasions/new', async (req, res) => {
         } else {
             exists = Invasion.build({
                 id: 0,
-                subscriptionId: subscriptionId,
+                subscriptionId: subscription.id,
                 guildId: guild_id,
                 userId: user_id,
                 rewardPokemonId: pokemonId,
@@ -867,16 +867,32 @@ const isUltraRarePokemon = (pokemonId) => {
 
 const getAreas = (guildId, city) => {
     let areas;
-    if (city === 'all') {
+    if (city === 'All') {
+        // All areas specified
         config.discord.guilds.map(x => {
             if (x.id === guildId) {
                 areas = x.geofences;
             }
         });
+    } else if (city === 'None') {
+        // No areas specified
+        areas = [];
     } else if (!Array.isArray(city)) {
+        // Only one area specified, make array
         areas = [city];
     } else {
-        areas = city;
+        // If all and none are both specified, all supersedes none or individual areas
+        // or if all is specified, none is not, set all areas and disregard individual
+        // areas that might be included
+        if ((city.includes('All') && city.includes('None')) ||
+            (city.includes('All') && !city.includes('None'))) {
+            return getAreas(guildId, 'All');
+        } else if (city.includes('None') && city.length > 1) {
+            city = city.splice(city.indexOf('None'), 1);
+        } else {
+            // Only individual areas are provided
+            areas = city;
+        }
     }
     return areas || [];
 };
@@ -884,8 +900,13 @@ const getAreas = (guildId, city) => {
 const formatAreas = (guildId, subscriptionAreas) => {
     return utils.arraysEqual(subscriptionAreas, config.discord.guilds.filter(x => x.id === guildId)[0].geofences)
         ? 'All' // TODO: Localize
-        : subscriptionAreas.join(',');
+        : ellipsis(subscriptionAreas.join(','));
 };
+
+const ellipsis = (str) => {
+    const value = str.substring(0, Math.min(64, str.length));
+    return value === str ? value : value + '...';
+}
 
 const showError = (res, page, message) => {
     console.error(message);

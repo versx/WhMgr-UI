@@ -68,11 +68,15 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     data.genders.forEach(gender => {
         data.selected = gender.id === pokemon.gender;
     });
-    data.cities = map.buildCityList(req.session.guilds);
     const areas = pokemon.city.map(x => x.toLowerCase());
-    data.cities.forEach(city => {
-        city.selected = areas.includes(city.name.toLowerCase());
-    });
+    data.cities = getSelectedAreas(
+        // Current guild
+        pokemon.guildId,
+        // Currently subscribed areas list
+        areas,
+        // All areas list
+        map.buildCityList(req.session.guilds)
+    );
     res.render('pokemon-edit', data);
 });
 
@@ -115,11 +119,14 @@ router.get('/pvp/edit/:id', async (req, res) => {
     });
     data.min_rank = pvp.minRank;
     data.min_percent = pvp.minPercent;
-    data.cities = map.buildCityList(req.session.guilds);
-    const areas = pvp.city.map(x => x.toLowerCase());
-    data.cities.forEach(city => {
-        city.selected = areas.includes(city.name.toLowerCase());
-    });
+    data.cities = getSelectedAreas(
+        // Current guild
+        pokemon.guildId,
+        // Currently subscribed areas list
+        pokemon.city.map(x => x.toLowerCase()),
+        // All areas list
+        map.buildCityList(req.session.guilds)
+    );
     res.render('pvp-edit', data);
 });
 
@@ -163,11 +170,14 @@ router.get('/raid/edit/:id', async (req, res) => {
         pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
     });
     data.form = raid.form;
-    data.cities = map.buildCityList(req.session.guilds);
-    const areas = raid.city.map(x => x.toLowerCase());
-    data.cities.forEach(city => {
-        city.selected = areas.includes(city.name.toLowerCase());
-    });
+    data.cities = getSelectedAreas(
+        // Current guild
+        pokemon.guildId,
+        // Currently subscribed areas list
+        pokemon.city.map(x => x.toLowerCase()),
+        // All areas list
+        map.buildCityList(req.session.guilds)
+    );
     res.render('raid-edit', data);
 });
 
@@ -227,11 +237,14 @@ router.get('/quest/edit/:id', async (req, res) => {
     data.id = id;
     const quest = await Quest.getById(id);
     data.reward = quest.reward;
-    data.cities = map.buildCityList(req.session.guilds);
-    const areas = quest.city.map(x => x.toLowerCase());
-    data.cities.forEach(city => {
-        city.selected = areas.includes(city.name.toLowerCase());
-    });
+    data.cities = getSelectedAreas(
+        // Current guild
+        pokemon.guildId,
+        // Currently subscribed areas list
+        pokemon.city.map(x => x.toLowerCase()),
+        // All areas list
+        map.buildCityList(req.session.guilds)
+    );
     res.render('quest-edit', data);
 });
 
@@ -274,11 +287,14 @@ router.get('/invasion/edit/:id', async (req, res) => {
     data.rewards.forEach(reward => {
         reward.selected = reward.id === invasion.rewardPokemonId;
     });
-    data.cities = map.buildCityList(req.session.guilds);
-    const areas = invasion.city.map(x => x.toLowerCase());
-    data.cities.forEach(city => {
-        city.selected = areas.includes(city.name.toLowerCase());
-    });
+    data.cities = getSelectedAreas(
+        // Current guild
+        pokemon.guildId,
+        // Currently subscribed areas list
+        pokemon.city.map(x => x.toLowerCase()),
+        // All areas list
+        map.buildCityList(req.session.guilds)
+    );
     res.render('invasion-edit', data);
 });
 
@@ -330,6 +346,29 @@ const validateRoles = (req, res) => {
         return null;
     }
     return servers;
+};
+
+const getSelectedAreas = (guildId, currentAreas, availableAreas) => {
+    // Loop through available areas, check if any current areas match
+    // and mark as selected
+    availableAreas.forEach(city => {
+        if (city.name === 'None' && currentAreas.length === 0) {
+            city.selected = true;
+        } else {
+            city.selected = currentAreas.includes(city.name.toLowerCase());
+        }
+    });
+    // If no areas then insert 'None' as selected
+    /*
+    if (currentAreas.length === 0) {
+        availableAreas.splice(0, 0, {
+            name: 'None',
+            guild: guildId,
+            selected: true,
+        });
+    }
+    */
+    return availableAreas;
 };
 
 module.exports = router;

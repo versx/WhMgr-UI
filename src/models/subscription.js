@@ -13,16 +13,7 @@ const Gym = require('./gym.js');
 */
 
 class Subscription extends Model {
-
-    static async getSubscriptionId(guildId, userId) {
-        const subscription = await this.getSubscription(guildId, userId);
-        if (subscription && subscription.id > 0) {
-            return subscription.id;
-        }
-        const newSubscription = await this.createUserSubscription(guildId, userId);
-        return newSubscription.id;
-    }
-    
+  
     static async createUserSubscription(guildId, userId) {
         const subscription = Subscription.build({
             id: 0,

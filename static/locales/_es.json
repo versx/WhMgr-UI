@@ -100,5 +100,7 @@
 	"Location": "Location",
 	"Max Distance": "Max Distance",
 	"Phone Number": "Phone Number",
-	"Value": "Value"
+	"Value": "Value",
+	"Server Selector": "Server Selector",
+    "None": "None"
 }

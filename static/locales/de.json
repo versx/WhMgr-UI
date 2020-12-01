@@ -6,7 +6,7 @@
   "poke_4": "Glumanda",
   "poke_5": "Glutexo",
   "poke_6": "Glurak",
-  "poke_7": "poke_7",
+  "poke_7": "Schiggy",
   "poke_8": "Schillok",
   "poke_9": "Turtok",
   "poke_10": "Raupy",
@@ -24,7 +24,7 @@
   "poke_22": "Ibitak",
   "poke_23": "Rettan",
   "poke_24": "Arbok",
-  "poke_25": "poke_25",
+  "poke_25": "Pikachu",
   "poke_26": "Raichu",
   "poke_27": "Sandan",
   "poke_28": "Sandamer",
@@ -131,7 +131,7 @@
   "poke_129": "Karpador",
   "poke_130": "Garados",
   "poke_131": "Lapras",
-  "poke_132": "poke_132",
+  "poke_132": "Ditto",
   "poke_133": "Evoli",
   "poke_134": "Aquana",
   "poke_135": "Blitza",
@@ -3646,5 +3646,7 @@
   "Location": "Standort",
   "Max Distance": "Maximale Distanz",
   "Phone Number": "Phone Number",
-  "Value": "Wert"
+  "Value": "Wert",
+  "Server Selector": "Server Selector",
+  "None": "None"
 }

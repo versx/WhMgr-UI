@@ -36,6 +36,7 @@
         <div class="form-group">
             {{City}}
             <select name="city" class="custom-select" multiple required>
+                <option value="none">{{None}}</option>
                 <option value="all" >{{All}}</option>
                 {{#cities}}
                 <option value="{{name}}" id="g_{{guild}}" {{#selected}}selected{{/selected}} hidden>{{name}}</option>
