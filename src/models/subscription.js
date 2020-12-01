@@ -19,7 +19,8 @@ class Subscription extends Model {
         if (subscription && subscription.id > 0) {
             return subscription.id;
         }
-        return await this.createUserSubscription(guildId, userId);
+        const newSubscription = await this.createUserSubscription(guildId, userId);
+        return newSubscription.id;
     }
     
     static async createUserSubscription(guildId, userId) {
@@ -27,14 +28,9 @@ class Subscription extends Model {
             id: 0,
             guildId: guildId,
             userId: userId,
-            enabled: 1,
-            distance: 0,
-            latitude: 0,
-            longitude: 0,
-            iconStyle: 'Default',
         });
         const results = await subscription.save();
-        return results.id;
+        return results;
     }
 
     static updateSubscription(guildId, userId, enabled, distance, latitude, longitude, iconStyle, phoneNumber) {
@@ -53,13 +49,17 @@ class Subscription extends Model {
         });
     }
 
-    static getSubscription(guildId, userId) {
-        return Subscription.findOne({
+    static async getSubscription(guildId, userId) {
+        const existing = await Subscription.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
             }
         });
+        if (!existing) {
+            return await this.createUserSubscription(guildId, userId);
+        }
+        return existing;
     }
 }
 
