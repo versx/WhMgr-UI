@@ -44,6 +44,7 @@
 	"Select Gen3": "Select Gen3",
 	"Select Gen4": "Select Gen4",
 	"Select Gen5": "Select Gen5",
+	"Select Gen6": "Select Gen6",
 	"Select Rare": "Select Rare",
 	"Select Ultra Rare": "Select Ultra Rare",
 	"Select 5 Star Raid": "Select 5 Star Raid",
@@ -100,8 +101,5 @@
 	"Location": "Location",
 	"Max Distance": "Max Distance",
 	"Phone Number": "Phone Number",
-	"Value": "Value",
-	"poke_7": "poke_7",
-	"poke_132": "poke_132",
-	"poke_25": "poke_25"
+	"Value": "Value"
 }
