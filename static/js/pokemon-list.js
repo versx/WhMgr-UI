@@ -49,6 +49,13 @@ $('#select_gen5').on('click', function() {
         }
     });
 });
+$('#select_gen6').on('click', function() {
+    $.each($('.item'), function(index, item) {
+        if (item.id > 649 && item.id < 722) {
+            selectItem(item);
+        }
+    });
+});
 $('#select_rare').on('click', function() {
     $.each($('.item'), function(index, item) {
         if (!pokemonRarity.common.includes(parseInt(item.id))) {

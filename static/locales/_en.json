@@ -44,6 +44,7 @@
 	"Select Gen3": "Select Gen3",
 	"Select Gen4": "Select Gen4",
 	"Select Gen5": "Select Gen5",
+	"Select Gen6": "Select Gen6",
 	"Select Rare": "Select Rare",
 	"Select Ultra Rare": "Select Ultra Rare",
 	"Select 5 Star Raid": "Select 5 Star Raid",
@@ -102,5 +103,5 @@
 	"Phone Number": "Phone Number",
 	"Value": "Value",
 	"Server Selector": "Server Selector",
-    "None": "None"
+  "None": "None"
 }
