@@ -32,7 +32,7 @@
                         <th class="all">{{ID}}</th>
                         <th class="all">{{Pokemon}}</th>
                         <th class="min-desktop">{{Form}}</th>
-                        <th class="min-desktop" hidden>{{CP}}</th>
+                        <th class="min-desktop">{{CP}}</th>
                         <th class="all">{{IV}}</th>
                         <th class="all">{{IV List}}</th>
                         <th class="min-desktop">{{Level}}</th>
@@ -116,7 +116,7 @@
             { "data": "pokemonId" },
             { "data": "name" },
             { "data": "form" },
-            //{ "data": "cp" },
+            { "data": "cp" },
             { "data": "iv" },
             { "data": "ivList" },
             { "data": "lvl" },
@@ -128,7 +128,7 @@
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
         "columnDefs": [{
-            "targets": [8],//[9],
+            "targets": [9],
             "orderable": false
         }],
         "responsive": true
@@ -185,6 +185,6 @@
 
     function refreshData() {
         $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pokemon").load();
-        $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pvp").load();
+        $("#table-pvp").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pvp").load();
     }
 </script>

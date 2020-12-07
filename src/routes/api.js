@@ -233,12 +233,13 @@ router.post('/pokemon/new', async (req, res) => {
     }
     const sql = [];
     const split = pokemon.split(',');
+    const ivList = iv_list ? iv_list.replace('\r', '').split('\n') : [];
     for (const pokemonId of split) {
         let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form);
         if (exists) {
             exists.minCp = 0;
             exists.minIv = iv || 0;
-            exists.ivList = iv_list ? iv_list.split('\r\n') : [];
+            exists.ivList = ivList;
             exists.minLvl = min_lvl || 0;
             exists.maxLvl = max_lvl || 35;
             exists.gender = gender || '*';
@@ -253,7 +254,7 @@ router.post('/pokemon/new', async (req, res) => {
                 form: form || null,
                 minCp: 0,
                 minIv: isUltraRarePokemon(pokemonId) ? 0 : iv || 0,
-                ivList: iv_list ? iv_list.split('\r\n') : [],
+                ivList: ivList,
                 minLvl: min_lvl || 0,
                 maxLvl: max_lvl || 35,
                 gender: gender || '*',
@@ -289,12 +290,13 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     const pkmn = await Pokemon.getById(id);
     const areas = getAreas(guild_id, city);
     if (pkmn) {
+        const ivList = iv_list ? iv_list.replace('\r', '').split('\n') : [];
         //pkmn.pokemonId = pokemon;
         pkmn.form = form;
         pkmn.minCp = 0;
         // If pokemon is rare (Unown, Azelf, etc), set IV value to 0
         pkmn.minIv = isUltraRarePokemon(pkmn.pokemonId) ? 0 : iv || 100;
-        pkmn.ivList = iv_list ? iv_list.split('\r\n') : [];
+        pkmn.ivList = ivList;
         pkmn.minLvl = min_lvl || 0;
         pkmn.maxLvl = max_lvl || 35;
         pkmn.gender = gender || '*';
@@ -889,8 +891,7 @@ const formatAreas = (guildId, subscriptionAreas) => {
 
 const showError = (res, page, message) => {
     console.error(message);
-    let errorData = {};
-    errorData = { ...defaultData };
+    const errorData = { ...defaultData };
     errorData.error = message;
     errorData.show_error = true;
     res.render(page, errorData);
