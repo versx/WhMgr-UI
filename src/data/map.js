@@ -1,9 +1,6 @@
 'use strict';
 
 const Localizer = require('../services/locale.js');
-const { GeofenceService } = require('../services/geofence.js');
-
-const svc = new GeofenceService();
 const config = require('../config.json');
 
 const getPokemonNameIdsList = async () => {
@@ -22,23 +19,14 @@ const getPokemonNameIdsList = async () => {
 
 const buildCityList = (guilds) => {
     const cities = [];
-    for (let i = 0; i < svc.geofences.length; i++) {
-        const geofence = svc.geofences[i];
-        const configGuilds = config.discord.guilds;
-        for (let j = 0; j < configGuilds.length; j++) {
-            const configGuild = configGuilds[j];
-            if (cities.filter(x => x.name === 'None').length === 0) {
-                cities.push({
-                    'name': 'None',
-                    'guild': configGuild.id,
-                });
-            }
-            if (guilds.includes(configGuild.id) && configGuild.geofences.includes(geofence.name)) {
-                cities.push({
-                    'name': geofence.name,
-                    'guild': configGuild.id,
-                });
-            }
+    const configGuilds = config.discord.guilds;
+    for (let i = 0; i < configGuilds.length; i++) {
+        const configGuild = configGuilds[i];
+        if (guilds.includes(configGuild.id)) {
+            configGuild.geofences.forEach(geofence => cities.push({
+                'name': geofence,
+                'guild': configGuild.id,
+            }));
         }
     }
     return cities;

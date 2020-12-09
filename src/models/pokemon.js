@@ -82,27 +82,6 @@ class Pokemon extends Model {
             }
         });
     }
-
-    async save() {
-        const results = Pokemon.update({
-            pokemonId: this.pokemonId,
-            form: this.form,
-            minCp: this.minCp,
-            minIv: this.minIv,
-            ivList: this.ivList,
-            minLvl: this.minLvl,
-            maxLvl: this.maxLvl,
-            gender: this.gender,
-            city: this.city,
-        }, {
-            where: {
-                id: this.id,
-                //guildId: this.guildId,
-                //userId: this.userId,
-            }
-        });
-        return results;
-    }
 }
 
 Pokemon.init({
@@ -163,7 +142,7 @@ Pokemon.init({
         allowNull: false,
         defaultValue: '[]',
         get() {
-            var data = this.getDataValue('iv_list');
+            var data = this.getDataValue('ivList');
             return Array.isArray(data)
                 ? data
                 : JSON.parse(data || '[]');

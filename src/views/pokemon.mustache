@@ -185,6 +185,6 @@
 
     function refreshData() {
         $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pokemon").load();
-        $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pvp").load();
+        $("#table-pvp").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pvp").load();
     }
 </script>
