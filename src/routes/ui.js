@@ -121,9 +121,9 @@ router.get('/pvp/edit/:id', async (req, res) => {
     data.min_percent = pvp.minPercent;
     data.cities = getSelectedAreas(
         // Current guild
-        pokemon.guildId,
+        pvp.guildId,
         // Currently subscribed areas list
-        pokemon.city.map(x => x.toLowerCase()),
+        pvp.city.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );
@@ -172,9 +172,9 @@ router.get('/raid/edit/:id', async (req, res) => {
     data.form = raid.form;
     data.cities = getSelectedAreas(
         // Current guild
-        pokemon.guildId,
+        raid.guildId,
         // Currently subscribed areas list
-        pokemon.city.map(x => x.toLowerCase()),
+        raid.city.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );
@@ -239,9 +239,9 @@ router.get('/quest/edit/:id', async (req, res) => {
     data.reward = quest.reward;
     data.cities = getSelectedAreas(
         // Current guild
-        pokemon.guildId,
+        quest.guildId,
         // Currently subscribed areas list
-        pokemon.city.map(x => x.toLowerCase()),
+        quest.city.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );
@@ -289,9 +289,9 @@ router.get('/invasion/edit/:id', async (req, res) => {
     });
     data.cities = getSelectedAreas(
         // Current guild
-        pokemon.guildId,
+        invasion.guildId,
         // Currently subscribed areas list
-        pokemon.city.map(x => x.toLowerCase()),
+        invasion.city.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );

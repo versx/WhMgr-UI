@@ -908,7 +908,7 @@ const formatAreas = (guildId, subscriptionAreas) => {
 const ellipsis = (str) => {
     const value = str.substring(0, Math.min(64, str.length));
     return value === str ? value : value + '...';
-}
+};
 
 const showError = (res, page, message) => {
     console.error(message);
