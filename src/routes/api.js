@@ -12,6 +12,7 @@ const Gym = require('../models/gym.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const Subscription = require('../models/subscription.js');
+const DiscordClient = require('../services/discord.js');
 const Localizer = require('../services/locale.js');
 const utils = require('../services/utils.js');
 
@@ -186,6 +187,30 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             }
             res.json({ data: { invasions: invasionData } });
             break;
+        case 'roles':
+            if (!guild_id || guild_id === null || guild_id === 'null') {
+                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { invasions: [] });
+                return;
+            }
+            const roleIds = await DiscordClient.getAllRoles(guild_id, user_id);
+            if (!roleIds) {
+                // Error
+                console.error('Failed to get roles for guild id', guild_id, 'and user id', user_id);
+            }
+            const results = [];
+            for (let roleId of roleIds) {
+                const name = await DiscordClient.getRoleNameById(guild_id, roleId);
+                if (config.discord.guilds.find(x => x.geofences.includes(name))) {
+                    results.push({
+                        id: roleId,
+                        name: name,
+                        // TODO: Make a javascript confirm alert
+                        buttons: `<a href='/api/role/remove/${guild_id}/${roleId}' onclick="return confirm('Are you sure you want to remove role ${name}?');"><button type='button'class='btn btn-sm btn-danger'>Remove</button></a>`
+                    });
+                }
+            }
+            res.json({ data: { roles: results } });
+            break;
         case 'settings':
             if (!guild_id || guild_id === null || guild_id === 'null') {
                 showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { settings: [] });
@@ -224,7 +249,7 @@ router.post('/pokemon/new', async (req, res) => {
         gender,
         city
     } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     const areas = getAreas(guild_id, city);
     const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
     if (!subscriptionId) {
@@ -286,7 +311,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         gender,
         city
     } = req.body;
-    //const user_id = defaultData.user_id;
+    //const user_id = req.session.user_id;
     const pkmn = await Pokemon.getById(id);
     const areas = getAreas(guild_id, city);
     if (pkmn) {
@@ -335,7 +360,7 @@ router.post('/pokemon/delete/:id', async (req, res) => {
 
 router.post('/pokemon/delete_all', async (req, res) => {
     const { guild_id } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     if (guild_id && user_id) {
         const result = await Pokemon.deleteAll(guild_id, user_id);
         if (result) {
@@ -364,7 +389,7 @@ router.post('/pvp/new', async (req, res) => {
         min_percent,
         city
     } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
     if (!subscriptionId) {
         showError(res, 'pvp-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
@@ -411,7 +436,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
         min_percent,
         city
     } = req.body;
-    //const user_id = defaultData.user_id;
+    //const user_id = req.session.user_id;
     const exists = await PVP.getById(id);
     if (exists) {
         const areas = getAreas(guild_id, city);
@@ -454,7 +479,7 @@ router.post('/pvp/delete/:id', async (req, res) => {
 
 router.post('/pvp/delete_all', async (req, res) => {
     const { guild_id } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     if (guild_id && user_id) {
         const result = await PVP.deleteAll(guild_id, user_id);
         if (result) {
@@ -475,7 +500,7 @@ router.post('/pvp/delete_all', async (req, res) => {
 // Raid routes
 router.post('/raids/new', async (req, res) => {
     const { guild_id, pokemon, form, city } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
     if (!subscriptionId) {
         showError(res, 'raid-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
@@ -508,7 +533,7 @@ router.post('/raids/new', async (req, res) => {
 router.post('/raids/edit/:id', async (req, res) => {
     const id = req.params.id;
     const { guild_id, /*pokemon,*/ form, city } = req.body;
-    //const user_id = defaultData.user_id;
+    //const user_id = req.session.user_id;
     const exists = await Raid.getById(id);
     if (exists) {
         const areas = getAreas(guild_id, city);
@@ -549,7 +574,7 @@ router.post('/raids/delete/:id', async (req, res) => {
 
 router.post('/raids/delete_all', async (req, res) => {
     const { guild_id } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     if (guild_id && user_id) {
         const result = await Raid.deleteAll(guild_id, user_id);
         if (result) {
@@ -567,7 +592,7 @@ router.post('/raids/delete_all', async (req, res) => {
 // Gym routes
 router.post('/gyms/new', async (req, res) => {
     const { guild_id, name } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
     if (!subscriptionId) {
         showError(res, 'gym-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
@@ -620,7 +645,7 @@ router.post('/gyms/delete/:id', async (req, res) => {
 
 router.post('/gyms/delete_all', async (req, res) => {
     const { guild_id } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     if (guild_id && user_id) {
         const result = await Gym.deleteAll(guild_id, user_id);
         if (result) {
@@ -642,7 +667,7 @@ router.post('/gyms/delete_all', async (req, res) => {
 // Quest routes
 router.post('/quests/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
     if (!subscriptionId) {
         showError(res, 'quest-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
@@ -677,7 +702,7 @@ router.post('/quests/new', async (req, res) => {
 router.post('/quests/edit/:id', async (req, res) => {
     const id = req.params.id;
     const { guild_id, /*reward,*/ city } = req.body;
-    //const user_id = defaultData.user_id;
+    //const user_id = req.session.user_id;
     const quest = await Quest.getById(id);
     if (quest) {
         const areas = getAreas(guild_id, city);
@@ -716,7 +741,7 @@ router.post('/quests/delete/:id', async (req, res) => {
 
 router.post('/quests/delete_all', async (req, res) => {
     const { guild_id } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     if (guild_id && user_id) {
         const result = await Quest.deleteAll(guild_id, user_id);
         if (result) {
@@ -737,7 +762,7 @@ router.post('/quests/delete_all', async (req, res) => {
 // Invasion routes
 router.post('/invasions/new', async (req, res) => {
     const { guild_id, pokemon, city } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
     if (!subscriptionId) {
         showError(res, 'invasions', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
@@ -776,7 +801,7 @@ router.post('/invasions/new', async (req, res) => {
 router.post('/invasions/edit/:id', async (req, res) => {
     const id = req.params.id;
     const { guild_id, /*reward,*/ city } = req.body;
-    //const user_id = defaultData.user_id;
+    //const user_id = req.session.user_id;
     const invasion = await Invasion.getById(id);
     if (invasion) {
         const areas = getAreas(guild_id, city);
@@ -814,7 +839,7 @@ router.post('/invasions/delete/:id', async (req, res) => {
 
 router.post('/invasions/delete_all', async (req, res) => {
     const { guild_id } = req.body;
-    const user_id = defaultData.user_id;
+    const user_id = req.session.user_id;
     if (guild_id && user_id) {
         const result = await Invasion.deleteAll(guild_id, user_id);
         if (result) {
@@ -831,6 +856,58 @@ router.post('/invasions/delete_all', async (req, res) => {
 });
 
 
+// Role assignment/unassignment routes
+router.post('/role/add', async (req, res) => {
+    const { guild_id, roles } = req.body;
+    const user_id = req.session.user_id;
+    const areas = getAreas(guild_id, roles);
+    let error = false;
+    for (const area of areas) {
+        const result = await DiscordClient.addRole(guild_id, user_id, area);
+        if (!result) {
+            console.error('Failed to assign role', area, 'to guild', guild_id, 'user', user_id);
+            error = true;
+        }
+    }
+    if (error) {
+        showError(res, 'role-add', `Failed to assign role(s) to guild ${guild_id} user ${user_id}`);
+        return;
+    }
+    res.redirect('/roles');
+});
+
+router.get('/role/remove/:guild_id/:id', async (req, res) => {
+    const { id, guild_id} = req.params;
+    const userId = req.session.user_id;
+    const result = await DiscordClient.removeRole(guild_id, userId, id);
+    if (!result) {
+        // Failed to remove city role
+        showError(res, 'role-remove', `Failed to remove city role with id ${id} from guild ${guild_id} user ${userId}`);
+        return;
+    }
+    res.redirect('/roles');
+});
+
+router.post('/roles/remove_all', async (req, res) => {
+    const { guild_id } = req.body;
+    const userId = req.session.user_id;
+    const guild = config.discord.guilds.find(x => x.id === guild_id);
+    if (!guild) {
+        // Failed to find guild
+        showError(res, 'roles-remove-all', `Failed to find guild ${guild_id} to remove all roles for user ${userId}`);
+        return;
+    }
+    const areas = guild.geofences;
+    const result = await DiscordClient.removeAllRoles(guild_id, userId, areas);
+    if (!result) {
+        // Failed to remove all city roles
+        showError(res, 'roles-remove-all', `Failed to remove all city roles from guild ${guild_id} user ${userId}`);
+        return;
+    }
+    res.redirect('/roles');
+});
+
+
 // Settings routes
 router.post('/settings', async (req, res) => {
     const {
@@ -841,15 +918,15 @@ router.post('/settings', async (req, res) => {
         enabled,
         phone_number,
     } = req.body;
-    const user_id = defaultData.user_id;
+    const userId = req.session.user_id;
     const split = (location || '0,0').split(',');
     const lat = parseFloat(split[0]);
     const lon = parseFloat(split[1]);
     const isEnabled = enabled === 'on';
-    const result = Subscription.updateSubscription(guild_id, user_id, isEnabled, distance, lat, lon, icon_style, phone_number);
+    const result = Subscription.updateSubscription(guild_id, userId, isEnabled, distance, lat, lon, icon_style, phone_number);
     if (result) {
         // Success
-        console.log('Successfully updated subscription settings for', user_id, 'in guild', guild_id);
+        console.log('Successfully updated subscription settings for', userId, 'in guild', guild_id);
     } else {
         showError(res, 'settings', 'Failed to update settings.');
         return;

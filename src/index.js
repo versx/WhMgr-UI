@@ -98,7 +98,7 @@ const utils = require('./services/utils.js');
     // Login middleware
     app.use(async (req, res, next) => {
         res.header('Access-Control-Allow-Headers', '*');
-        // Expose the store
+        // Expose the session store
         req.sessionStore = store;
         if (req.path === '/api/discord/login' || req.path === '/login') {
             return next();
