@@ -987,17 +987,17 @@ router.post('/lures/delete_all', async (req, res) => {
 router.post('/role/add', async (req, res) => {
     const { guild_id, roles } = req.body;
     const user_id = req.session.user_id;
-    const roles = getRoles(guild_id, roles);
+    const cityRoles = getRoles(guild_id, roles);
     let error = false;
-    for (const role of roles) {
-        const result = await DiscordClient.addRole(guild_id, user_id, role);
+    for (const cityRole of cityRoles) {
+        const result = await DiscordClient.addRole(guild_id, user_id, cityRole);
         if (!result) {
-            console.error('Failed to assign role', role, 'to guild', guild_id, 'user', user_id);
+            console.error('Failed to assign city role', cityRole, 'to guild', guild_id, 'user', user_id);
             error = true;
         }
     }
     if (error) {
-        showError(res, 'role-add', `Failed to assign role(s) to guild ${guild_id} user ${user_id}`);
+        showError(res, 'role-add', `Failed to assign city role(s) to guild ${guild_id} user ${user_id}`);
         return;
     }
     res.redirect('/roles');
@@ -1021,7 +1021,7 @@ router.post('/roles/remove_all', async (req, res) => {
     const guild = config.discord.guilds.find(x => x.id === guild_id);
     if (!guild) {
         // Failed to find guild
-        showError(res, 'roles-remove-all', `Failed to find guild ${guild_id} to remove all roles for user ${userId}`);
+        showError(res, 'roles-remove-all', `Failed to find guild ${guild_id} to remove all city roles for user ${userId}`);
         return;
     }
     const roles = guild.cityRoles;
@@ -1093,26 +1093,20 @@ const formatAreas = (guildId, subscriptionAreas) => {
         : subscriptionAreas.join(',');
 };
 
-const getRoles = (guildId, name) => {
+const getRoles = (guildId, cityName) => {
     let areas;
-    if (city === 'all' || city.includes('all')) {
+    if (cityName === 'all' || cityName.includes('all')) {
         config.discord.guilds.map(x => {
             if (x.id === guildId) {
                 areas = x.cityRoles;
             }
         });
-    } else if (!Array.isArray(city)) {
-        areas = [city];
+    } else if (!Array.isArray(cityName)) {
+        areas = [cityName];
     } else {
-        areas = city;
+        areas = cityName;
     }
     return areas || [];
-};
-
-const formatRoles = (guildId, roleNames) => {
-    return utils.arraysEqual(roleNames, config.discord.guilds.filter(x => x.id === guildId)[0].cityRoles)
-        ? 'All' // TODO: Localize
-        : roleNames.join(',');
 };
 
 const showError = (res, page, message) => {
