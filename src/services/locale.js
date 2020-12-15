@@ -4,7 +4,6 @@ const axios = require('axios');
 const fs = require('fs');
 const i18n = require('i18n');
 const path = require('path');
-const util = require('util');
 
 const config = require('../config.json');
 
