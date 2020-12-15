@@ -34,12 +34,12 @@ const buildCityList = (guilds) => {
 
 const getLureTypes = () => {
     return [
-        { name: "Normal" },
-        { name: "Glacial" },
-        { name: "Mossy" },
-        { name: "Magnetic" },
+        { name: 'Normal' },
+        { name: 'Glacial' },
+        { name: 'Mossy' },
+        { name: 'Magnetic' },
     ];
-}
+};
 
 module.exports = {
     getPokemonNameIdsList,
