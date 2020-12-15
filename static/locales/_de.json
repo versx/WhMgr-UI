@@ -8,6 +8,7 @@
     "Invasions": "Invasionen",
     "Lures": "Lures",
     "Profile": "Profil",
+    "Roles": "Roles",
     "Settings": "Einstellungen",
     "Subscription Settings": "Abonnement-Einstellungen",
     "Logout": "Abmelden",
@@ -97,6 +98,7 @@
     "Are you sure that you want to delete all of your quest subscriptions?": "Sind Sie sicher, dass Sie alle Ihre Quest-Abonnements löschen möchten?",
     "Are you sure that you want to delete all of your invasion subscriptions?": "Sind Sie sicher, dass Sie alle Ihre Invasions-Abonnements löschen möchten?",
     "Are you sure that you want to delete all of your lure subscriptions?": "Are you sure that you want to delete all of your lure subscriptions?",
+    "Are you sure that you want to remove all of your city roles?": "Are you sure that you want to remove all of your city roles?",
     "All": "Alle",
     "Create": "Erstellen",
     "Save": "Speichern",
@@ -110,5 +112,9 @@
     "Max Distance": "Maximale Distanz",
     "Phone Number": "Phone Number",
     "Value": "Wert",
+    "Assign Role": "Assign Role",
+    "Remove": "Remove",
+    "Remove All": "Remove All",
+    "Assign": "Assign",
     "Lure Type": "Lure Type"
 }
