@@ -320,7 +320,7 @@ router.get('/roles/remove_all', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('roles-remove-all', data);
-})
+});
 
 
 // Settings routes
