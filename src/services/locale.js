@@ -45,21 +45,34 @@ class Localizer {
     }
 
     getPokemonName(pokemonId) {
-        const key = 'poke_' + pokemonId;
-        const name = i18n.__(key);
+        const name = i18n.__('poke_' + pokemonId);
         return name;
+    }
+
+    getLureName(lureType) {
+        switch (lureType.toLowerCase()) {
+            case 'normal': return i18n.__('lure_501');
+            case 'glacial': return i18n.__('lure_502');
+            case 'mossy': return i18n.__('lure_503');
+            case 'magnetic': return i18n.__('lure_504');
+        }
+        return lureType;
+    }
+
+    getLureIcon(lureType) {
+        let id = '501';
+        switch (lureType.toLowerCase()) {
+            case 'normal': id = '501'; break;
+            case 'glacial': id = '502'; break;
+            case 'mossy': id = '503'; break;
+            case 'magnetic': id = '504'; break;
+        }
+        return `../../img/lures/${id}.png`;
     }
 
     /* eslint-enable no-unused-vars */
     async getPokemonIcon(pokemonId, form = 0, evolution = 0, gender = 0, costume = 0, shiny = false) {
         return `${config.urls.images.pokemon}/${await this.resolvePokemonIcon(pokemonId, form, evolution, gender, costume, shiny)}.png`;
-    }
-
-    async getRaidIcon(pokemonId, raidLevel, form, evolution, gender, costume) {
-        if (pokemonId > 0) {
-            return await this.getPokemonIcon(pokemonId, form, evolution, gender, costume);
-        }
-        return util.format(config.urls.images.eggs, raidLevel);
     }
 
     async resolvePokemonIcon(pokemonId, form = 0, evolution = 0, gender = 0, costume = 0, shiny = false) {

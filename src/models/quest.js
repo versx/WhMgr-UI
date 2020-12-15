@@ -30,8 +30,8 @@ class Quest extends Model {
     static getByReward(guildId, userId, reward) {
         return Quest.findOne({
             where: {
-                guild_id: guildId,
-                user_id: userId,
+                guildId: guildId,
+                userId: userId,
                 reward: reward,
             }
         });

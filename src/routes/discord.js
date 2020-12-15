@@ -62,6 +62,7 @@ router.get('/callback', catchAsyncErrors(async (req, res) => {
         if (req.session.valid) {
             console.log(user.id, 'Authenticated successfully.');
             if (req.session.current_path) {
+                console.log(user.id, 'Redirecting to previous page:', req.session.current_path);
                 res.redirect(req.session.current_path);
             } else {
                 res.redirect(`/?token=${response.data.access_token}`);

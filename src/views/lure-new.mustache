@@ -1,0 +1,47 @@
+{{> header}}
+
+{{> navbar}}
+
+<br>
+<div class="alert alert-danger w-75 {{^show_error}}d-none{{/show_error}}" style="float: none; margin: 0 auto;">
+    <div id="error"><strong>Error!</strong> {{error}}</div>
+</div>
+{{#show_error}}<br>{{/show_error}}
+
+<h1 align="center" id="header">{{New Lure Subscription}}</h1>
+<br>
+<div class="w-75" style="float: none; margin: 0 auto;">
+    <form action="/api/lures/new" method="post">
+        <div class="form-group">
+            {{Lure Type}}
+            <select name="lure_types" class="custom-select" multiple required>
+                <option value="all" selected>{{All}}</option>
+                {{#lureTypes}}
+                <option value="{{name}}">{{name}}</option>
+                {{/lureTypes}}
+            </select>
+        </div>
+        <div class="form-group">
+            {{City}}
+            <select name="city" class="custom-select" multiple required>
+                <option value="all" selected>{{All}}</option>
+                {{#cities}}
+                <option value="{{name}}" id="g_{{guild}}" hidden>{{name}}</option>
+                {{/cities}}
+            </select>
+        </div>
+        <br>
+        <input type="hidden" id="guild_id" name="guild_id">
+        <button type="submit" class="btn btn-primary">{{Create}}</button>
+        <br>
+    </form>
+</div>
+
+<script>
+    $('#guild_id').val(guildId);
+    const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
+    if (guilds) {
+        guilds.forEach(guild => guild.hidden = false);
+    }
+    $('#server_selector').prop('disabled', true);
+</script>

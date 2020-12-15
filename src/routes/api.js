@@ -11,6 +11,7 @@ const Raid = require('../models/raid.js');
 const Gym = require('../models/gym.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
+const Lure = require('../models/lure.js');
 const Subscription = require('../models/subscription.js');
 const Localizer = require('../services/locale.js');
 const utils = require('../services/utils.js');
@@ -32,6 +33,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 quests: await Quest.getCount(guild_id, user_id),
                 invasions: await Invasion.getCount(guild_id, user_id),
                 gyms: await Gym.getCount(guild_id, user_id),
+                lures: await Lure.getCount(guild_id, user_id),
             };
             req.sessionStore.length((err, length) => {
                 if (err) {
@@ -185,6 +187,30 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 }
             }
             res.json({ data: { invasions: invasionData } });
+            break;
+        case 'lures':
+            if (!guild_id || guild_id === null || guild_id === 'null') {
+                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { lures: [] });
+                return;
+            }
+            const lures = await Lure.getAll(guild_id, user_id);
+            const lureData = [];
+            if (lures) {
+                for (let lure of lures) {
+                    lure = lure.toJSON();
+                    const lureName = Localizer.getLureName(lure.lureType);
+                    const lureIcon = Localizer.getLureIcon(lure.lureType);
+                    lure.type = `<img src='${lureIcon}' width='auto' height='32'>&nbsp;${lureName}`;
+                    lure.city = formatAreas(guild_id, lure.city);
+                    lure.buttons = `
+                    <a href='/lure/edit/${lure.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                    &nbsp;
+                    <a href='/lure/delete/${lure.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
+                    `;
+                    lureData.push(lure);
+                }
+            }
+            res.json({ data: { lures: lureData } });
             break;
         case 'settings':
             if (!guild_id || guild_id === null || guild_id === 'null') {
@@ -831,6 +857,107 @@ router.post('/invasions/delete_all', async (req, res) => {
 });
 
 
+// Lure routes
+router.post('/lures/new', async (req, res) => {
+    const { guild_id, city } = req.body;
+    let lureTypes = req.body.lure_types;
+    const user_id = defaultData.user_id;
+    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
+    if (!subscriptionId) {
+        showError(res, 'invasions', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
+        return;
+    }
+    if (!Array.isArray(lureTypes)) {
+        lureTypes = [lureTypes];
+    }
+    const areas = getAreas(guild_id, city);
+    //const split = lureTypes.split(',');
+    for (let i = 0; i < lureTypes.length; i++) {
+        const lureType = lureTypes[i];
+        let exists = await Lure.getByType(guild_id, user_id, lureType);
+        if (exists) {
+            // Already exists
+            exists.city = utils.arrayUnique(exists.city.concat(areas || []));
+        } else {
+            exists = Lure.build({
+                id: 0,
+                subscriptionId: subscriptionId,
+                guildId: guild_id,
+                userId: user_id,
+                lureType: lureType,
+                city: areas,
+            });
+        }
+        const results = await exists.save();
+        if (results) {
+            // Success
+            console.log('Lure subscription for type', lureType, 'created successfully.');
+        } else {
+            showError(res, 'lures', `Failed to create Lure subscription for type ${lureType}`);
+            return;
+        }
+    }
+    res.redirect('/lures');
+});
+
+router.post('/lures/edit/:id', async (req, res) => {
+    const id = req.params.id;
+    const { guild_id, city } = req.body;
+    //const user_id = defaultData.user_id;
+    const lure = await Lure.getById(id);
+    if (lure) {
+        const areas = getAreas(guild_id, city);
+        lure.city = areas;
+        const result = lure.save();
+        if (result) {
+            // Success
+            console.log('Lure subscription', id, 'updated successfully.');
+        } else {
+            showError(res, 'lures', `Failed to update Lure subscription ${id}`);
+        }
+    }
+    res.redirect('/lures');
+});
+
+router.post('/lures/delete/:id', async (req, res) => {
+    const id = req.params.id;
+    const exists = await Lure.getById(id);
+    if (exists) {
+        const result = await Lure.deleteById(id);
+        if (result) {
+            // Success
+            console.log('Lure subscription with id', id, 'deleted successfully.');
+        } else {
+            showError(res, 'lures', `Failed to delete Lure subscription ${id}`);
+            return;
+        }
+    } else {
+        // Does not exist
+        showError(res, 'lures', `Failed to find Lure subscription ${id}`);
+        return;
+    }
+    res.redirect('/lures');
+});
+
+router.post('/lures/delete_all', async (req, res) => {
+    const { guild_id } = req.body;
+    const user_id = defaultData.user_id;
+    if (guild_id && user_id) {
+        const result = await Lure.deleteAll(guild_id, user_id);
+        if (result) {
+            // Success
+            console.log('All Lure subscriptions deleted for guild:', guild_id, 'user:', user_id);
+        } else {
+            console.error('Failed to delete all Lure subscriptions for guild:', guild_id, 'user_id:', user_id);
+        }
+    } else {
+        showError(res, 'lures', 'Guild ID or User ID not set, failed to delete all lure subscriptions.');
+        return;
+    }
+    res.redirect('/lures');
+});
+
+
 // Settings routes
 router.post('/settings', async (req, res) => {
     const {
@@ -869,7 +996,7 @@ const isUltraRarePokemon = (pokemonId) => {
 
 const getAreas = (guildId, city) => {
     let areas;
-    if (city === 'all') {
+    if (city === 'all' || city.includes('all')) {
         config.discord.guilds.map(x => {
             if (x.id === guildId) {
                 areas = x.geofences;
