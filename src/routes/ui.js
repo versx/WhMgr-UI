@@ -354,7 +354,7 @@ router.get('/roles', (req, res) => {
 router.get('/role/add', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    data.cities = map.buildCityList(req.session.guilds);
+    data.roles = map.buildCityRoleList(req.session.guilds);
     res.render('role-add', data);
 });
 

@@ -13,12 +13,12 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/role/add" method="post">
         <div class="form-group">
-            {{City}}
+            {{Roles}}
             <select name="roles" class="custom-select" multiple required>
                 <option value="all" selected>{{All}}</option>
-                {{#cities}}
+                {{#roles}}
                 <option value="{{name}}" id="g_{{guild}}" hidden>{{name}}</option>
-                {{/cities}}
+                {{/roles}}
             </select>
         </div>
         <br>

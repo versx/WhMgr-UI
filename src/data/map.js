@@ -32,6 +32,21 @@ const buildCityList = (guilds) => {
     return cities;
 };
 
+const buildCityRoleList = (guilds) => {
+    const roles = [];
+    const configGuilds = config.discord.guilds;
+    for (let i = 0; i < configGuilds.length; i++) {
+        const configGuild = configGuilds[i];
+        if (guilds.includes(configGuild.id)) {
+            (configGuild.cityRoles || []).forEach(cityRole => roles.push({
+                'name': cityRole,
+                'guild': configGuild.id,
+            }));
+        }
+    }
+    return roles;
+};
+
 const getLureTypes = () => {
     return [
         { name: 'Normal' },
@@ -44,5 +59,6 @@ const getLureTypes = () => {
 module.exports = {
     getPokemonNameIdsList,
     buildCityList,
+    buildCityRoleList,
     getLureTypes,
 };
