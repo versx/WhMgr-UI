@@ -32,7 +32,17 @@ const buildCityList = (guilds) => {
     return cities;
 };
 
+const getLureTypes = () => {
+    return [
+        { name: "Normal" },
+        { name: "Glacial" },
+        { name: "Mossy" },
+        { name: "Magnetic" },
+    ];
+}
+
 module.exports = {
     getPokemonNameIdsList,
-    buildCityList
+    buildCityList,
+    getLureTypes,
 };

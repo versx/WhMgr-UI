@@ -40,8 +40,8 @@ class Invasion extends Model {
     static getByReward(guildId, userId, rewardPokemonId) {
         return Invasion.findOne({
             where: {
-                guild_id: guildId,
-                user_id: userId,
+                guildId: guildId,
+                userId: userId,
                 rewardPokemonId: rewardPokemonId,
             }
         });
