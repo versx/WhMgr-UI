@@ -527,8 +527,8 @@ router.post('/pvp/delete_all', async (req, res) => {
 router.post('/raids/new', async (req, res) => {
     const { guild_id, pokemon, form, city } = req.body;
     const user_id = req.session.user_id;
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
         showError(res, 'raid-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
@@ -619,8 +619,8 @@ router.post('/raids/delete_all', async (req, res) => {
 router.post('/gyms/new', async (req, res) => {
     const { guild_id, name } = req.body;
     const user_id = req.session.user_id;
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
         showError(res, 'gym-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
@@ -694,8 +694,8 @@ router.post('/gyms/delete_all', async (req, res) => {
 router.post('/quests/new', async (req, res) => {
     const { guild_id, reward, city } = req.body;
     const user_id = req.session.user_id;
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
         showError(res, 'quest-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
@@ -789,8 +789,8 @@ router.post('/quests/delete_all', async (req, res) => {
 router.post('/invasions/new', async (req, res) => {
     const { guild_id, pokemon, city } = req.body;
     const user_id = req.session.user_id;
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
         showError(res, 'invasions', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
         return;
     }
@@ -887,8 +887,8 @@ router.post('/lures/new', async (req, res) => {
     const { guild_id, city } = req.body;
     let lureTypes = req.body.lure_types;
     const user_id = defaultData.user_id;
-    const subscriptionId = await Subscription.getSubscriptionId(guild_id, user_id);
-    if (!subscriptionId) {
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
         showError(res, 'invasions', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
         return;
     }
@@ -906,7 +906,7 @@ router.post('/lures/new', async (req, res) => {
         } else {
             exists = Lure.build({
                 id: 0,
-                subscriptionId: subscriptionId,
+                subscriptionId: subscription.id,
                 guildId: guild_id,
                 userId: user_id,
                 lureType: lureType,
