@@ -29,6 +29,7 @@
                 "roles": [
                     "000000000000000000"
                 ],
+                "cityRoles": [],
                 "geofences": []
             },
             {
@@ -37,6 +38,7 @@
                 "roles": [
                     "000000000000000000"
                 ],
+                "cityRoles": [],
                 "geofences": []
             }
         ],
@@ -53,8 +55,7 @@
     ],
     "urls": {
         "images": {
-            "pokemon": "https://mygod.github.io/pokicons/v2",
-            "eggs": "/img/eggs/%s.png"
+            "pokemon": "https://mygod.github.io/pokicons/v2"
         },
         "map": "",
         "paypal": ""

@@ -11,6 +11,7 @@ const PVP = require('../models/pvp.js');
 const Raid = require('../models/raid.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
+const Lure = require('../models/lure.js');
 const utils = require('../services/utils.js');
 
 
@@ -309,6 +310,80 @@ router.get('/invasions/delete_all', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     res.render('invasions-delete-all', data);
+});
+
+
+// Lure routes
+router.get('/lures', (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    res.render('lures', data);
+});
+
+router.get('/lure/new', async (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    data.lureTypes = map.getLureTypes();
+    data.cities = map.buildCityList(req.session.guilds);
+    res.render('lure-new', data);
+});
+
+router.get('/lure/edit/:id', async (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    const id = req.params.id;
+    data.id = id;
+    const lure = await Lure.getById(id);
+    data.lureTypes = map.getLureTypes();
+    data.lureTypes.forEach(lureType => {
+        lureType.selected = lureType === lure.lureType;
+    });
+    data.cities = map.buildCityList(req.session.guilds);
+    const areas = lure.city.map(x => x.toLowerCase());
+    data.cities.forEach(city => {
+        city.selected = areas.includes(city.name.toLowerCase());
+    });
+    res.render('lure-edit', data);
+});
+
+router.get('/lure/delete/:id', (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    data.id = req.params.id;
+    res.render('lure-delete', data);
+});
+
+router.get('/lures/delete_all', (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    res.render('lures-delete-all', data);
+});
+
+
+// Role assignment/unassignment routes
+router.get('/roles', (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    res.render('roles', data);
+});
+
+router.get('/role/add', (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    data.cities = map.buildCityList(req.session.guilds);
+    res.render('role-add', data);
+});
+
+router.get('/role/remove/:id', (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    res.render('role-remove', data);
+});
+
+router.get('/roles/remove_all', (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    res.render('roles-remove-all', data);
 });
 
 

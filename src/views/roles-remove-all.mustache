@@ -1,0 +1,23 @@
+{{> header}}
+
+{{> navbar}}
+
+<br>
+<h1 align="center" id="header">{{Remove All Roles}}</h1>
+<br>
+<div class="w-75" style="float: none; margin: 0 auto;">
+    <form action="/api/roles/remove_all" method="post">
+        <div align="center">
+            <h3 id="message">{{Are you sure that you want to remove all of your city roles?}}</h3>
+            <a href="/roles" id="cancel" name="cancel" class="btn btn-secondary">{{Cancel}}</a>
+            <input type="hidden" id="guild_id" name="guild_id" required>
+            <button type="submit" class="btn btn-danger">{{Remove}}</button>
+        </div>
+        <br>
+    </form>
+</div>
+
+<script>
+    $('#guild_id').val(guildId);
+    $('#server_selector').prop('disabled', true);
+</script>

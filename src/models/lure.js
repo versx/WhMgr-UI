@@ -1,12 +1,12 @@
 'use strict';
 
-const { DataTypes, Model } = require('sequelize');
+const { DataTypes, Model, } = require('sequelize');
 const sequelize = require('../services/sequelize.js');
 
-class Quest extends Model {
+class Lure extends Model {
 
     static getCount(guildId, userId) {
-        return Quest.count({
+        return Lure.count({
             where: {
                 guildId: guildId,
                 userId: userId,
@@ -14,8 +14,18 @@ class Quest extends Model {
         });
     }
 
+    static async create(lures) {
+        if (lures.length === 0) {
+            return;
+        }
+        const results = await Lure.bulkCreate(lures, {
+            updateOnDuplicate: Lure.fromLureFields,
+        });
+        console.log('[Lure] Results:', results);
+    }
+
     static getAll(guildId, userId) {
-        return Quest.findAll({
+        return Lure.findAll({
             where: {
                 guildId: guildId,
                 userId: userId,
@@ -24,32 +34,31 @@ class Quest extends Model {
     }
 
     static getById(id) {
-        return Quest.findByPk(id);
+        return Lure.findByPk(id);
     }
 
-    static getByReward(guildId, userId, reward) {
-        return Quest.findOne({
+    static getByType(guildId, userId, lureType) {
+        return Lure.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
-                reward: reward,
+                lureType: lureType,
             }
         });
     }
 
-    static delete(guildId, userId, pokemonId, form) {
-        return Quest.destroy({
+    static delete(guildId, userId, lureType) {
+        return Lure.destroy({
             where: {
                 guildId: guildId,
                 userId: userId,
-                pokemonId: pokemonId,
-                form: form,
+                lureType: lureType,
             }
         });
     }
 
     static deleteById(id) {
-        return Quest.destroy({
+        return Lure.destroy({
             where: {
                 id: id,
             }
@@ -57,7 +66,7 @@ class Quest extends Model {
     }
 
     static deleteAll(guildId, userId) {
-        return Quest.destroy({
+        return Lure.destroy({
             where: {
                 guildId: guildId,
                 userId: userId,
@@ -66,7 +75,7 @@ class Quest extends Model {
     }
 }
 
-Quest.init({
+Lure.init({
     id: {
         type: DataTypes.INTEGER(11).UNSIGNED,
         primaryKey: true,
@@ -85,20 +94,20 @@ Quest.init({
         type: DataTypes.BIGINT(20).UNSIGNED,
         allowNull: false,
     },
-    reward: {
-        type: DataTypes.TEXT,
+    lureType: {
+        type: DataTypes.INTEGER(11).UNSIGNED,
         allowNull: false,
     },
     city: {
-        type: DataTypes.JSONTEXT,
+        type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            const data = this.getDataValue('city');
+            var data = this.getDataValue('city');
             return Array.isArray(data)
                 ? data
                 : JSON.parse(data || '[]');
-        }
+        },
     },
 }, {
     sequelize,
@@ -106,11 +115,11 @@ Quest.init({
     underscored: true,
     indexes: [
         {
-            name: 'FK_quest_subscriptions_subscription_id',
+            name: 'FK_lure_subscriptions_subscription_id',
             fields: ['subscription_id'],
         },
     ],
-    tableName: 'quests',
+    tableName: 'lures',
 });
 
-module.exports = Quest;
+module.exports = Lure;

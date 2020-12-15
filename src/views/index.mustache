@@ -74,6 +74,17 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md p-1">
+                        <div class="list-group">
+                            <a class="list-group-item" href="/lures">
+                                <h3 class="pull-right"><img src="./img/lures/501.png" width="64" height="64"/></h3>
+                                <h4 class="list-group-item-heading text-light lures_count">{{lures_count}}</h4>
+                                <p class="list-group-item-text text-light">{{Lures}}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -136,6 +147,7 @@
                 updateCounter(".gyms_count", result.data.subscriptions.gyms);
                 updateCounter(".quests_count", result.data.subscriptions.quests);
                 updateCounter(".invasions_count", result.data.subscriptions.invasions);
+                updateCounter(".lures_count", result.data.subscriptions.lures);
                 $('#clients_online').text(result.data.clients_online);
 
                 showError('Please select a server from the dropdown menu!');

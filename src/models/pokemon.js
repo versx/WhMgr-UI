@@ -52,8 +52,8 @@ class Pokemon extends Model {
     static getByPokemon(guildId, userId, pokemonId, form) {
         return Pokemon.findOne({
             where: {
-                guild_id: guildId,
-                user_id: userId,
+                guildId: guildId,
+                userId: userId,
                 pokemonId: pokemonId,
                 form: {
                     [Op.or]: [null, form],

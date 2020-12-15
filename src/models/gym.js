@@ -26,8 +26,8 @@ class Gym extends Model {
     static getByName(guildId, userId, name) {
         return Gym.findOne({
             where: {
-                guild_id: guildId,
-                user_id: userId,
+                guildId: guildId,
+                userId: userId,
                 name: name,
             }
         });
