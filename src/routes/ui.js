@@ -57,6 +57,10 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const pokemon = await Pokemon.getById(id);
+    if (!pokemon) {
+        res.redirect('/pokemon');
+        return;
+    }
     data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pokemon.pokemonId;
@@ -106,6 +110,10 @@ router.get('/pvp/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const pvp = await PVP.getById(id);
+    if (!pvp) {
+        res.redirect('/pokemon#pvp');
+        return;
+    }
     data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pvp.pokemonId;
@@ -159,6 +167,10 @@ router.get('/raid/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const raid = await Raid.getById(id);
+    if (!raid) {
+        res.redirect('/raids');
+        return;
+    }
     data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
@@ -227,6 +239,10 @@ router.get('/quest/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const quest = await Quest.getById(id);
+    if (!quest) {
+        res.redirect('/quests');
+        return;
+    }
     data.reward = quest.reward;
     data.cities = map.buildCityList(req.session.guilds);
     const areas = quest.city.map(x => x.toLowerCase());
@@ -271,6 +287,10 @@ router.get('/invasion/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const invasion = await Invasion.getById(id);
+    if (!invasion) {
+        res.redirect('/invasions');
+        return;
+    }
     data.rewards = await map.getPokemonNameIdsList();
     data.rewards.forEach(reward => {
         reward.selected = reward.id === invasion.rewardPokemonId;
@@ -318,6 +338,10 @@ router.get('/lure/edit/:id', async (req, res) => {
     const id = req.params.id;
     data.id = id;
     const lure = await Lure.getById(id);
+    if (!lure) {
+        res.redirect('/lures');
+        return;
+    }
     data.lureTypes = map.getLureTypes();
     data.lureTypes.forEach(lureType => {
         lureType.selected = lureType === lure.lureType;
