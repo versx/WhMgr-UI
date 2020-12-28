@@ -60,7 +60,7 @@
     }
 
     function refreshData() {
-        showError('Please select a server from the dropdown menu!');
+        showError('Select a server from the dropdown menu before creating/editing/deleting any subscriptions!');
         $.ajax({
             url: "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=settings",
             method: "POST",

@@ -24,7 +24,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
     switch (type) {
         case 'subscriptions':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { subscriptions: { pokemon: 0, pvp: 0, raids: 0, gyms: 0, quests: 0, invasions: 0 }, clients_online: 0 });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { subscriptions: { pokemon: 0, pvp: 0, raids: 0, gyms: 0, quests: 0, invasions: 0 }, clients_online: 0 });
                 return;
             }
             const subscriptions = {
@@ -46,7 +46,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'pokemon':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { pokemon: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { pokemon: [] });
                 return;
             }
             const pokemon = await Pokemon.getAll(guild_id, user_id);
@@ -80,7 +80,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'pvp':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { pvp: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { pvp: [] });
                 return;
             }
             const pvp = await PVP.getAll(guild_id, user_id);
@@ -104,7 +104,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'raids':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { raids: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { raids: [] });
                 return;
             }
             const raids = await Raid.getAll(guild_id, user_id);
@@ -128,7 +128,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'gyms':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { gyms: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { gyms: [] });
                 return;
             }
             const gyms = await Gym.getAll(guild_id, user_id);
@@ -146,7 +146,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'quests':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { quests: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { quests: [] });
                 return;
             }
             const quests = await Quest.getAll(guild_id, user_id);
@@ -167,7 +167,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'invasions':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { invasions: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { invasions: [] });
                 return;
             }
             const invasions = await Invasion.getAll(guild_id, user_id);
@@ -191,7 +191,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'lures':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { lures: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { lures: [] });
                 return;
             }
             const lures = await Lure.getAll(guild_id, user_id);
@@ -215,7 +215,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'roles':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { invasions: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { invasions: [] });
                 return;
             }
             const roleIds = await DiscordClient.getAllRoles(guild_id, user_id);
@@ -239,7 +239,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'settings':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                showErrorJson(res, guild_id, 'Please select a server from the dropdown menu!', { settings: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { settings: [] });
                 return;
             }
             const settings = (await Subscription.getSubscription(guild_id, user_id)).toJSON();

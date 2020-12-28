@@ -46,7 +46,7 @@
         $('html,body').scrollTop(scrollmem);
     });
 
-    showError('Please select a server from the dropdown menu!');
+    showError('Select a server from the dropdown menu before creating/editing/deleting any subscriptions!');
     const table = $('#table').DataTable({
         "ajax": {
             "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=roles",
