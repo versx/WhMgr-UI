@@ -24,6 +24,9 @@
 </div>
 
 <script type='text/javascript'>
+    if (!guildId) {
+        window.location.href = '/';
+    }
     $('#guild_id').val(guildId);
     $('#server_selector').prop('disabled', true);
 </script>

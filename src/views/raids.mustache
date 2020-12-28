@@ -54,6 +54,9 @@
 {{> footer}}
 
 <script type='text/javascript'>
+    if (!guildId) {
+        window.location.href = '/';
+    }
     $("[data-toggle='datetimepicker']").flatpickr({
         altInput: true,
         altFormat: "F j, Y",

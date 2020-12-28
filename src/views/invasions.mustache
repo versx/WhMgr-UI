@@ -30,6 +30,9 @@
 {{> footer}}
 
 <script type='text/javascript'>
+    if (!guildId) {
+        window.location.href = '/';
+    }
     showError('Please select a server from the dropdown menu!');
     const table = $('#table').DataTable({
         "ajax": {

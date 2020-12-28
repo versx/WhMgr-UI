@@ -36,6 +36,9 @@
 </div>
 
 <script>
+    if (!guildId) {
+        window.location.href = '/';
+    }
     var pokemon_form = document.getElementById('pokemon_form');
     pokemon_form.oninvalid = function (event) {
         event.target.setCustomValidity('Please leave blank if you want all pokemon forms');

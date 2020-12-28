@@ -33,6 +33,9 @@
 </div>
 
 <script>
+    if (!guildId) {
+        window.location.href = '/';
+    }
     $('#guild_id').val(guildId);
     const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
     if (guilds) {
