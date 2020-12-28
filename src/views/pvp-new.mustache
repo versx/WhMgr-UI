@@ -41,7 +41,7 @@
         </div>
         <div class="form-group">
             {{Form}}
-            <input type="text" class="form-control" name="form" value="" placeholder="i.e. Sunny">
+            <input type="text" class="form-control" name="form" value="" placeholder="i.e. Sunny" id="pokemon_form" pattern="^((?![aA][lL][lL]).)*$">
         </div>
         <div class="form-group">
             {{League}}
@@ -78,6 +78,10 @@
 
 <script type='text/javascript' src="/js/pokemon-list.js"></script>
 <script type='text/javascript'>
+    var pokemon_form = document.getElementById('pokemon_form');
+    pokemon_form.oninvalid = function (event) {
+        event.target.setCustomValidity('Please leave blank if you want all pokemon forms');
+    }
     $('#guild_id').val(guildId);
     const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
     if (guilds) {
