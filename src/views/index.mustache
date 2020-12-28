@@ -17,7 +17,7 @@
                 <div class="row">
                     <div class="col-md p-1">
                         <div class="list-group">
-                            <a class="list-group-item" href="/pokemon">
+                            <a class="list-group-item" href="/pokemon" onclick="return isServerSelected();">
                                 <h3 class="pull-right"><img src="./img/pokemon.png" width="64" height="64"/></h3>
                                 <h4 class="list-group-item-heading text-light pokemon_count">{{pokemon_count}}</h4>
                                 <p class="list-group-item-text text-light">{{Pokemon}}</p>
@@ -26,7 +26,7 @@
                     </div>
                     <div class="col-md p-1">
                         <div class="list-group">
-                            <a class="list-group-item" href="/pokemon#pvp">
+                            <a class="list-group-item" href="/pokemon#pvp" onclick="return isServerSelected();">
                                 <h3 class="pull-right"><img src="./img/pvp.png" width="64" height="64"/></h3>
                                 <h4 class="list-group-item-heading text-light pvp_count">{{pvp_count}}</h4>
                                 <p class="list-group-item-text text-light">{{PVP}}</p>
@@ -37,7 +37,7 @@
                 <div class="row">
                     <div class="col-md p-1">
                         <div class="list-group">
-                            <a class="list-group-item" href="/raids">
+                            <a class="list-group-item" href="/raids" onclick="return isServerSelected();">
                                 <h3 class="pull-right"><img src="./img/raids.png" width="64" height="64"/></h3>
                                 <h4 class="list-group-item-heading text-light raids_count">{{raids_count}}</h4>
                                 <p class="list-group-item-text text-light">{{Raids}}</p>
@@ -46,7 +46,7 @@
                     </div>
                     <div class="col-md p-1">
                         <div class="list-group">
-                            <a class="list-group-item" href="/raids#gyms">
+                            <a class="list-group-item" href="/raids#gyms" onclick="return isServerSelected();">
                                 <h3 class="pull-right"><img src="./img/gyms.png" width="64" height="64"/></h3>
                                 <h4 class="list-group-item-heading text-light gyms_count">{{gyms_count}}</h4>
                                 <p class="list-group-item-text text-light">{{Gyms}}</p>
@@ -57,7 +57,7 @@
                 <div class="row">
                     <div class="col-md p-1">
                         <div class="list-group">
-                            <a class="list-group-item" href="/quests">
+                            <a class="list-group-item" href="/quests" onclick="return isServerSelected();">
                                 <h3 class="pull-right"><img src="./img/quests.png" width="64" height="64"/></h3>
                                 <h4 class="list-group-item-heading text-light quests_count">{{quests_count}}</h4>
                                 <p class="list-group-item-text text-light">{{Quests}}</p>
@@ -66,7 +66,7 @@
                     </div>
                     <div class="col-md p-1">
                         <div class="list-group">
-                            <a class="list-group-item" href="/invasions">
+                            <a class="list-group-item" href="/invasions" onclick="return isServerSelected();">
                                 <h3 class="pull-right"><img src="./img/invasions.png" width="64" height="64"/></h3>
                                 <h4 class="list-group-item-heading text-light invasions_count">{{invasions_count}}</h4>
                                 <p class="list-group-item-text text-light">{{Invasions}}</p>
@@ -77,7 +77,7 @@
                 <div class="row">
                     <div class="col-md p-1">
                         <div class="list-group">
-                            <a class="list-group-item" href="/lures">
+                            <a class="list-group-item" href="/lures" onclick="return isServerSelected();">
                                 <h3 class="pull-right"><img src="./img/lures/501.png" width="64" height="64"/></h3>
                                 <h4 class="list-group-item-heading text-light lures_count">{{lures_count}}</h4>
                                 <p class="list-group-item-text text-light">{{Lures}}</p>
@@ -134,6 +134,11 @@
             "responsive": true
         });
     });
+
+    function isServerSelected() {
+        const guildId = $('#server_selector').val();
+        return guildId !== undefined && guildId !== null;
+    }
 
     function refreshData() {
         $.ajax({
