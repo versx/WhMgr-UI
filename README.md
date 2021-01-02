@@ -10,16 +10,8 @@
 1. Copy config `cp src/config.example.json src/config.json`  
 1. Create a Discord bot at https://discord.com/developers and enter the `botToken`, `clientId`, and `clientSecret` in your `config.json`  
 1. Fill out config `vi src/config.json`  
-1. Create or copy your existing geofences to the `geofences` folder. One geofence per file, the following is the expected format:  
-```ini
-[City Name]
-0,0
-1,1
-2,2
-3,3
-```
-7.) Run `npm start`  
-8.) Access via http://machineip:port/ login using your Discord account    
+1.) Run `npm start`  
+1.) Access via http://machineip:port/ login using your Discord account    
 
 ## Updating  
 1. Run `git pull`  
