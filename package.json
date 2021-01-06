@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/versx/WhMgr-UI#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
