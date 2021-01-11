@@ -12,8 +12,8 @@
 1. Copy config `cp src/config.example.json src/config.json`  
 1. Create a Discord bot at https://discord.com/developers and enter the `botToken`, `clientId`, and `clientSecret` in your `config.json`  
 1. Fill out config `vi src/config.json`  
-1.) Run `npm start`  
-1.) Access via http://machineip:port/ login using your Discord account    
+1. Run `npm start`  
+1. Access via http://machineip:port/ login using your Discord account  
 
 ## Updating  
 1. Run `git pull`  
