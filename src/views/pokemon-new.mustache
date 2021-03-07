@@ -99,15 +99,9 @@
     }
     $('#server_selector').prop('disabled', true);
     $('#iv').change(function() {
-        var ivValue = $('#iv').val();
-        if (ivValue.length > 0) {
-            $('#iv_list').prop('disabled', true);
-        }
+        $('#iv_list').prop('disabled', $('#iv').val().length > 0);
     });
     $('#iv_list').change(function() {
-        var ivListValue = $('#iv_list').val();
-        if (ivListValue.length > 0) {
-            $('#iv').prop('disabled', true);
-        }
+        $('#iv').prop('disabled', $('#iv_list').val().length > 0);
     });
 </script>
