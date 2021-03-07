@@ -414,6 +414,9 @@ const validateRoles = (req, res) => {
             if (requiredRoles.length > 0) {
                 server.show = guilds.includes(server.id) && utils.hasRole(userRoles, requiredRoles[0].roles);
                 if (server.show) {
+                    if (servers.length === 1) {
+                        server.selected = true;
+                    }
                     valid = true;
                 }
             } else {
