@@ -3650,5 +3650,7 @@
   "Location": "Standort",
   "Max Distance": "Maximale Distanz",
   "Phone Number": "Phone Number",
-  "Value": "Wert"
+  "Value": "Wert",
+  "Server Selector": "Server Selector",
+  "None": "None"
 }

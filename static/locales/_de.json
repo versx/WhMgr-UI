@@ -116,5 +116,7 @@
     "Remove": "Remove",
     "Remove All": "Remove All",
     "Assign": "Assign",
-    "Lure Type": "Lure Type"
+    "Lure Type": "Lure Type",
+    "Server Selector": "Server Selector",
+    "None": "None/Location"
 }

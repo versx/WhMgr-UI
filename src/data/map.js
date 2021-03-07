@@ -4,7 +4,7 @@ const Localizer = require('../services/locale.js');
 const config = require('../config.json');
 
 const getPokemonNameIdsList = async () => {
-    let pokemon = [];
+    const pokemon = [];
     for (let i = 1; i < config.maxPokemonId; i++) {
         const pkmnIcon = await Localizer.getPokemonIcon(i);
         pokemon.push({
