@@ -33,7 +33,7 @@
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
                 <select class="form-control .server_selector" id="server_selector" name="server_selector" onchange="onServerChanged()">
-                    <option value="" selected disabled hidden>{{Choose a Server}}</option>
+                    <option value="" {{#nothing_selected}}selected{{/nothing_selected}} disabled hidden>{{Choose a Server}}</option>
                     <!--<option value="all">{{All}}</option>-->
                     {{#servers}}
                         <option value="{{id}}" {{#selected}}selected{{/selected}} {{^show}}hidden{{/show}}>{{name}}</option>
