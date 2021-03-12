@@ -8,6 +8,7 @@
     "maxPokemonId": 721,
     "lastNestMigration": "2019-03-07T01:00:00Z",
     "showFooter": true,
+    "enableGeofenceRoles": true,
     "db": {
         "host": "127.0.0.1",
         "port": 3306,

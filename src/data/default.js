@@ -20,5 +20,6 @@ data.leagues = [
     //{ 'id': 'master', 'name': 'Master' },
 ];
 data.icon_styles = config.iconStyles;
+data.enable_geofence_roles = config.enableGeofenceRoles;
 
 module.exports = data;

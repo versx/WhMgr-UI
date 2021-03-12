@@ -18,7 +18,6 @@
             <table id="table" class="table {{table_class}} table-sm table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                 <thead class="thead-dark">
                     <tr>
-                        <th class="min-desktop">{{ID}}</th>
                         <th class="all">{{Name}}</th>
                         <th class="all" width="5%"></th>
                     </tr>
@@ -77,15 +76,14 @@
         "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
         "pageLength": 100,
         "columns": [
-            { "data": "id" },
             { "data": "name" },
             { "data": "buttons" }
         ],
         "info": true,
-        "order": [[ 1, "asc" ]],
+        "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
         "columnDefs": [{
-            "targets": [2],
+            "targets": [1],
             "orderable": false
         }],
         "responsive": true

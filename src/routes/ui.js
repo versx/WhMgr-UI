@@ -385,30 +385,32 @@ router.get('/lures/delete_all', (req, res) => {
 
 
 // Role assignment/unassignment routes
-router.get('/roles', (req, res) => {
-    const data = { ...defaultData };
-    data.servers = validateRoles(req, res);
-    res.render('roles', data);
-});
+if (config.enableGeofenceRoles) {
+    router.get('/roles', (req, res) => {
+        const data = { ...defaultData };
+        data.servers = validateRoles(req, res);
+        res.render('roles', data);
+    });
 
-router.get('/role/add', (req, res) => {
-    const data = { ...defaultData };
-    data.servers = validateRoles(req, res);
-    data.roles = map.buildCityRoleList(req.session.guilds);
-    res.render('role-add', data);
-});
+    router.get('/role/add', (req, res) => {
+        const data = { ...defaultData };
+        data.servers = validateRoles(req, res);
+        data.roles = map.buildCityRoleList(req.session.guilds);
+        res.render('role-add', data);
+    });
 
-router.get('/role/remove/:id', (req, res) => {
-    const data = { ...defaultData };
-    data.servers = validateRoles(req, res);
-    res.render('role-remove', data);
-});
+    router.get('/role/remove/:id', (req, res) => {
+        const data = { ...defaultData };
+        data.servers = validateRoles(req, res);
+        res.render('role-remove', data);
+    });
 
-router.get('/roles/remove_all', (req, res) => {
-    const data = { ...defaultData };
-    data.servers = validateRoles(req, res);
-    res.render('roles-remove-all', data);
-});
+    router.get('/roles/remove_all', (req, res) => {
+        const data = { ...defaultData };
+        data.servers = validateRoles(req, res);
+        res.render('roles-remove-all', data);
+    });
+}
 
 
 // Settings routes
