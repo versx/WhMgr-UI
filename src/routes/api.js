@@ -1073,7 +1073,7 @@ const isUltraRarePokemon = (pokemonId) => {
 
 const getAreas = (guildId, city) => {
     let areas;
-    if (city === 'all' || city.includes('all')) {
+    if (city === 'All' || city.includes('All')) {
         config.discord.guilds.map(x => {
             if (x.id === guildId) {
                 areas = x.geofences;
