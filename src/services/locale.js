@@ -2,12 +2,10 @@
 
 const axios = require('axios');
 const fs = require('fs');
-const { __ } = require('i18n');
 const i18n = require('i18n');
 const path = require('path');
 
 const config = require('../config.json');
-const Quest = require('../models/quest');
 
 i18n.configure({
     autoReload: true,
