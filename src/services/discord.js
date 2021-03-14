@@ -122,7 +122,7 @@ class DiscordClient {
         }
     }
 
-    static async removeAllRoles(guildId, userId, cityRoles) {
+    static async removeAllRoles(guildId, userId, areas) {
         const guild = await this.getGuild(guildId);
         if (!guild) {
             console.error('Failed to find guild by id', guildId);
@@ -134,14 +134,14 @@ class DiscordClient {
             return false;
         }
         try {
-            for (const cityRole of cityRoles) {
-                const role = this.getRoleByName(guild, cityRole);
+            for (const area of areas) {
+                const role = this.getRoleByName(guild, area);
                 if (!role) {
-                    console.error('Failed to find role by name', cityRole);
+                    console.error('Failed to find role by name', area);
                     continue;
                 }
                 await member.roles.remove(role);
-                console.info('Removed city role', cityRole, 'from user', member.user.username);
+                console.info('Removed city role', area, 'from user', member.user.username);
             }
             return true;
         } catch (err) {
