@@ -395,7 +395,7 @@ if (config.enableGeofenceRoles) {
     router.get('/role/add', (req, res) => {
         const data = { ...defaultData };
         data.servers = validateRoles(req, res);
-        data.roles = map.buildCityRoleList(req.session.guilds);
+        data.roles = map.buildCityList(req.session.guilds);
         res.render('role-add', data);
     });
 

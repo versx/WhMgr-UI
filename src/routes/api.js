@@ -987,12 +987,12 @@ router.post('/lures/delete_all', async (req, res) => {
 router.post('/role/add', async (req, res) => {
     const { guild_id, roles } = req.body;
     const user_id = req.session.user_id;
-    const cityRoles = getRoles(guild_id, roles);
+    const areas = getAreas(guild_id, roles);
     let error = false;
-    for (const cityRole of cityRoles) {
-        const result = await DiscordClient.addRole(guild_id, user_id, cityRole);
+    for (const area of areas) {
+        const result = await DiscordClient.addRole(guild_id, user_id, area);
         if (!result) {
-            console.error('Failed to assign city role', cityRole, 'to guild', guild_id, 'user', user_id);
+            console.error('Failed to assign city role', area, 'to guild', guild_id, 'user', user_id);
             error = true;
         }
     }
@@ -1024,7 +1024,7 @@ router.post('/roles/remove_all', async (req, res) => {
         showError(res, 'roles-remove-all', `Failed to find guild ${guild_id} to remove all city roles for user ${userId}`);
         return;
     }
-    const roles = guild.cityRoles;
+    const roles = guild.geofences;
     const result = await DiscordClient.removeAllRoles(guild_id, userId, roles);
     if (!result) {
         // Failed to remove all city roles
@@ -1111,22 +1111,6 @@ const formatAreas = (guildId, subscriptionAreas) => {
 const ellipsis = (str) => {
     const value = str.substring(0, Math.min(64, str.length));
     return value === str ? value : value + '...';
-};
-
-const getRoles = (guildId, cityName) => {
-    let areas;
-    if (cityName === 'all' || cityName.includes('all')) {
-        config.discord.guilds.map(x => {
-            if (x.id === guildId) {
-                areas = x.cityRoles;
-            }
-        });
-    } else if (!Array.isArray(cityName)) {
-        areas = [cityName];
-    } else {
-        areas = cityName;
-    }
-    return areas || [];
 };
 
 const showError = (res, page, message) => {
