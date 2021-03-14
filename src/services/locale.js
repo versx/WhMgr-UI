@@ -2,10 +2,12 @@
 
 const axios = require('axios');
 const fs = require('fs');
+const { __ } = require('i18n');
 const i18n = require('i18n');
 const path = require('path');
 
 const config = require('../config.json');
+const Quest = require('../models/quest');
 
 i18n.configure({
     autoReload: true,
@@ -67,6 +69,39 @@ class Localizer {
             case 'magnetic': id = '504'; break;
         }
         return `../../img/lures/${id}.png`;
+    }
+
+    getItemName(itemId) {
+        return i18n.__('item_' + itemId);
+    }
+
+    getQuestReward(reward) {
+        // TODO: Use format method
+        switch (reward.type) {
+            case 2:
+                // item
+                //return i18n.__('quest_reward_' + reward.type + '_formatted', { item: reward.info.item_id, amount: reward.info.amount });
+                return reward.info.amount + ' ' + this.getItemName(reward.info.item_id);
+            case 3:
+                // stardust
+                //return i18n.__('quest_reward_' + reward.type + '_formatted', reward.info.amount);
+                return reward.info.amount + ' ' + i18n.__('quest_reward_' + reward.type);
+            case 4:
+                // candy
+                //const candy = this.getItemName(reward.info.item_id);
+                //return candy;
+                //return i18n.__('quest_reward_' + reward.type + '_formatted', { item: reward.info.item_id, amount: reward.info.amount });
+                return reward.info.amount + ' ' + this.getItemName(reward.info.item_id);
+            case 7:
+                // pokemon name
+                return this.getPokemonName(reward.info.pokemon_id);
+            case 12:
+                // mega candy
+                //return this.getPokemonName(reward.info.pokemon_id); //+ amount
+                //return i18n.__('quest_reward_' + reward.type + '_formatted', { pokemon: reward.info.pokemon_id, amount: reward.info.amount });
+                return reward.info.amount + ' ' + this.getPokemonName(reward.info.pokemon_id) + ' Mega Energy';
+        }
+        return null;
     }
 
     /* eslint-enable no-unused-vars */

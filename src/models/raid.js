@@ -1,7 +1,7 @@
 'use strict';
 
 const { DataTypes, Model, Op, } = require('sequelize');
-const sequelize = require('../services/sequelize.js');
+const sequelize = require('../services/sequelize.js')(true);
 
 class Raid extends Model {
 

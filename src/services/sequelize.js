@@ -48,19 +48,22 @@ JSONTEXT.prototype.key = JSONTEXT.key = 'JSONTEXT';
 DataTypes.JSONTEXT = Utils.classToInvokable(JSONTEXT);
 
 // initialize the singleton database in-place; it should not be closed ever
-module.exports = new Sequelize(config.db.database, config.db.username, config.db.password, {
-    host: config.db.host,
-    port: config.db.port,
-    // TODO: customizable?
-    dialect: 'mysql',
-    dialectOptions: {
-        supportBigNumbers: true,
-    },
-    define: {
-        charset: config.db.charset,
-    },
-    pool: {
-        max: config.db.connectionLimit,
-    },
-    logging: false,
-});
+module.exports = (mainDatabase) => {
+    const db = mainDatabase ? config.db.main : config.db.scanner;
+    return new Sequelize(db.database, db.username, db.password, {
+        host: db.host,
+        port: db.port,
+        // TODO: customizable?
+        dialect: 'mysql',
+        dialectOptions: {
+            supportBigNumbers: true,
+        },
+        define: {
+            charset: db.charset,
+        },
+        pool: {
+            max: db.connectionLimit,
+        },
+        logging: false,
+    });
+};
