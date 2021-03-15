@@ -69,6 +69,39 @@ class Localizer {
         return `../../img/lures/${id}.png`;
     }
 
+    getItemName(itemId) {
+        return i18n.__('item_' + itemId);
+    }
+
+    getQuestReward(reward) {
+        // TODO: Use format method
+        switch (reward.type) {
+            case 2:
+                // item
+                //return i18n.__('quest_reward_' + reward.type + '_formatted', { item: reward.info.item_id, amount: reward.info.amount });
+                return reward.info.amount + ' ' + this.getItemName(reward.info.item_id);
+            case 3:
+                // stardust
+                //return i18n.__('quest_reward_' + reward.type + '_formatted', reward.info.amount);
+                return reward.info.amount + ' ' + i18n.__('quest_reward_' + reward.type);
+            case 4:
+                // candy
+                //const candy = this.getItemName(reward.info.item_id);
+                //return candy;
+                //return i18n.__('quest_reward_' + reward.type + '_formatted', { item: reward.info.item_id, amount: reward.info.amount });
+                return reward.info.amount + ' ' + this.getItemName(reward.info.item_id);
+            case 7:
+                // pokemon name
+                return this.getPokemonName(reward.info.pokemon_id);
+            case 12:
+                // mega candy
+                //return this.getPokemonName(reward.info.pokemon_id); //+ amount
+                //return i18n.__('quest_reward_' + reward.type + '_formatted', { pokemon: reward.info.pokemon_id, amount: reward.info.amount });
+                return reward.info.amount + ' ' + this.getPokemonName(reward.info.pokemon_id) + ' Mega Energy';
+        }
+        return null;
+    }
+
     /* eslint-enable no-unused-vars */
     async getPokemonIcon(pokemonId, form = 0, evolution = 0, gender = 0, costume = 0, shiny = false) {
         return `${config.urls.images.pokemon}/${await this.resolvePokemonIcon(pokemonId, form, evolution, gender, costume, shiny)}.png`;

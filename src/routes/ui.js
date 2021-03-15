@@ -258,9 +258,10 @@ router.get('/quests', (req, res) => {
     res.render('quests', data);
 });
 
-router.get('/quest/new', (req, res) => {
+router.get('/quest/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
+    data.rewards = await map.getQuestRewards();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('quest-new', data);
 });
