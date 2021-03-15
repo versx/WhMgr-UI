@@ -641,7 +641,7 @@ router.post('/gyms/new', async (req, res) => {
             name: name,
             minLevel: min_level,
             maxLevel: max_level,
-            pokemonIds: (pokemon || []).split(','),
+            pokemonIds: (pokemon || '').split(','),
         });
         const result = await gym.save();
         if (result) {
@@ -671,7 +671,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
     } else {
         exists.minLevel = min_level;
         exists.maxLevel = max_level;
-        exists.pokemonIds = (pokemon || []).split(',');
+        exists.pokemonIds = (pokemon || '').split(',');
         const result = await gym.save();
         if (result) {
             // Success
