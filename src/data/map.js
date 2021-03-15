@@ -1,6 +1,7 @@
 'use strict';
 
 const Localizer = require('../services/locale.js');
+const PokestopQuest = require('../models/pokestop-quest.js');
 const config = require('../config.json');
 
 const getPokemonNameIdsList = async () => {
@@ -32,6 +33,22 @@ const buildCityList = (guilds) => {
     return cities;
 };
 
+const getQuestRewards = async () => {
+    const quests = await PokestopQuest.getAll();
+    const rewards = [];
+    for (const quest of quests) {
+        const questRewards = JSON.parse(quest.questRewards);
+        if (questRewards.length > 0) {
+            const reward = Localizer.getQuestReward(questRewards[0]);
+            if (reward && !rewards.includes(reward)) {
+                rewards.push(reward);
+            }
+        }
+    }
+    rewards.sort();
+    return rewards;
+};
+
 const getLureTypes = () => {
     return [
         { name: 'Normal' },
@@ -44,5 +61,6 @@ const getLureTypes = () => {
 module.exports = {
     getPokemonNameIdsList,
     buildCityList,
+    getQuestRewards,
     getLureTypes,
 };

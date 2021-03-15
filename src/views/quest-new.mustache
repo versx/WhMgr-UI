@@ -14,7 +14,19 @@
     <form action="/api/quests/new" method="post">
         <div class="form-group">
             {{Reward}}
-            <input type="text" class="form-control" name="reward" value="" placeholder="i.e. 500 Stardust" required>
+            <input list="rewards" class="custom-select" name="reward" id="reward">
+            <datalist id="rewards">
+                {{#rewards}}
+                <option value="{{.}}">
+                {{/rewards}}
+            </datalist>
+            <!--
+            <select name="reward" class="custom-select" required>
+                {{#rewards}}
+                <option value="{{.}}">{{.}}</option>
+                {{/rewards}}
+            </select>
+            -->
         </div>
         <div class="form-group">
             {{City}}

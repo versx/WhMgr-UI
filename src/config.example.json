@@ -10,13 +10,24 @@
     "showFooter": true,
     "enableGeofenceRoles": true,
     "db": {
-        "host": "127.0.0.1",
-        "port": 3306,
-        "username": "user",
-        "password": "pass123!",
-        "database": "brockdb",
-        "charset": "utf8mb4",
-        "connectionLimit": 10
+        "main": {
+            "host": "127.0.0.1",
+            "port": 3306,
+            "username": "user",
+            "password": "pass123!",
+            "database": "brockdb",
+            "charset": "utf8mb4",
+            "connectionLimit": 10
+        },
+        "scanner": {
+            "host": "127.0.0.1",
+            "port": 3306,
+            "username": "user",
+            "password": "pass123!",
+            "database": "rdmdb",
+            "charset": "utf8mb4",
+            "connectionLimit": 10
+        }
     },
     "discord": {
         "botToken": "",
