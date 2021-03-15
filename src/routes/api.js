@@ -672,7 +672,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
         exists.minLevel = min_level;
         exists.maxLevel = max_level;
         exists.pokemonIds = (pokemon || '').split(',');
-        const result = await gym.save();
+        const result = await exists.save();
         if (result) {
             // Success
             console.log('Gym subscription for gym', name, 'updated successfully.');
