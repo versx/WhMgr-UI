@@ -216,8 +216,7 @@ router.get('/gym/new', async (req, res) => {
     data.servers = validateRoles(req, res);
     const gyms = await MapGym.getAll();
     const sorted = gyms.map(x => x.name);
-    sorted.sort();
-    data.gyms = sorted;
+    data.gyms = [...new Set(sorted.sort())];
     data.pokemon = await map.getPokemonNameIdsList();
     res.render('gym-new', data);
 });
