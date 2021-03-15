@@ -136,7 +136,11 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (gyms) {
                 for (let gym of gyms) {
                     gym = gym.toJSON();
-                    gym.pokemonIds = gym.pokemonIds.join(', ');
+                    const images = [];
+                    for (const id of gym.pokemonIds.sort()) { // TODO: Use map instead
+                        images.push(`<img src='${await Localizer.getPokemonIcon(id)}' width='18' height='18'>`);
+                    }
+                    gym.pokemonIds = images.join(' ');
                     gym.buttons = `
                     <a href='/gym/edit/${gym.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
