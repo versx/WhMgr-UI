@@ -22,7 +22,6 @@ const utils = require('./services/utils.js');
 // TODO: Convert to typescript
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
-// TODO: Cookie sessions
 // TODO: Add checkbox to only show available invasion rewards
 // TODO: Lookup form name to id and show proper icon
 
@@ -99,8 +98,6 @@ const utils = require('./services/utils.js');
     // Login middleware
     app.use(async (req, res, next) => {
         res.header('Access-Control-Allow-Headers', '*');
-        // Expose the session store
-        var all = await Session.getAll();
         /*
         if (!(await Session.isValid(req.session.user_id))) {
             console.debug('[Session] Detected multiple sessions, clearing old ones...');
