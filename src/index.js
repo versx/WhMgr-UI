@@ -5,7 +5,6 @@ const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const session = require('express-session');
-const MemoryStore = require('memorystore')(session);
 const app = express();
 const mustacheExpress = require('mustache-express');
 const helmet = require('helmet');
@@ -13,9 +12,11 @@ const i18n = require('i18n');
 
 const config = require('./config.json');
 const defaultData = require('./data/default.js');
+const Session = require('./models/session.js');
 const apiRoutes = require('./routes/api.js');
 const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');
+const { sessionStore, } = require('./services/session-store.js');
 const utils = require('./services/utils.js');
 
 // TODO: Convert to typescript
@@ -64,16 +65,16 @@ const utils = require('./services/utils.js');
     // Set locale
     i18n.setLocale(config.locale);
 
-    // Session store in memory
-    const store = new MemoryStore();
-
     // Sessions middleware
     app.use(session({
-        secret: utils.generateString(),
+        key: 'session',
+        secret: config.sessionSecret,
+        store: sessionStore,
         resave: true,
-        store: store,
-        saveUninitialized: true
+        saveUninitialized: false,
+        cookie: {maxAge: 604800000}
     }));
+    
 
     app.use('/api/discord', discordRoutes);
 
@@ -99,22 +100,29 @@ const utils = require('./services/utils.js');
     app.use(async (req, res, next) => {
         res.header('Access-Control-Allow-Headers', '*');
         // Expose the session store
-        req.sessionStore = store;
-        if (req.path === '/api/discord/login' || req.path === '/login') {
-            return next();
+        var all = await Session.getAll();
+        /*
+        if (!(await Session.isValid(req.session.user_id))) {
+            console.debug('[Session] Detected multiple sessions, clearing old ones...');
+            await Session.clearOthers(req.session.user_id, req.sessionID);
         }
-        const session = await getSession(store, req.sessionID);
-        if (!session) {
+        */
+        if (config.discord.enabled && !req.session.valid) {
+            console.error('Invalid user authenticated', req.session.user_id);
             req.session.current_path = req.path;
             res.redirect('/login');
             return;
         }
 
-        //console.log('Session:', req.session);
-        if (session.logged_in) {
-            defaultData.logged_in = session.logged_in;
-            defaultData.username = session.username || 'root';
-            defaultData.user_id = session.user_id;
+        //req.sessionStore = store;
+        if (req.path === '/api/discord/login' || req.path === '/login') {
+            return next();
+        }
+
+        if (req.session.logged_in) {
+            defaultData.logged_in = req.session.logged_in;
+            defaultData.username = req.session.username || 'root';
+            defaultData.user_id = req.session.user_id;
             let valid = false;
             const guilds = req.session.guilds;
             const roles = req.session.roles;
@@ -129,7 +137,7 @@ const utils = require('./services/utils.js');
                     }
                 }
             });
-            if (!session.valid || !valid) {
+            if (!req.session.valid || !valid) {
                 console.error('Invalid user authentication, no valid roles for user', req.session.user_id);
                 res.redirect('/login');
                 return;
@@ -161,14 +169,3 @@ const utils = require('./services/utils.js');
     // Start listener
     app.listen(config.port, config.interface, () => console.log(`Listening on port ${config.port}...`));
 })();
-
-const getSession = async (store, id) => {
-    return new Promise((resolve, reject) => {
-        store.get(id, (err, session) => {
-            if (err) {
-                return reject(err);
-            }
-            resolve(session);
-        });
-    });
-};

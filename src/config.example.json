@@ -9,6 +9,7 @@
     "lastNestMigration": "2019-03-07T01:00:00Z",
     "showFooter": true,
     "enableGeofenceRoles": true,
+    "sessionSecret": "lmV3q76N4cAt3mtcAhLs~!",
     "db": {
         "main": {
             "host": "127.0.0.1",
