@@ -26,6 +26,7 @@ const utils = require('./services/utils.js');
 // TODO: Lookup form name to id and show proper icon
 
 (async () => {
+
     // Basic security protections
     app.use(helmet());
 

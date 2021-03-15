@@ -14,7 +14,15 @@
     <form action="/api/gyms/edit/{{id}}" method="post">
         <div class="form-group">
             {{Gym Name}}
+            <!--
             <input type="text" class="form-control" name="name" value="{{name}}" placeholder="i.e. Starbucks">
+            -->
+            <input list="names" class="custom-select" name="name" id="name" value={{name}}>
+            <datalist id="names">
+                {{#gyms}}
+                <option value="{{.}}">
+                {{/gyms}}
+            </datalist>
         </div>
         <div class="form-group">
             <div class="form-group">
@@ -30,7 +38,7 @@
                 </div>
             {{/pokemon}}
             </div>
-            <input type="hidden" id="pokemon" name="pokemon" />
+            <input type="hidden" id="pokemon" name="pokemon" value="{{pokemon_ids}}" />
             <br>
             <button id="select_all" type="button" class="btn btn-primary btn-sm">{{Select All}}</button>
             <button id="select_none" type="button" class="btn btn-primary btn-sm">{{Select None}}</button>
@@ -48,7 +56,7 @@
             <input type="number" class="form-control" name="min_level" value="{{min_level}}" min=0 max=6>
         </div>
         <div class="form-group">
-            {{Minimum Level}}
+            {{Maximum Level}}
             <input type="number" class="form-control" name="max_level" value="{{max_level}}"" min=0 max=6>
         </div>
         <br>

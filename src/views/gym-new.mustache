@@ -14,7 +14,15 @@
     <form action="/api/gyms/new" method="post">
         <div class="form-group">
             {{Gym Name}}
+            <!--
             <input type="text" class="form-control" name="name" value="" placeholder="i.e. Starbucks">
+            -->
+            <input list="names" class="custom-select" name="name" id="name">
+            <datalist id="names">
+                {{#gyms}}
+                <option value="{{.}}">
+                {{/gyms}}
+            </datalist>
         </div>
         <div class="form-group">
             <div class="form-group">
@@ -48,7 +56,7 @@
             <input type="number" class="form-control" name="min_level" value="0" min=0 max=6>
         </div>
         <div class="form-group">
-            {{Minimum Level}}
+            {{Maximum Level}}
             <input type="number" class="form-control" name="max_level" value="6" min=0 max=6>
         </div>
         <br>

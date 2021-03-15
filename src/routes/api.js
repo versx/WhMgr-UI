@@ -627,6 +627,7 @@ router.post('/gyms/new', async (req, res) => {
         showError(res, 'gym-new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
+    // TODO: Validate gym name exists in scanner database
     const exists = await Gym.getByName(guild_id, user_id, name);
     if (exists) {
         // Already exists
@@ -663,6 +664,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
         showError(res, 'gym-edit', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
+    // TODO: Validate gym name exists in scanner database
     const exists = await Gym.getByName(guild_id, user_id, name);
     if (!exists) {
         // Does not exist
