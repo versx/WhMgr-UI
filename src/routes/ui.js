@@ -215,8 +215,8 @@ router.get('/gym/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     const gyms = await MapGym.getAll();
-    const sorted = gyms.map(x => x.name);
-    data.gyms = [...new Set(sorted.sort())];
+    const sorted = gyms.map(x => x.name).sort();
+    data.gyms = [...new Set(sorted)];
     data.pokemon = await map.getPokemonNameIdsList();
     res.render('gym-new', data);
 });
@@ -232,9 +232,8 @@ router.get('/gym/edit/:id', async (req, res) => {
         return;
     }
     const gyms = await MapGym.getAll();
-    const sorted = gyms.map(x => x.name);
-    sorted.sort();
-    data.gyms = sorted;
+    const sorted = gyms.map(x => x.name).sort();
+    data.gyms = [...new Set(sorted)];
     data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = gym.pokemonIds.includes(pkmn.id.toString());
