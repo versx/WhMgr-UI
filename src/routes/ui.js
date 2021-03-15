@@ -9,6 +9,7 @@ const map = require('../data/map.js');
 const Pokemon = require('../models/pokemon.js');
 const PVP = require('../models/pvp.js');
 const Raid = require('../models/raid.js');
+const Gym = require('../models/gym.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const Lure = require('../models/lure.js');
@@ -209,10 +210,31 @@ router.get('/raids/delete_all', (req, res) => {
 
 
 // Gym routes
-router.get('/gym/new', (req, res) => {
+router.get('/gym/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
+    data.pokemon = await map.getPokemonNameIdsList();
     res.render('gym-new', data);
+});
+
+router.get('/gym/edit/:id', async (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    const id = req.params.id;
+    data.id = id;
+    const gym = await Gym.getById(id);
+    if (!gym) {
+        res.redirect('/raids#gyms');
+        return;
+    }
+    data.pokemon = await map.getPokemonNameIdsList();
+    data.pokemon.forEach(pkmn => {
+        pkmn.selected = gym.pokemonIds.includes(pkmn.id.toString());
+    });
+    data.name = gym.name;
+    data.min_level = gym.minLevel;
+    data.max_level = gym.maxLevel;
+    res.render('gym-edit', data);
 });
 
 router.get('/gym/delete/:id', (req, res) => {

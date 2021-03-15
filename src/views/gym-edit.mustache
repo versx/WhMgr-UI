@@ -8,13 +8,13 @@
 </div>
 {{#show_error}}<br>{{/show_error}}
 
-<h1 align="center" id="header">{{New Gym Subscription}}</h1>
+<h1 align="center" id="header">{{Edit Gym Subscription}} {{id}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
-    <form action="/api/gyms/new" method="post">
+    <form action="/api/gyms/edit/{{id}}" method="post">
         <div class="form-group">
             {{Gym Name}}
-            <input type="text" class="form-control" name="name" value="" placeholder="i.e. Starbucks">
+            <input type="text" class="form-control" name="name" value="{{name}}" placeholder="i.e. Starbucks">
         </div>
         <div class="form-group">
             <div class="form-group">
@@ -45,15 +45,15 @@
         </div>
         <div class="form-group">
             {{Minimum Level}}
-            <input type="number" class="form-control" name="min_level" value="0" min=0 max=6>
+            <input type="number" class="form-control" name="min_level" value="{{min_level}}" min=0 max=6>
         </div>
         <div class="form-group">
             {{Minimum Level}}
-            <input type="number" class="form-control" name="max_level" value="6" min=0 max=6>
+            <input type="number" class="form-control" name="max_level" value="{{max_level}}"" min=0 max=6>
         </div>
         <br>
         <input type="hidden" id="guild_id" name="guild_id">
-        <button type="submit" class="btn btn-primary">{{Create}}</button>
+        <button type="submit" class="btn btn-primary">{{Save}}</button>
         <br>
     </form>
 </div>

@@ -136,7 +136,10 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (gyms) {
                 for (let gym of gyms) {
                     gym = gym.toJSON();
+                    gym.pokemonIds = gym.pokemonIds.join(', ');
                     gym.buttons = `
+                    <a href='/gym/edit/${gym.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
+                    &nbsp;
                     <a href='/gym/delete/${gym.id}'><button type='button'class='btn btn-sm btn-danger'>Delete</button></a>
                     `;
                     gymData.push(gym);
@@ -617,7 +620,7 @@ router.post('/raids/delete_all', async (req, res) => {
 
 // Gym routes
 router.post('/gyms/new', async (req, res) => {
-    const { guild_id, name } = req.body;
+    const { guild_id, name, min_level, max_level, pokemon } = req.body;
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
@@ -636,6 +639,9 @@ router.post('/gyms/new', async (req, res) => {
             guildId: guild_id,
             userId: user_id,
             name: name,
+            minLevel: min_level,
+            maxLevel: max_level,
+            pokemonIds: (pokemon || []).split(','),
         });
         const result = await gym.save();
         if (result) {
@@ -643,6 +649,35 @@ router.post('/gyms/new', async (req, res) => {
             console.log('Gym subscription for gym', name, 'created successfully.');
         } else {
             showError(res, 'gym-new', `Failed to create Gym subscription ${name}`);
+            return;
+        }
+    }
+    res.redirect('/raids#gyms');
+});
+
+router.post('/gyms/edit/:id', async (req, res) => {
+    const { guild_id, name, min_level, max_level, pokemon } = req.body;
+    const user_id = req.session.user_id;
+    const subscription = await Subscription.getSubscription(guild_id, user_id);
+    if (!subscription) {
+        showError(res, 'gym-edit', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
+        return;
+    }
+    const exists = await Gym.getByName(guild_id, user_id, name);
+    if (!exists) {
+        // Does not exist
+        console.log('Gym subscription with name', name, 'does not exist');
+        showError(res, 'gym-edit', `Gym subscription with name ${name} does not exist`);
+    } else {
+        exists.minLevel = min_level;
+        exists.maxLevel = max_level;
+        exists.pokemonIds = (pokemon || []).split(',');
+        const result = await gym.save();
+        if (result) {
+            // Success
+            console.log('Gym subscription for gym', name, 'updated successfully.');
+        } else {
+            showError(res, 'gym-edit', `Failed to update Gym subscription ${name}`);
             return;
         }
     }
