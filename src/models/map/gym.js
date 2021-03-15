@@ -1,6 +1,6 @@
 'use strict';
 
-const { DataTypes, Model, Op, } = require('sequelize');
+const { DataTypes, Model, /*Op,*/ } = require('sequelize');
 const sequelize = require('../../services/sequelize.js')(false);
 
 class Gym extends Model {
