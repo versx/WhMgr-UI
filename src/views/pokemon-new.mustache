@@ -41,7 +41,15 @@
         </div>
         <div class="form-group">
             {{Form}}
+            <!--
             <input type="text" class="form-control" name="form" value="" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
+            -->
+            <input list="forms" class="custom-select" name="form" id="form">
+            <datalist id="forms">
+                {{#forms}}
+                <option value="{{.}}">
+                {{/forms}}
+            </datalist>
         </div>
         <div class="form-group">
             {{Minimum IV}}
