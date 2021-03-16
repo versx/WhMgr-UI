@@ -1,7 +1,7 @@
 'use strict';
 
 const { DataTypes, Model, Op } = require('sequelize');
-const sequelize = require('../services/sequelize.js')(false);
+const sequelize = require('../../services/sequelize.js')(false);
 
 class PokestopQuest extends Model {
 

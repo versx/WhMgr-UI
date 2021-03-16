@@ -1,7 +1,7 @@
 'use strict';
 
 const Localizer = require('../services/locale.js');
-const PokestopQuest = require('../models/pokestop-quest.js');
+const MapPokestop = require('../models/map/pokestop.js');
 const config = require('../config.json');
 
 const getPokemonNameIdsList = async () => {
@@ -34,7 +34,7 @@ const buildCityList = (guilds) => {
 };
 
 const getQuestRewards = async () => {
-    const quests = await PokestopQuest.getAll();
+    const quests = await MapPokestop.getAll();
     const rewards = [];
     for (const quest of quests) {
         const questRewards = JSON.parse(quest.questRewards);
