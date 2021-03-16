@@ -63,5 +63,4 @@ module.exports = {
     buildCityList,
     getQuestRewards,
     getLureTypes,
-    getPokemonSizes,
 };
