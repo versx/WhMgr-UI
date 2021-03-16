@@ -58,17 +58,6 @@ const getLureTypes = () => {
     ];
 };
 
-const getPokemonSizes = () => {
-    return [
-        { name: 'All', value: 0, },
-        { name: 'Tiny', value: 1, },
-        { name: 'Small', value: 2, },
-        { name: 'Normal', value: 3, },
-        { name: 'Large', value: 4, },
-        { name: 'Big', value: 5, },
-    ];
-};
-
 module.exports = {
     getPokemonNameIdsList,
     buildCityList,

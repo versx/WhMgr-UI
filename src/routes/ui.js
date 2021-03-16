@@ -49,7 +49,6 @@ router.get('/pokemon/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.pokemon = await map.getPokemonNameIdsList();
-    data.sizes = map.getPokemonSizes();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pokemon-new', data);
 });
@@ -76,7 +75,6 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     data.genders.forEach(gender => {
         data.selected = gender.id === pokemon.gender;
     });
-    data.sizes = map.getPokemonSizes();
     data.sizes.forEach(size => {
         data.selected = size.name === pokemon.size;
     });
