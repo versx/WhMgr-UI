@@ -67,7 +67,7 @@ const getPokemonSizes = () => {
         { name: 'Large', value: 4, },
         { name: 'Big', value: 5, },
     ];
-}
+};
 
 module.exports = {
     getPokemonNameIdsList,
