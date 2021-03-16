@@ -89,6 +89,25 @@ Gym.init({
         allowNull: false,
         unique: true,
     },
+    minLevel: {
+        type: DataTypes.TINYINT(1).UNSIGNED,
+        defaultValue: 0,
+    },
+    maxLevel: {
+        type: DataTypes.TINYINT(1).UNSIGNED,
+        defaultValue: 0,
+    },
+    pokemonIds: {
+        type: DataTypes.JSON,
+        defaultValue: null,
+        //defaultValue: '[]',
+        get() {
+            var data = this.getDataValue('pokemonIds');
+            return Array.isArray(data)
+                ? data
+                : JSON.parse(data || '[]');
+        },
+    }
 }, {
     sequelize,
     timestamps: false,

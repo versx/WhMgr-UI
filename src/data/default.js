@@ -21,5 +21,6 @@ data.leagues = [
 ];
 data.icon_styles = config.iconStyles;
 data.enable_geofence_roles = config.enableGeofenceRoles;
+data.hide_phone_number = config.hidePhoneNumber;
 
 module.exports = data;

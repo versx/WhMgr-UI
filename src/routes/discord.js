@@ -48,7 +48,12 @@ router.get('/callback', catchAsyncErrors(async (req, res) => {
             req.session.roles = await buildGuildRoles(client, user.id, guilds);
             req.session.valid = true;
             req.session.save();
-            res.redirect(`/?token=${response.data.access_token}`);
+            if (req.session.current_path) {
+                console.log(user.id, 'Redirecting to previous page:', req.session.current_path);
+                res.redirect(req.session.current_path);
+            } else {
+                res.redirect(`/?token=${response.data.access_token}`);
+            }
             return;
         }
 

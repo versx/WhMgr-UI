@@ -79,6 +79,8 @@ $('#select_raid5star').on('click', function() {
 })
 
 function onPokemonClicked(element) {
+    if (element.disabled)
+        return;
     if (element.classList.value.includes('active')) {
         element.classList.value = element.classList.value.replace(' active', '');
         element.style.background = $('.pokemon-list').css('background-color');
@@ -98,6 +100,13 @@ function onPokemonSearch() {
         const id = element.getAttribute('id');
         const matches = !name.toLowerCase().includes(search) && !id.includes(search) && search;
         element.hidden = matches;
+    }
+}
+
+function toggleAllPokemon(disable) {
+    const pokemon = $('#pokemon-list').children();
+    for (let element of pokemon) {
+        element.disabled = disable;
     }
 }
 

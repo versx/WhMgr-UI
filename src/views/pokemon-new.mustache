@@ -45,11 +45,11 @@
         </div>
         <div class="form-group">
             {{Minimum IV}}
-            <input type="number" class="form-control" name="iv" id="iv" value="" min=0 max=100 pattern="^([0-9]|[1-9][0-9]|100)$" placeholder="i.e. 100">
+            <input type="number" class="form-control" name="iv" id="iv" min=0 max=100 pattern="^([0-9]|[1-9][0-9]|100)$" placeholder="i.e. 100">
         </div>
         <div class="form-group">
             {{IV List}}
-            <textarea class="form-control" name="iv_list" id="iv_list" value="" placeholder="i.e. 0/15/14&#10;0/15/15&#10;1/15/15" rows="5"></textarea>
+            <textarea class="form-control" name="iv_list" id="iv_list" placeholder="i.e. 0/15/14&#10;0/15/15&#10;1/15/15" rows="5"></textarea>
         </div>
         <div class="row">
             <div class="col">
@@ -107,9 +107,9 @@
     }
     $('#server_selector').prop('disabled', true);
     $('#iv').change(function() {
-        $('#iv_list').prop('disabled', $('#iv').val().length > 0);
+        $('#iv_list').prop('disabled', this.value.length > 0);
     });
     $('#iv_list').change(function() {
-        $('#iv').prop('disabled', $('#iv_list').val().length > 0);
+        $('#iv').prop('disabled', this.value.length > 0);
     });
 </script>

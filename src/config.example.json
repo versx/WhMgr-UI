@@ -10,6 +10,7 @@
     "showFooter": true,
     "enableGeofenceRoles": true,
     "sessionSecret": "lmV3q76N4cAt3mtcAhLs~!",
+    "hidePhoneNumber": false,
     "db": {
         "main": {
             "host": "127.0.0.1",
