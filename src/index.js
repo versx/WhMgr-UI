@@ -12,7 +12,7 @@ const i18n = require('i18n');
 
 const config = require('./config.json');
 const defaultData = require('./data/default.js');
-const Session = require('./models/session.js');
+//const Session = require('./models/session.js');
 const apiRoutes = require('./routes/api.js');
 const discordRoutes = require('./routes/discord.js');
 const uiRoutes = require('./routes/ui.js');

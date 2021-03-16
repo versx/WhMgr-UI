@@ -25,7 +25,7 @@ const sessionStore = new MySQLStore({
     createDatabaseTable: true,
     // Set Sessions table name
     schema: {
-        tableName: "sessions",
+        tableName: 'sessions',
     }
 });
 
