@@ -32,10 +32,12 @@
                         {{Max Distance}}
                         <input type="number" class="form-control" id="distance" name="distance" min=0 max=99999 placeholder="i.e. 500 (meters)" required>
                     </div>
+                    {{^hide_phone_number}}
                     <div class="form-group">
                         {{Phone Number}}
                         <input type="text" class="form-control" id="phone_number" name="phone_number" pattern="[0-9]{10}" placeholder="i.e 8001234567">
                     </div>
+                    {{/hide_phone_number}}
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="enabled" name="enabled">
                         <label class="form-check-label" for="enabled">{{Enable Subscriptions}}</label>
