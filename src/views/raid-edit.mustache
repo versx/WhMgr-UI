@@ -14,7 +14,15 @@
     <form action="/api/raids/edit/{{id}}" method="post">
         <div class="form-group">
             {{Form}}
-            <input type="text" class="form-control" name="form" value="{{form}}" placeholder="i.e. Sunny" pattern="^((?![aA][lL][lL]).)*$" id="pokemon_form">
+            <!--
+            <input type="text" class="form-control" name="form" value="{{form}}" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
+            -->
+            <input list="forms" class="custom-select" name="form" id="pokemon_form" value="{{form}}"">
+            <datalist id="forms">
+                {{#forms}}
+                <option value="{{.}}">
+                {{/forms}}
+            </datalist>
         </div>
         <div class="form-group">
             {{City}}
