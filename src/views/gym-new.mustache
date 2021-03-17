@@ -17,7 +17,7 @@
             <!--
             <input type="text" class="form-control" name="name" value="" placeholder="i.e. Starbucks">
             -->
-            <input list="names" class="custom-select" name="name" id="name">
+            <input list="names" class="custom-select" name="name" id="name" required>
             <datalist id="names">
                 {{#gyms}}
                 <option value="{{.}}">
