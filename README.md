@@ -5,6 +5,8 @@
 [![GitHub Contributors](https://img.shields.io/github/contributors/versx/WhMgr-UI.svg)](https://github.com/versx/WhMgr-UI/graphs/contributors/)
 [![Discord](https://img.shields.io/discord/552003258000998401.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/zZ9h9Xa)  
 # Webhook Manager User Interface  
+Web interface to manage subscriptions for [WhMgr](https://github.com/versx/WhMgr) custom member subscriptions for Pokemon, PvP, Raids, Quests, Lures, Invasions, and Gyms.
+
 
 ## Installation  
 1. Clone repository `git clone https://github.com/versx/WhMgr-UI`  
