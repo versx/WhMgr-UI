@@ -55,6 +55,7 @@ const getLureTypes = () => {
         { name: 'Glacial' },
         { name: 'Mossy' },
         { name: 'Magnetic' },
+        { name: 'Rainy' },
     ];
 };
 
