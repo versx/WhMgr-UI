@@ -14,7 +14,7 @@
     <form action="/api/pokemon/new" method="post">
         <div class="form-group">
             <div class="form-group">
-                Search
+                {{Search}}
                 <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
             </div>
             {{Pokemon}}
@@ -41,7 +41,15 @@
         </div>
         <div class="form-group">
             {{Form}}
+            <!--
             <input type="text" class="form-control" name="form" value="" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
+            -->
+            <input list="forms" class="custom-select" name="form" id="pokemon_form">
+            <datalist id="forms">
+                {{#forms}}
+                <option value="{{.}}">
+                {{/forms}}
+            </datalist>
         </div>
         <div class="form-group">
             {{Minimum IV}}
@@ -89,13 +97,11 @@
         </div>
         <div class="form-group">
             {{City}}
-            <select name="city" class="custom-select" multiple>
-                <option value="None" selected>{{None}}</option>
-                <option value="All">{{All}}</option>
-                {{#cities}}
-                <option value="{{name}}" id="g_{{guild}}" hidden>{{name}}</option>
-                {{/cities}}
-            </select>
+            <br>
+            <input type="hidden" id="city" name="city" />
+            <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
+            <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
+            <div id="map" style="height: 500px;"></div>
         </div>
         <br>
         <input type="hidden" id="guild_id" name="guild_id">
@@ -104,6 +110,7 @@
     </form>
 </div>
 
+<script type='text/javascript' src="/js/city-map.js"></script>
 <script type='text/javascript' src="/js/pokemon-list.js"></script>
 <script type='text/javascript'>
     if (!guildId) {
@@ -126,4 +133,5 @@
     $('#iv_list').change(function() {
         $('#iv').prop('disabled', this.value.length > 0);
     });
+    initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}");
 </script>

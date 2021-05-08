@@ -49,12 +49,22 @@ const getQuestRewards = async () => {
     return rewards;
 };
 
+const getInvasionTypes = () => {
+    const types = [];
+    for (let i = 0; i <= 50; i++) {
+        const name = Localizer.getInvasionName(i);
+        types.push({ id: i, name });
+    }
+    return types;
+};
+
 const getLureTypes = () => {
     return [
         { name: 'Normal' },
         { name: 'Glacial' },
         { name: 'Mossy' },
         { name: 'Magnetic' },
+        { name: 'Rainy' },
     ];
 };
 
@@ -62,5 +72,6 @@ module.exports = {
     getPokemonNameIdsList,
     buildCityList,
     getQuestRewards,
+    getInvasionTypes,
     getLureTypes,
 };

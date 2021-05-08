@@ -69,8 +69,25 @@ class Localizer {
         return `../../img/lures/${id}.png`;
     }
 
+    getInvasionName(gruntType) {
+        const name = i18n.__('grunt_' + gruntType);
+        return name;
+    }
+
     getItemName(itemId) {
         return i18n.__('item_' + itemId);
+    }
+
+    getFormNames() {
+        const locales = i18n.getCatalog(config.locale);
+        const forms = [];
+        for (const locale in locales) {
+            const formName = locales[locale];
+            if (formName && locale.includes('form_') && !forms.includes(formName)) {
+                forms.push(formName);
+            }
+        }
+        return forms;
     }
 
     getQuestReward(reward) {

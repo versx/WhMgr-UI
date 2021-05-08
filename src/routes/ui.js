@@ -14,7 +14,9 @@ const MapGym = require('../models/map/gym.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const Lure = require('../models/lure.js');
+const Localizer = require('../services/locale.js');
 const utils = require('../services/utils.js');
+const PokestopQuest = require('../models/map/pokestop');
 
 
 router.get(['/', '/index'], async (req, res) => {
@@ -49,6 +51,7 @@ router.get('/pokemon/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.pokemon = await map.getPokemonNameIdsList();
+    data.forms = Localizer.getFormNames();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pokemon-new', data);
 });
@@ -67,6 +70,7 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pokemon.pokemonId;
     });
+    data.forms = Localizer.getFormNames();
     data.form = pokemon.form;
     data.iv = pokemon.minIv;
     data.iv_list = (pokemon.ivList || []).join('\n');
@@ -78,15 +82,15 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     data.sizes.forEach(size => {
         data.selected = size.name === pokemon.size;
     });
-    const areas = pokemon.city.map(x => x.toLowerCase());
-    data.cities = getSelectedAreas(
+    const cities = getSelectedAreas(
         // Current guild
         pokemon.guildId,
         // Currently subscribed areas list
-        areas,
+        pokemon.city.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );
+    data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
     res.render('pokemon-edit', data);
 });
 
@@ -109,6 +113,7 @@ router.get('/pvp/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.pokemon = await map.getPokemonNameIdsList();
+    data.forms = Localizer.getFormNames();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pvp-new', data);
 });
@@ -127,13 +132,14 @@ router.get('/pvp/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pvp.pokemonId;
     });
+    data.forms = Localizer.getFormNames();
     data.form = pvp.form;
     data.leagues.forEach(league => {
         league.selected = league.name === pvp.league;
     });
     data.min_rank = pvp.minRank;
     data.min_percent = pvp.minPercent;
-    data.cities = getSelectedAreas(
+    const cities = getSelectedAreas(
         // Current guild
         pvp.guildId,
         // Currently subscribed areas list
@@ -141,6 +147,7 @@ router.get('/pvp/edit/:id', async (req, res) => {
         // All areas list
         map.buildCityList(req.session.guilds)
     );
+    data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
     res.render('pvp-edit', data);
 });
 
@@ -169,6 +176,7 @@ router.get('/raid/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.pokemon = await map.getPokemonNameIdsList();
+    data.forms = Localizer.getFormNames();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('raid-new', data);
 });
@@ -187,8 +195,9 @@ router.get('/raid/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
     });
+    data.forms = Localizer.getFormNames();
     data.form = raid.form;
-    data.cities = getSelectedAreas(
+    const cities = getSelectedAreas(
         // Current guild
         raid.guildId,
         // Currently subscribed areas list
@@ -196,6 +205,7 @@ router.get('/raid/edit/:id', async (req, res) => {
         // All areas list
         map.buildCityList(req.session.guilds)
     );
+    data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
     res.render('raid-edit', data);
 });
 
@@ -288,7 +298,7 @@ router.get('/quest/edit/:id', async (req, res) => {
         return;
     }
     data.reward = quest.reward;
-    data.cities = getSelectedAreas(
+    const cities = getSelectedAreas(
         // Current guild
         quest.guildId,
         // Currently subscribed areas list
@@ -296,6 +306,7 @@ router.get('/quest/edit/:id', async (req, res) => {
         // All areas list
         map.buildCityList(req.session.guilds)
     );
+    data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
     res.render('quest-edit', data);
 });
 
@@ -323,6 +334,9 @@ router.get('/invasions', (req, res) => {
 router.get('/invasion/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
+    data.types = map.getInvasionTypes();
+    const pokestopNames = await PokestopQuest.getPokestopNames();
+    data.pokestops = [...new Set(pokestopNames)];
     data.rewards = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('invasion-new', data);
@@ -338,11 +352,18 @@ router.get('/invasion/edit/:id', async (req, res) => {
         res.redirect('/invasions');
         return;
     }
+    const pokestopNames = await PokestopQuest.getPokestopNames();
+    data.pokestops = [...new Set(pokestopNames)];
+    data.name = invasion.pokestopName;
+    const types = map.getInvasionTypes();
+    data.types = types.map(x => {
+        return { id: x.id, name: x.name, selected: x.id === invasion.gruntType };
+    });
     data.rewards = await map.getPokemonNameIdsList();
     data.rewards.forEach(reward => {
         reward.selected = reward.id === invasion.rewardPokemonId;
     });
-    data.cities = getSelectedAreas(
+    const cities = getSelectedAreas(
         // Current guild
         invasion.guildId,
         // Currently subscribed areas list
@@ -350,6 +371,7 @@ router.get('/invasion/edit/:id', async (req, res) => {
         // All areas list
         map.buildCityList(req.session.guilds)
     );
+    data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
     res.render('invasion-edit', data);
 });
 
@@ -396,11 +418,15 @@ router.get('/lure/edit/:id', async (req, res) => {
     data.lureTypes.forEach(lureType => {
         lureType.selected = lureType === lure.lureType;
     });
-    data.cities = map.buildCityList(req.session.guilds);
-    const areas = lure.city.map(x => x.toLowerCase());
-    data.cities.forEach(city => {
-        city.selected = areas.includes(city.name.toLowerCase());
-    });
+    const cities = getSelectedAreas(
+        // Current guild
+        lure.guildId,
+        // Currently subscribed areas list
+        lure.city.map(x => x.toLowerCase()),
+        // All areas list
+        map.buildCityList(req.session.guilds)
+    );
+    data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
     res.render('lure-edit', data);
 });
 

@@ -16,6 +16,8 @@
     <table id="table" class="table {{table_class}} table-sm table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
         <thead class="thead-dark">
             <tr>
+                <th class="all">{{Pokestop Name}}</th>
+                <th class="all">{{Invasion Type}}</th>
                 <th class="all">{{Reward}}</th>
                 <th class="all">{{City}}</th>
                 <th class="all" width="5%"></th>
@@ -64,6 +66,8 @@
         "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
         "pageLength": 100,
         "columns": [
+            { "data": "name" },
+            { "data": "type" },
             { "data": "reward" },
             { "data": "city" },
             { "data": "buttons" }

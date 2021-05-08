@@ -30,5 +30,12 @@ data.sizes = [
     { name: 'Large', value: 4, },
     { name: 'Big', value: 5, },
 ];
+// Leaflet map properties
+data.start_lat = config.map.startLat;
+data.start_lon = config.map.startLon;
+data.start_zoom = config.map.startZoom;
+data.min_zoom = config.map.minZoom;
+data.max_zoom = config.map.maxZoom;
+data.tileserver = config.map.tileserver;
 
 module.exports = data;
