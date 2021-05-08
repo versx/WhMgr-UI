@@ -291,7 +291,7 @@ router.post('/pokemon/new', async (req, res) => {
     }
     const sql = [];
     const split = pokemon.split(',');
-    const ivList = iv_list ? iv_list.replace('\r', '').split('\n') : [];
+    const ivList = iv_list ? iv_list.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',') : [];
     for (const pokemonId of split) {
         let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form);
         if (exists) {
