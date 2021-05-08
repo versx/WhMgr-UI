@@ -15,6 +15,7 @@ const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const Lure = require('../models/lure.js');
 const utils = require('../services/utils.js');
+const PokestopQuest = require('../models/map/pokestop');
 
 
 router.get(['/', '/index'], async (req, res) => {
@@ -320,6 +321,9 @@ router.get('/invasions', (req, res) => {
 router.get('/invasion/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
+    data.types = map.getInvasionTypes();
+    const pokestopNames = await PokestopQuest.getPokestopNames();
+    data.pokestops = [...new Set(pokestopNames)];
     data.rewards = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('invasion-new', data);
@@ -335,6 +339,13 @@ router.get('/invasion/edit/:id', async (req, res) => {
         res.redirect('/invasions');
         return;
     }
+    const pokestopNames = await PokestopQuest.getPokestopNames();
+    data.pokestops = [...new Set(pokestopNames)];
+    data.name = invasion.pokestopName;
+    const types = map.getInvasionTypes();
+    data.types = types.map(x => {
+        return { id: x.id, name: x.name, selected: x.id === invasion.gruntType };
+    });
     data.rewards = await map.getPokemonNameIdsList();
     data.rewards.forEach(reward => {
         reward.selected = reward.id === invasion.rewardPokemonId;
