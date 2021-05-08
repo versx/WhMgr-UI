@@ -65,6 +65,14 @@
         { "name": "Default" },
         { "name": "Shuffle" }
     ],
+    "map": {
+        "startLat": 4,
+        "startLon": -100,
+        "startZoom": 10,
+        "minZoom": 8,
+        "maxZoom": 18,
+        "tileserver": "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png;Map tiles by Carto, under CC BY 3.0. Data by  <a href='https://www.openstreetmap.org/'>OpenStreetMap</a>, under ODbL."
+    },
     "urls": {
         "images": {
             "pokemon": "https://mygod.github.io/pokicons/v2"
