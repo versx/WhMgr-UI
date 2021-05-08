@@ -73,6 +73,18 @@ class Localizer {
         return i18n.__('item_' + itemId);
     }
 
+    getFormNames() {
+        const locales = i18n.getCatalog(config.locale);
+        const forms = [];
+        for (const locale in locales) {
+            const formName = locales[locale];
+            if (formName && locale.includes('form_') && !forms.includes(formName)) {
+                forms.push(formName);
+            }
+        }
+        return forms;
+    }
+
     getQuestReward(reward) {
         // TODO: Use format method
         switch (reward.type) {

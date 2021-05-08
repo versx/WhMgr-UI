@@ -14,6 +14,7 @@ const MapGym = require('../models/map/gym.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const Lure = require('../models/lure.js');
+const Localizer = require('../services/locale.js');
 const utils = require('../services/utils.js');
 
 
@@ -49,6 +50,7 @@ router.get('/pokemon/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.pokemon = await map.getPokemonNameIdsList();
+    data.forms = Localizer.getFormNames();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pokemon-new', data);
 });
@@ -67,6 +69,7 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pokemon.pokemonId;
     });
+    data.forms = Localizer.getFormNames();
     data.form = pokemon.form;
     data.iv = pokemon.minIv;
     data.iv_list = (pokemon.ivList || []).join('\n');
@@ -106,6 +109,7 @@ router.get('/pvp/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.pokemon = await map.getPokemonNameIdsList();
+    data.forms = Localizer.getFormNames();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('pvp-new', data);
 });
@@ -124,6 +128,7 @@ router.get('/pvp/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === pvp.pokemonId;
     });
+    data.forms = Localizer.getFormNames();
     data.form = pvp.form;
     data.leagues.forEach(league => {
         league.selected = league.name === pvp.league;
@@ -166,6 +171,7 @@ router.get('/raid/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.pokemon = await map.getPokemonNameIdsList();
+    data.forms = Localizer.getFormNames();
     data.cities = map.buildCityList(req.session.guilds);
     res.render('raid-new', data);
 });
@@ -184,6 +190,7 @@ router.get('/raid/edit/:id', async (req, res) => {
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
     });
+    data.forms = Localizer.getFormNames();
     data.form = raid.form;
     data.cities = getSelectedAreas(
         // Current guild
