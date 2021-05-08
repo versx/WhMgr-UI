@@ -121,3 +121,8 @@ static/locales/*.json
 static/favicons/*.png
 static/favicons/*.icon
 !static/favicons/default.png
+
+static/data/*
+!static/data/server_id1.example.json
+!static/data/server_id2.example.json
+!static/data/rarity.json

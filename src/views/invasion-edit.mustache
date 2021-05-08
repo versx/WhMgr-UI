@@ -28,13 +28,11 @@
         </select>
         <div class="form-group">
             {{City}}
-            <select name="city" class="custom-select" multiple required>
-                <option value="None">{{None}}</option>
-                <option value="All">{{All}}</option>
-                {{#cities}}
-                <option value="{{name}}" id="g_{{guild}}" {{#selected}}selected{{/selected}} hidden>{{name}}</option>
-                {{/cities}}
-            </select>
+            <br>
+            <input type="hidden" id="city" name="city" />
+            <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
+            <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
+            <div id="map" style="height: 500px;"></div>
         </div>
         <br>
         <input type="hidden" id="guild_id" name="guild_id" required>
@@ -46,6 +44,7 @@
     </form>
 </div>
 
+<script type='text/javascript' src="/js/city-map.js"></script>
 <script>
     if (!guildId) {
         window.location.href = '/';
@@ -56,4 +55,5 @@
         guilds.forEach(guild => guild.hidden = false);
     }
     $('#server_selector').prop('disabled', true);
+    initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}", {{{cities}}});
 </script>
