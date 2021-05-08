@@ -16,12 +16,24 @@ class PokestopQuest extends Model {
         // TODO: Parse quest rewards
         return quests;
     }
+
+    static async getPokestopNames() {
+        const stops = await PokestopQuest.findAll();
+        const names = stops.map(x => x.name);
+        names.sort();
+        return names;
+    }
 }
 
 PokestopQuest.init({
     id: {
         type: DataTypes.STRING(35),
         primaryKey: true,
+    },
+    name: {
+        type: DataTypes.STRING(128),
+        allowNull: false,
+        unique: true,
     },
     questType: {
         type: DataTypes.INTEGER(11).UNSIGNED,

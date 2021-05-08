@@ -69,6 +69,11 @@ class Localizer {
         return `../../img/lures/${id}.png`;
     }
 
+    getInvasionName(gruntType) {
+        const name = i18n.__('grunt_' + gruntType);
+        return name;
+    }
+
     getItemName(itemId) {
         return i18n.__('item_' + itemId);
     }

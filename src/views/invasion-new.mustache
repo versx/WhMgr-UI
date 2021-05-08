@@ -13,8 +13,22 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/invasions/new" method="post">
         <div class="form-group">
+            {{Pokestop Name}}
+            <input list="pokestop-names" class="custom-select" name="name" id="name">
+            <datalist id="pokestop-names">
+                {{#pokestops}}
+                <option value="{{.}}">
+                {{/pokestops}}
+            </datalist>
+            {{Invasion Type}}
+            <select name="grunt_type" class="custom-select">
+                <!--<option value="all" selected>{{All}}</option>-->
+                {{#types}}
+                <option value="{{id}}">{{name}}</option>
+                {{/types}}
+            </select>
             <div class="form-group">
-                Search
+                {{Search}}
                 <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
             </div>
             {{Reward}}

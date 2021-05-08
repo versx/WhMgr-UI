@@ -184,7 +184,9 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     invasion = invasion.toJSON();
                     const pkmnName = Localizer.getPokemonName(invasion.rewardPokemonId);
                     const pkmnIcon = await Localizer.getPokemonIcon(invasion.rewardPokemonId);
+                    invasion.name = invasion.pokestopName;
                     invasion.reward = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pkmnName}`;
+                    invasion.type = Localizer.getInvasionName(invasion.gruntType);
                     invasion.city = formatAreas(guild_id, invasion.city);
                     invasion.buttons = `
                     <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
@@ -828,7 +830,7 @@ router.post('/quests/delete_all', async (req, res) => {
 
 // Invasion routes
 router.post('/invasions/new', async (req, res) => {
-    const { guild_id, pokemon, city } = req.body;
+    const { guild_id, name, pokemon, grunt_type, city } = req.body;
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
@@ -839,7 +841,7 @@ router.post('/invasions/new', async (req, res) => {
     const split = pokemon.split(',');
     for (let i = 0; i < split.length; i++) {
         const pokemonId = split[i];
-        let exists = await Invasion.getByReward(guild_id, user_id, pokemonId);
+        let exists = await Invasion.getBy(guild_id, user_id, name, grunt_type, pokemonId);
         if (exists) {
             // Already exists
             exists.city = utils.arrayUnique(exists.city.concat(areas || []));
@@ -849,6 +851,8 @@ router.post('/invasions/new', async (req, res) => {
                 subscriptionId: subscription.id,
                 guildId: guild_id,
                 userId: user_id,
+                pokestopName: name,
+                gruntType: grunt_type,
                 rewardPokemonId: pokemonId,
                 city: areas,
             });
@@ -867,11 +871,13 @@ router.post('/invasions/new', async (req, res) => {
 
 router.post('/invasions/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, /*reward,*/ city } = req.body;
+    const { guild_id, name, grunt_type, city } = req.body;
     //const user_id = req.session.user_id;
     const invasion = await Invasion.getById(id);
     if (invasion) {
         const areas = getAreas(guild_id, (city || '').split(','));
+        invasion.name = name;
+        invasion.gruntType = grunt_type;
         invasion.city = areas;
         const result = invasion.save();
         if (result) {
