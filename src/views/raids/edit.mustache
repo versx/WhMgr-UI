@@ -8,38 +8,21 @@
 </div>
 {{#show_error}}<br>{{/show_error}}
 
-<h1 align="center" id="header">{{Edit PVP Subscription}} {{id}}</h1>
+<h1 align="center" id="header">{{Edit Raid Subscription}} {{id}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
-    <form action="/api/pvp/edit/{{id}}" method="post">
+    <form action="/api/raids/edit/{{id}}" method="post">
         <div class="form-group">
             {{Form}}
             <!--
             <input type="text" class="form-control" name="form" value="{{form}}" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
             -->
-            <input list="forms" class="custom-select" name="form" id="pokemon_form" value="{{form}}">
+            <input list="forms" class="custom-select" name="form" id="pokemon_form" value="{{form}}"">
             <datalist id="forms">
                 {{#forms}}
                 <option value="{{.}}">
                 {{/forms}}
             </datalist>
-        </div>
-        <div class="form-group">
-            {{League}}
-            <select name="league" class="custom-select" required>
-                <option value="" selected disabled hidden>{{Choose a League}}</option>
-                {{#leagues}}
-                <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
-                {{/leagues}}
-            </select>
-        </div>
-        <div class="form-group">
-            {{Minimum Rank}}
-            <input type="text" class="form-control" name="min_rank" value="{{min_rank}}" placeholder="i.e. 0-4096" min="0", max="4096">
-        </div>
-        <div class="form-group">
-            {{Minimum Percent}}
-            <input type="text" class="form-control" name="min_percent" value="{{min_percent}}" placeholder="i.e. 0-100" min="0", max="100">
         </div>
         <div class="form-group">
             {{City}}
@@ -49,19 +32,27 @@
             <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
             <div id="map" style="height: 500px;"></div>
         </div>
+        <div class="form-group">
+            {{Location}}
+            <select name="location" class="custom-select" required>
+                <option value="">{{None}}</option>
+                {{#locations}}
+                <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                {{/locations}}
+            </select>
+        </div>
         <br>
         <input type="hidden" id="guild_id" name="guild_id">
         <button type="submit" class="btn btn-primary">{{Save}}</button>
         <br>
     </form>
-    <form action="/api/pvp/delete/{{id}}" method="post">
-        <button type="submit" class="btn btn-danger" onclick="return confirm('{{Are you sure that you want to delete PVP subscription}} {{id}}?');">{{Delete}}</button>
+    <form action="/api/raids/delete/{{id}}" method="post">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('{{Are you sure that you want to delete raid subscription}} {{id}}?');">{{Delete}}</button>
     </form>
 </div>
 
 <script type='text/javascript' src="/js/city-map.js"></script>
-<script type='text/javascript' src="/js/pokemon-list.js"></script>
-<script type='text/javascript'>
+<script>
     if (!guildId) {
         window.location.href = '/';
     }
@@ -74,6 +65,5 @@
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
-    $('#server_selector').prop('disabled', true);
     initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}", {{{cities}}});
 </script>

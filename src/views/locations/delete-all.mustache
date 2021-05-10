@@ -8,13 +8,13 @@
 </div>
 {{#show_error}}<br>{{/show_error}}
 
-<h1 align="center" id="header">{{Remove Role}} {{name}} </h1>
+<h1 align="center" id="header">{{Delete All Locations}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
-    <form action="/api/role/remove/{{id}}" method="post">
+    <form action="/api/locations/delete_all" method="post">
         <div align="center">
-            <h3 id="message">{{Are you sure that you want to remove role}} {{name}}?</h3>
-            <a href="/roles" id="cancel" name="cancel" class="btn btn-secondary">{{Cancel}}</a>
+            <h3 id="message">{{Are you sure that you want to delete all of your locations?}}</h3>
+            <a href="/locations" id="cancel" name="cancel" class="btn btn-secondary">{{Cancel}}</a>
             <input type="hidden" id="guild_id" name="guild_id" required>
             <button type="submit" class="btn btn-danger">{{Delete}}</button>
         </div>
@@ -23,5 +23,5 @@
 </div>
 
 <script>
-    $('#server_selector').prop('disabled', true);
+    $('#guild_id').val(guildId);
 </script>

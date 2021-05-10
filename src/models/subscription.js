@@ -73,21 +73,6 @@ Subscription.init({
         allowNull: false,
         defaultValue: 1,
     },
-    distance: {
-        type: DataTypes.INTEGER(11),
-        allowNull: false,
-        defaultValue: 0,
-    },
-    latitude: {
-        type: DataTypes.DOUBLE(18, 14),
-        allowNull: false,
-        defaultValue: 0,
-    },
-    longitude: {
-        type: DataTypes.DOUBLE(18, 14),
-        allowNull: false,
-        defaultValue: 0,
-    },
     iconStyle: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -96,6 +81,10 @@ Subscription.init({
     phoneNumber: {
         type: DataTypes.STRING(10),
         allowNull: true,
+        defaultValue: null,
+    },
+    location: {
+        type: DataTypes.STRING(32),
         defaultValue: null,
     },
 }, {

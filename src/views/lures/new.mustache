@@ -8,25 +8,18 @@
 </div>
 {{#show_error}}<br>{{/show_error}}
 
-<h1 align="center" id="header">{{New Quest Subscription}}</h1>
+<h1 align="center" id="header">{{New Lure Subscription}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
-    <form action="/api/quests/new" method="post">
+    <form action="/api/lures/new" method="post">
         <div class="form-group">
-            {{Reward}}
-            <input list="rewards" class="custom-select" name="reward" id="reward">
-            <datalist id="rewards">
-                {{#rewards}}
-                <option value="{{.}}">
-                {{/rewards}}
-            </datalist>
-            <!--
-            <select name="reward" class="custom-select" required>
-                {{#rewards}}
-                <option value="{{.}}">{{.}}</option>
-                {{/rewards}}
+            {{Lure Type}}
+            <select name="lure_types" class="custom-select" multiple required>
+                <option value="all" selected>{{All}}</option>
+                {{#lureTypes}}
+                <option value="{{name}}">{{name}}</option>
+                {{/lureTypes}}
             </select>
-            -->
         </div>
         <div class="form-group">
             {{City}}
@@ -36,6 +29,12 @@
             <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
             <div id="map" style="height: 500px;"></div>
         </div>
+        <div class="form-group">
+            {{Location}}
+            <select id="location" name="location" class="custom-select" required>
+                <option value="">{{None}}</option>
+            </select>
+        </div>
         <br>
         <input type="hidden" id="guild_id" name="guild_id">
         <button type="submit" class="btn btn-primary">{{Create}}</button>
@@ -44,6 +43,7 @@
 </div>
 
 <script type='text/javascript' src="/js/city-map.js"></script>
+<script type='text/javascript' src="/js/fetch-locations.js"></script>
 <script>
     if (!guildId) {
         window.location.href = '/';
@@ -53,6 +53,11 @@
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
-    $('#server_selector').prop('disabled', true);
     initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}");
+
+    fetchLocations($('#server_selector').val(), '{{user_id}}', function(result) {
+        for (const location of result.data.locations) {
+            $('#location').append(new Option(location.name, location.name));
+        }
+    });
 </script>

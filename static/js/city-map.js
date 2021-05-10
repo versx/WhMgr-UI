@@ -89,6 +89,7 @@ function loadGeofences(selected) {
             });
         }
     }
+    // Set dom value to selected geofences
     $('#city').val(selectedGeofences.join(','));
 }
 

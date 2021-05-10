@@ -84,6 +84,15 @@
                             </a>
                         </div>
                     </div>
+                    <div class="col-md p-1">
+                        <div class="list-group">
+                            <a class="list-group-item" href="/locations" onclick="return isServerSelected();">
+                                <h3 class="pull-right"><img src="./img/map-pin.png" width="64" height="64"/></h3>
+                                <h4 class="list-group-item-heading text-light locations_count">{{locations_count}}</h4>
+                                <p class="list-group-item-text text-light">{{Locations}}</p>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -153,6 +162,7 @@
                 updateCounter(".quests_count", result.data.subscriptions.quests);
                 updateCounter(".invasions_count", result.data.subscriptions.invasions);
                 updateCounter(".lures_count", result.data.subscriptions.lures);
+                updateCounter(".locations_count", result.data.subscriptions.locations);
                 $('#clients_online').text(result.data.clients_online);
 
                 showError('Select a server from the dropdown menu before creating/editing/deleting any subscriptions!');

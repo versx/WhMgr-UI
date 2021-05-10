@@ -63,6 +63,7 @@
                     <i class="fa fa-fw fa-user" aria-hidden="true"></i>&nbsp;{{username}}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/locations"><i class="fa fa-fw fa-map-pin" aria-hidden="true"></i>&nbsp;{{Locations}}</a>
                     <a class="dropdown-item" href="/settings"><i class="fa fa-fw fa-cog" aria-hidden="true"></i>&nbsp;{{Settings}}</a>
                     <a class="dropdown-item" href="/logout"><i class="fa fa-fw fa-sign-out" aria-hidden="true"></i>&nbsp;{{Logout}}</a>
                 </div>
@@ -81,6 +82,9 @@
     const guildId = get("guild_id");
     $("#server_selector").val(guildId);
     $('#guild_id').val(guildId);
+    if (!guildId) {
+        window.location.href = '/';
+    }
     $(document).ready(function() {
         // Get current URL path and assign 'active' class
         var pathname = window.location.pathname;
@@ -91,4 +95,5 @@
         // If no server/guild selected hide subscription pages
         $('.nav-pages').prop('hidden', true);
     }
+    $('#server_selector').prop('disabled', true);
 </script>

@@ -20,8 +20,6 @@ const { sessionStore, } = require('./services/session-store.js');
 const utils = require('./services/utils.js');
 
 const Localizer = require('./services/locale.js');
-const forms = Localizer.getFormNames();
-console.log('forms:', forms);
 
 // TODO: Convert to typescript
 // TODO: Import/export options

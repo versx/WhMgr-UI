@@ -76,6 +76,12 @@
             <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
             <div id="map" style="height: 500px;"></div>
         </div>
+        <div class="form-group">
+            {{Location}}
+            <select id="location" name="location" class="custom-select" required>
+                <option value="">{{None}}</option>
+            </select>
+        </div>
         <br>
         <input type="hidden" id="guild_id" name="guild_id">
         <button type="submit" class="btn btn-primary">{{Create}}</button>
@@ -84,6 +90,7 @@
 </div>
 
 <script type='text/javascript' src="/js/city-map.js"></script>
+<script type='text/javascript' src="/js/fetch-locations.js"></script>
 <script type='text/javascript' src="/js/pokemon-list.js"></script>
 <script type='text/javascript'>
     if (!guildId) {
@@ -98,6 +105,11 @@
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
-    $('#server_selector').prop('disabled', true);
     initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}");
+
+    fetchLocations($('#server_selector').val(), '{{user_id}}', function(result) {
+        for (const location of result.data.locations) {
+            $('#location').append(new Option(location.name, location.name));
+        }
+    });
 </script>
