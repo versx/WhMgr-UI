@@ -5,9 +5,13 @@ let initialLocation;
 let lastLocation;
 let circleMarker;
 
+// TODO: Maybe upon location found, set circle position.
+
 $('#distance').change(function(e) {
-    const radius = $('#distance').val();
-    circle.setRadius(radius) ;
+    if (circleMarker) {
+        const radius = $('#distance').val();
+        circleMarker.setRadius(radius);
+    }
 });
 
 function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, location = null, radius = 1000) {
@@ -24,8 +28,8 @@ function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, locatio
     map.on('click', function(e) {
         locationLayer.clearLayers();
         const radius = $('#distance').val();
-        circle = createCircle(e.latlng.lat, e.latlng.lng, radius);
-        locationLayer.addLayer(circle);
+        circleMarker = createCircle(e.latlng.lat, e.latlng.lng, radius);
+        locationLayer.addLayer(circleMarker);
         lastLocation = e.latlng;
         $('#location').val(`${e.latlng.lat},${e.latlng.lng}`);
     });
@@ -77,17 +81,17 @@ function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, locatio
 
 function loadLocation(location, radius) {
     const split = location.split(',');
-    circle = createCircle(split[0], split[1], radius);
-    locationLayer.addLayer(circle);
+    circleMarker = createCircle(split[0], split[1], radius);
+    locationLayer.addLayer(circleMarker);
     $('#location').val(location);
 }
 
 function createCircle(lat, lng, radius) {
-    circle = L.circle([lat, lng], {
+    circleMarker = L.circle([lat, lng], {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,
         radius: radius
     });
-    return circle;
+    return circleMarker;
 }
