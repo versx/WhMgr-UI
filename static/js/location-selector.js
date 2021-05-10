@@ -1,10 +1,14 @@
 let tileLayer;
 let locationLayer = new L.LayerGroup();
-let editableLayers = new L.FeatureGroup();
+//let editableLayers = new L.FeatureGroup();
 let initialLocation;
+let lastLocation;
+let circleMarker;
 
-// TODO: Save last latlng
-// TODO: Keep track of circle
+$('#distance').change(function(e) {
+    const radius = $('#distance').val();
+    circle.setRadius(radius) ;
+});
 
 function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, location = null, radius = 1000) {
     const map = L.map('map', {
@@ -20,10 +24,9 @@ function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, locatio
     map.on('click', function(e) {
         locationLayer.clearLayers();
         const radius = $('#distance').val();
-        //console.log('latlng:', e.target);
-        //const radius = e.target._size.x;
-        const circle = createCircle(e.latlng.lat, e.latlng.lng, radius);
+        circle = createCircle(e.latlng.lat, e.latlng.lng, radius);
         locationLayer.addLayer(circle);
+        lastLocation = e.latlng;
         $('#location').val(`${e.latlng.lat},${e.latlng.lng}`);
     });
 
@@ -37,11 +40,12 @@ function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, locatio
         minZoom: minZoom,
         maxZoom: maxZoom,
         scale: scale,
-        hq: L.Browser.retina
+        hq: L.Browser.retina,
     });
     tileLayer.addTo(map);
 
-     // FeatureGroup is to store editable layers
+    // FeatureGroup is to store editable layers
+    /*
     const options = {
         position: 'topleft',
         draw: {
@@ -57,6 +61,13 @@ function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, locatio
     map.on(L.Draw.Event.CREATED, function (e) {
         editableLayers.addLayer(e.layer);
     });
+    */
+
+    L.control.locate({
+        icon: 'fa fa-crosshairs',
+        setView: 'untilPan',
+        keepCurrentZoomLevel: true,
+    }).addTo(map);
 
     initialLocation = location;
     if (initialLocation) {
@@ -66,13 +77,13 @@ function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, locatio
 
 function loadLocation(location, radius) {
     const split = location.split(',');
-    const circle = createCircle(split[0], split[1], radius);
+    circle = createCircle(split[0], split[1], radius);
     locationLayer.addLayer(circle);
     $('#location').val(location);
 }
 
 function createCircle(lat, lng, radius) {
-    const circle = L.circle([lat, lng], {
+    circle = L.circle([lat, lng], {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5,

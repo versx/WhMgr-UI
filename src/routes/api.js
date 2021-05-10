@@ -241,7 +241,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 for (let location of locations) {
                     location = location.toJSON();
                     if (formatted) {
-                        location.location = `${location.latitude},${location.longitude}`;
+                        location.location = `<a href="https://maps.google.com/maps?q=${location.latitude},${location.longitude}" target="_blank">${location.latitude},${location.longitude}</a>`;
                         location.active = location.name === subscription.location ? "Yes" : "No";
                         location.buttons = `
                         <a href='/location/edit/${location.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
