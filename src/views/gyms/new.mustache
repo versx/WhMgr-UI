@@ -79,6 +79,7 @@
         window.location.href = '/';
     }
     $('#guild_id').val(guildId);
+    $('#server_selector').prop('disabled', false);
 
     fetchLocations($('#server_selector').val(), '{{user_id}}', function(result) {
         for (const location of result.data.locations) {

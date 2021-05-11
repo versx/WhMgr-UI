@@ -93,6 +93,7 @@
     }
 
     $('#guild_id').val(guildId);
+    $('#server_selector').prop('disabled', false);
     const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);

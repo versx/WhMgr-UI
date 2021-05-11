@@ -33,6 +33,7 @@
 <script type='text/javascript' src="/js/location-selector.js"></script>
 <script type='text/javascript'>
     $('#guild_id').val(guildId);
+    $('#server_selector').prop('disabled', false);
     initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}");
 
     $('#distance').change(updateCircleRadius);

@@ -11,6 +11,10 @@
 <h1 align="center" id="header">{{New PVP Subscription}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
+    <div class="alert alert-info" style="float: none; margin: 0 auto;">
+        <div><strong>{{Description}}:</strong> PvP subscriptions are based on wild spawns. If you want to receive a rank 1 Venasuar, you should subscribe to Bulbsaur, Ivysaur, and Venusaur at rank 1 since all three are wild and valid candidates.</div>
+    </div>
+    <br>
     <form action="/api/pvp/new" method="post">
         <div class="form-group">
             <div class="form-group">
@@ -101,6 +105,7 @@
         event.target.setCustomValidity('Please leave blank if you want all pokemon forms');
     }
     $('#guild_id').val(guildId);
+    $('#server_selector').prop('disabled', false);
     const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
