@@ -242,7 +242,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     location = location.toJSON();
                     if (formatted) {
                         location.location = `<a href="https://maps.google.com/maps?q=${location.latitude},${location.longitude}" target="_blank">${location.latitude},${location.longitude}</a>`;
-                        location.active = location.name === subscription.location ? "Yes" : "No";
+                        location.active = location.name === subscription.location ? 'Yes' : 'No';
                         location.buttons = `
                         <a href='/location/edit/${location.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                         &nbsp;
@@ -306,7 +306,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         name: x.name,
                         location: `${x.latitude},${x.longitude}`,
                         distance: x.distance,
-                    }
+                    };
                 });
                 res.json({ data: { settings: settings } });
             }
@@ -836,7 +836,7 @@ router.post('/quests/new', async (req, res) => {
 
 router.post('/quests/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, /*reward,*/ citylocation, } = req.body;
+    const { guild_id, /*reward,*/ city, location, } = req.body;
     //const user_id = req.session.user_id;
     const quest = await Quest.getById(id);
     if (quest) {

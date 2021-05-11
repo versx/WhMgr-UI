@@ -558,7 +558,7 @@ router.get('/settings', async (req, res) => {
         name: x.name,
         guild: x.guild,
         selected: false,
-    }});
+    };});
     res.render('settings', data);
 });
 
