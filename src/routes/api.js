@@ -301,8 +301,21 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     loc.selected = loc.name === settings.location;
                 });
                 */
-                settings.locations = locations;
+                settings.locations = locations.map(x => {
+                    return {
+                        name: x.name,
+                        location: `${x.latitude},${x.longitude}`,
+                        distance: x.distance,
+                    }
+                });
                 res.json({ data: { settings: settings } });
+            }
+            break;
+        case 'get_location':
+            const locationName = req.query.name;
+            if (locationName) {
+                const location = await Location.getByName(guild_id, user_id, locationName);
+                res.json({ data: { location: `${location.latitude},${location.longitude}`, radius: location.distance, } });
             }
             break;
     }

@@ -36,6 +36,9 @@
                             -->
                         </select>
                     </div>
+                    <div class="form-group">
+                        <div id="map" style="height: 500px;"></div>
+                    </div>
                     {{^hide_phone_number}}
                     <div class="form-group">
                         {{Phone Number}}
@@ -56,7 +59,8 @@
     </form>
 </div>
 
-<script>
+<script type='text/javascript' src="/js/location-viewer.js"></script>
+<script type='text/javascript'>
     if (!guildId) {
         window.location.href = '/';
     }
@@ -65,6 +69,19 @@
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
+
+    $('#location').change(function(e) {
+        $.ajax({
+            url: "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=get_location&name=" + $('#location').val(),
+            method: "POST",
+            type: "json",
+            success: function(result) {
+                const location = result.data.location;
+                const radius = result.data.radius;
+                loadLocation(location, radius);
+            }
+        });
+    });
 
     function refreshData() {
         showError('Select a server from the dropdown menu before creating/editing/deleting any subscriptions!');
@@ -77,7 +94,20 @@
                 $('#phone_number').val(result.data.settings.phoneNumber);
                 $('#enabled').prop('checked', result.data.settings.enabled);
                 for (const location of result.data.settings.locations) {
-                    $('#location').append(new Option(location.name, location.name, location.name === result.data.settings.location, location.name === result.data.settings.location));
+                    const selected = location.name === result.data.settings.location;
+                    $('#location').append(new Option(
+                        location.name,
+                        location.name,
+                        selected,
+                        selected
+                    ));
+                    const curLocation = (result.data.settings.locations.filter(x => {
+                        return x.name === result.data.settings.location
+                    }) || []);
+                    if (curLocation.length > 0 && selected) {
+                        const radius = curLocation[0].distance;
+                        initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}", curLocation[0].location, radius);
+                    }
                 }
             }
         });
