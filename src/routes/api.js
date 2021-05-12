@@ -13,7 +13,7 @@ const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const Lure = require('../models/lure.js');
 const Location = require('../models/location.js');
-const Subscription = require('../models/subscription.js');
+const { Subscription, NotificationStatusType, } = require('../models/subscription.js');
 const DiscordClient = require('../services/discord.js');
 const Localizer = require('../services/locale.js');
 const utils = require('../services/utils.js');
@@ -283,7 +283,8 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { settings: [] });
                 return;
             }
-            const settings = (await Subscription.getSubscription(guild_id, user_id)).toJSON();
+            const sub = await Subscription.getSubscription(guild_id, user_id);
+            const settings = sub.toJSON();
             if (formatted) {
                 const list = [];
                 const keys = Object.keys(settings);
@@ -293,14 +294,17 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         list.push({ 'name': key.toUpperCase(), 'value': settings[key] });
                     }
                 });
-                res.json({ data: { settings: list } });
+                // Get subscription statuses
+                settings.enable_pokemon = sub.isEnabled(NotificationStatusType.Pokemon);
+                settings.enable_pvp = sub.isEnabled(NotificationStatusType.PvP);
+                settings.enable_raids = sub.isEnabled(NotificationStatusType.Raids);
+                settings.enable_quests = sub.isEnabled(NotificationStatusType.Quests);
+                settings.enable_invasions = sub.isEnabled(NotificationStatusType.Invasions);
+                settings.enable_lures = sub.isEnabled(NotificationStatusType.Lures);
+                settings.enable_gyms = sub.isEnabled(NotificationStatusType.Gyms);
+                res.json({ data: { settings: list, } });
             } else {
                 const locations = await Location.getAll(guild_id, user_id);
-                /*
-                locations.forEach(loc => {
-                    loc.selected = loc.name === settings.location;
-                });
-                */
                 settings.locations = locations.map(x => {
                     return {
                         name: x.name,
@@ -308,7 +312,15 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         distance: x.distance,
                     };
                 });
-                res.json({ data: { settings: settings } });
+                // Get subscription statuses
+                settings.enable_pokemon = sub.isEnabled(NotificationStatusType.Pokemon);
+                settings.enable_pvp = sub.isEnabled(NotificationStatusType.PvP);
+                settings.enable_raids = sub.isEnabled(NotificationStatusType.Raids);
+                settings.enable_quests = sub.isEnabled(NotificationStatusType.Quests);
+                settings.enable_invasions = sub.isEnabled(NotificationStatusType.Invasions);
+                settings.enable_lures = sub.isEnabled(NotificationStatusType.Lures);
+                settings.enable_gyms = sub.isEnabled(NotificationStatusType.Gyms);
+                res.json({ data: { settings: settings, } });
             }
             break;
         case 'get_location':
@@ -1241,15 +1253,58 @@ router.post('/settings', async (req, res) => {
         icon_style,
         location,
         distance,
-        enabled,
         phone_number,
+        enable_pokemon,
+        enable_pvp,
+        enable_raids,
+        enable_quests,
+        enable_invasions,
+        enable_lures,
+        enable_gyms,
     } = req.body;
     const userId = req.session.user_id;
     const split = (location || '0,0').split(',');
     const lat = parseFloat(split[0]);
     const lon = parseFloat(split[1]);
-    const isEnabled = enabled === 'on';
-    const result = Subscription.updateSubscription(guild_id, userId, isEnabled, distance, lat, lon, icon_style, phone_number);
+    let status = NotificationStatusType.None;
+    const sub = await Subscription.getSubscription(guild_id, userId);
+    if (enable_pokemon === 'on') {
+        sub.enableNotificationType(NotificationStatusType.Pokemon);
+    } else {
+        sub.disableNotificationType(NotificationStatusType.Pokemon);
+    }
+    if (enable_pvp === 'on') {
+        sub.enableNotificationType(NotificationStatusType.PvP);
+    } else {
+        sub.disableNotificationType(NotificationStatusType.PvP);
+    }
+    if (enable_raids === 'on') {
+        sub.enableNotificationType(NotificationStatusType.Raids);
+    } else {
+        sub.disableNotificationType(NotificationStatusType.Raids);
+    }
+    if (enable_quests === 'on') {
+        sub.enableNotificationType(NotificationStatusType.Quests);
+    } else {
+        sub.disableNotificationType(NotificationStatusType.Quests);
+    }
+    if (enable_invasions === 'on') {
+        sub.enableNotificationType(NotificationStatusType.Invasions);
+    } else {
+        sub.disableNotificationType(NotificationStatusType.Invasions);
+    }
+    if (enable_lures === 'on') {
+        sub.enableNotificationType(NotificationStatusType.Lures);
+    } else {
+        sub.disableNotificationType(NotificationStatusType.Lures);
+    }
+    if (enable_gyms === 'on') {
+        sub.enableNotificationType(NotificationStatusType.Gyms);
+    } else {
+        sub.disableNotificationType(NotificationStatusType.Gyms);
+    }
+    status = sub.status;
+    const result = await Subscription.updateSubscription(guild_id, userId, status, distance, lat, lon, icon_style, phone_number);
     if (result) {
         // Success
         console.log('Successfully updated subscription settings for', userId, 'in guild', guild_id);
