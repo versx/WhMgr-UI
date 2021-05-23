@@ -86,7 +86,7 @@
         event.target.setCustomValidity('Please leave blank if you want all pokemon forms');
     }
     $('#guild_id').val(guildId);
-    $('#server_selector').prop('disabled', false);
+    $('#server_selector').prop('disabled', true);
     const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
