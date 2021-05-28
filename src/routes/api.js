@@ -164,6 +164,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (quests) {
                 for (let quest of quests) {
                     quest = quest.toJSON();
+                    quest.pokestop_name = quest.pokestopName;
                     quest.city = formatAreas(guild_id, quest.city);
                     quest.buttons = `
                     <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
@@ -213,6 +214,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     lure = lure.toJSON();
                     const lureName = Localizer.getLureName(lure.lureType);
                     const lureIcon = Localizer.getLureIcon(lure.lureType);
+                    lure.pokestop_name = lure.pokestopName;
                     lure.type = `<img src='${lureIcon}' width='auto' height='32'>&nbsp;${lureName}`;
                     lure.city = formatAreas(guild_id, lure.city);
                     lure.buttons = `
@@ -812,7 +814,7 @@ router.post('/gyms/delete_all', async (req, res) => {
 
 // Quest routes
 router.post('/quests/new', async (req, res) => {
-    const { guild_id, reward, city, location, } = req.body;
+    const { guild_id, pokestop_name, reward, city, location, } = req.body;
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
@@ -820,7 +822,7 @@ router.post('/quests/new', async (req, res) => {
         return;
     }
     const areas = getAreas(guild_id, (city || '').split(','));
-    let exists = await Quest.getByReward(guild_id, user_id, reward);
+    let exists = await Quest.getBy(guild_id, user_id, pokestop_name, reward);
     if (exists) {
         // Already exists
         exists.city = utils.arrayUnique(exists.city.concat(areas || []));
@@ -830,6 +832,7 @@ router.post('/quests/new', async (req, res) => {
             subscriptionId: subscription.id,
             guildId: guild_id,
             userId: user_id,
+            pokestopName: pokestop_name,
             reward: reward,
             city: areas,
             location: location || null,
@@ -838,9 +841,9 @@ router.post('/quests/new', async (req, res) => {
     const results = await exists.save();
     if (results) {
         // Success
-        console.log('Quest subscription for reward', reward, 'created successfully.');
+        console.log('Quest subscription for reward', reward, 'at pokestop', pokestop_name, 'created successfully.');
     } else {
-        showError(res, 'quests/new', `Failed to create or update Quest subscription reward ${reward}`);
+        showError(res, 'quest-new', `Failed to create or update Quest subscription reward ${reward} and pokestop ${pokestop_name}`);
         return;
     }
     res.redirect('/quests');
@@ -848,11 +851,13 @@ router.post('/quests/new', async (req, res) => {
 
 router.post('/quests/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, /*reward,*/ city, location, } = req.body;
+    const { guild_id, reward, pokestop_name, city, location, } = req.body;
     //const user_id = req.session.user_id;
     const quest = await Quest.getById(id);
     if (quest) {
         const areas = getAreas(guild_id, (city || '').split(','));
+        quest.reward = reward;
+        quest.pokestopName = pokestop_name;
         quest.city = areas;
         quest.location = location || null;
         const result = await quest.save();
@@ -1013,7 +1018,7 @@ router.post('/invasions/delete_all', async (req, res) => {
 
 // Lure routes
 router.post('/lures/new', async (req, res) => {
-    const { guild_id, city, location, } = req.body;
+    const { guild_id, pokestop_name, city, location, } = req.body;
     let lureTypes = req.body.lure_types;
     const user_id = defaultData.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
@@ -1028,9 +1033,11 @@ router.post('/lures/new', async (req, res) => {
     //const split = lureTypes.split(',');
     for (let i = 0; i < lureTypes.length; i++) {
         const lureType = lureTypes[i];
-        let exists = await Lure.getByType(guild_id, user_id, lureType);
+        let exists = await Lure.getBy(guild_id, user_id, pokestop_name, lureType);
         if (exists) {
             // Already exists
+            // TODO: Update pokestop lure type
+            exists.pokestopName = pokestop_name;
             exists.city = utils.arrayUnique(exists.city.concat(areas || []));
             exists.location = location || null;
         } else {
@@ -1039,6 +1046,7 @@ router.post('/lures/new', async (req, res) => {
                 subscriptionId: subscription.id,
                 guildId: guild_id,
                 userId: user_id,
+                pokestopName: pokestop_name,
                 lureType: lureType,
                 city: areas,
                 location: location || null,
@@ -1047,9 +1055,9 @@ router.post('/lures/new', async (req, res) => {
         const results = await exists.save();
         if (results) {
             // Success
-            console.log('Lure subscription for type', lureType, 'created successfully.');
+            console.log('Lure subscription for type', lureType, 'with pokestop', pokestop_name, 'created successfully.');
         } else {
-            showError(res, 'lures/lures', `Failed to create Lure subscription for type ${lureType}`);
+            showError(res, 'lures', `Failed to create Lure subscription for type ${lureType} with pokestop ${pokestop_name}`);
             return;
         }
     }
@@ -1058,11 +1066,13 @@ router.post('/lures/new', async (req, res) => {
 
 router.post('/lures/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, city, location, } = req.body;
+    const { guild_id, pokestop_name, city, location, } = req.body;
     //const user_id = defaultData.user_id;
     const lure = await Lure.getById(id);
     if (lure) {
         const areas = getAreas(guild_id, (city || '').split(','));
+        // TODO: Update pokestop lure type
+        lure.pokestopName = pokestop_name;
         lure.city = areas;
         lure.location = location || null;
         const result = lure.save();
