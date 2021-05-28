@@ -19,10 +19,6 @@ const uiRoutes = require('./routes/ui.js');
 const { sessionStore, } = require('./services/session-store.js');
 const utils = require('./services/utils.js');
 
-const Localizer = require('./services/locale.js');
-const forms = Localizer.getFormNames();
-console.log('forms:', forms);
-
 // TODO: Convert to typescript
 // TODO: Import/export options
 // TODO: Copy subscriptions to other discord server options
@@ -109,7 +105,7 @@ console.log('forms:', forms);
             await Session.clearOthers(req.session.user_id, req.sessionID);
         }
         */
-        if (config.discord.enabled && !req.session.valid) {
+        if (!req.session.valid && req.path !== '/login') {
             console.error('Invalid user authenticated', req.session.user_id);
             req.session.current_path = req.path;
             res.redirect('/login');
@@ -121,32 +117,32 @@ console.log('forms:', forms);
             return next();
         }
 
-        if (req.session.logged_in) {
-            defaultData.logged_in = req.session.logged_in;
-            defaultData.username = req.session.username || 'root';
-            defaultData.user_id = req.session.user_id;
-            let valid = false;
-            const guilds = req.session.guilds;
-            const roles = req.session.roles;
-            defaultData.servers.forEach(server => {
-                if (roles[server.id]) {
-                    const userRoles = roles[server.id];
-                    const requiredRoles = config.discord.guilds.filter(x => x.id === server.id);
-                    if (requiredRoles.length > 0) {
-                        if (guilds.includes(server.id) && utils.hasRole(userRoles, requiredRoles[0].roles)) {
-                            valid = true;
-                        }
+        if (!req.session.logged_in) {
+            res.redirect('/login');
+        }
+        defaultData.logged_in = req.session.logged_in;
+        defaultData.username = req.session.username || 'root';
+        defaultData.user_id = req.session.user_id;
+        let valid = false;
+        const guilds = req.session.guilds;
+        const roles = req.session.roles;
+        defaultData.servers.forEach(server => {
+            if (roles[server.id]) {
+                const userRoles = roles[server.id];
+                const requiredRoles = config.discord.guilds.filter(x => x.id === server.id);
+                if (requiredRoles.length > 0) {
+                    if (guilds.includes(server.id) && utils.hasRole(userRoles, requiredRoles[0].roles)) {
+                        valid = true;
                     }
                 }
-            });
-            if (!req.session.valid || !valid) {
-                console.error('Invalid user authentication, no valid roles for user', req.session.user_id);
-                res.redirect('/login');
-                return;
             }
-            return next();
+        });
+        if (!req.session.valid || !valid) {
+            console.error('Invalid user authentication, no valid roles for user', req.session.user_id);
+            res.redirect('/login');
+            return;
         }
-        res.redirect('/login');
+        return next();
     });
 
     // API routes

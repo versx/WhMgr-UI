@@ -33,9 +33,9 @@
         window.location.href = '/';
     }
     $('#guild_id').val(guildId);
+    $('#server_selector').prop('disabled', true);
     const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
-    $('#server_selector').prop('disabled', true);
 </script>

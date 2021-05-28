@@ -1,6 +1,7 @@
 'use strict';
 
 const Localizer = require('../services/locale.js');
+const Location = require('../models/location.js');
 const MapPokestop = require('../models/map/pokestop.js');
 const config = require('../config.json');
 
@@ -31,6 +32,21 @@ const buildCityList = (guilds) => {
         }
     }
     return cities;
+};
+
+const buildLocationsList = async (guilds, userId) => {
+    const locs = [];
+    const locations = await Location.getAllByUserId(userId);
+    for (let i = 0; i < locations.length; i++) {
+        const location = locations[i];
+        if (guilds.includes(location.guildId)) {
+            locs.push({
+                'name': location.name,
+                'guild': location.guildId,
+            });
+        }
+    }
+    return locs;
 };
 
 const getQuestRewards = async () => {
@@ -71,6 +87,7 @@ const getLureTypes = () => {
 module.exports = {
     getPokemonNameIdsList,
     buildCityList,
+    buildLocationsList,
     getQuestRewards,
     getInvasionTypes,
     getLureTypes,

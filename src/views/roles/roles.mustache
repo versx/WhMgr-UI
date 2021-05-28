@@ -51,7 +51,7 @@
             "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=roles",
             "dataSrc": "data.roles",
             "async": true,
-            "type": "POST"
+            "type": "POST",
         },
         //"dom": "Bfrtip",
         // Reference: https://stackoverflow.com/a/43176143
@@ -64,11 +64,11 @@
                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         "fixedHeader": {
             "header": true,
-            "headerOffset": $('.navbar').height() + 15
+            "headerOffset": $('.navbar').height() + 15,
         },
         "buttons": [
             "colvis",
-            "pageLength"
+            "pageLength",
         ],
         "colReorder": true,
         "stateSave": true,
@@ -77,23 +77,19 @@
         "pageLength": 100,
         "columns": [
             { "data": "name" },
-            { "data": "buttons" }
+            { "data": "buttons" },
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
         "columnDefs": [{
             "targets": [1],
-            "orderable": false
+            "orderable": false,
         }],
-        "responsive": true
+        "responsive": true,
     });
 
     function refreshData() {
         $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=roles").load();
-    }
-
-    function testRemove() {
-
     }
 </script>

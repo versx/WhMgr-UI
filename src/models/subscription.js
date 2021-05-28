@@ -12,6 +12,18 @@ const Invasion = require('./invasion.js');
 const Gym = require('./gym.js');
 */
 
+const NotificationStatusType = {
+    None: 0x0,
+    Pokemon: 0x1,
+    PvP: 0x2,
+    Raids: 0x4,
+    Quests: 0x8,
+    Invasions: 0x10,
+    Lures: 0x20,
+    Gyms: 0x40,
+    All: this.Pokemon | this.PvP | this.Raids | this.Quests | this.Invasions | this.Lures | this.Gyms,
+};
+
 class Subscription extends Model {
   
     static async createUserSubscription(guildId, userId) {
@@ -24,9 +36,9 @@ class Subscription extends Model {
         return results;
     }
 
-    static updateSubscription(guildId, userId, enabled, distance, latitude, longitude, iconStyle, phoneNumber) {
+    static updateSubscription(guildId, userId, status, distance, latitude, longitude, iconStyle, phoneNumber) {
         return Subscription.update({
-            enabled: enabled,
+            status: status,
             distance: distance || 0,
             latitude: latitude || 0,
             longitude: longitude || 0,
@@ -52,6 +64,18 @@ class Subscription extends Model {
         }
         return existing;
     }
+
+    isEnabled(status) {
+        return (this.status & status) === status;
+    }
+
+    enableNotificationType(status) {
+        this.status |= status;
+    }
+
+    disableNotificationType(status) {
+        this.status &= (~status);
+    }
 }
 
 Subscription.init({
@@ -68,24 +92,16 @@ Subscription.init({
         type: DataTypes.BIGINT(20).UNSIGNED,
         allowNull: false,
     },
+    /*
     enabled: {
         type: DataTypes.TINYINT(1).UNSIGNED,
         allowNull: false,
         defaultValue: 1,
     },
-    distance: {
-        type: DataTypes.INTEGER(11),
-        allowNull: false,
-        defaultValue: 0,
-    },
-    latitude: {
-        type: DataTypes.DOUBLE(18, 14),
-        allowNull: false,
-        defaultValue: 0,
-    },
-    longitude: {
-        type: DataTypes.DOUBLE(18, 14),
-        allowNull: false,
+    */
+    status: {
+        type: DataTypes.SMALLINT(5).UNSIGNED,
+        require: true,
         defaultValue: 0,
     },
     iconStyle: {
@@ -96,6 +112,10 @@ Subscription.init({
     phoneNumber: {
         type: DataTypes.STRING(10),
         allowNull: true,
+        defaultValue: null,
+    },
+    location: {
+        type: DataTypes.STRING(32),
         defaultValue: null,
     },
 }, {
@@ -116,4 +136,4 @@ Subscription.Gyms = Subscription.hasMany(Gym);
 */
 
 // Export the class
-module.exports = Subscription;
+module.exports = { Subscription, NotificationStatusType, };

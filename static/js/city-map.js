@@ -87,8 +87,10 @@ function loadGeofences(selected) {
             featureLayer.setStyle({
                 fillColor: 'green',
             });
+            createCityListItem(area);
         }
     }
+    // Set dom value to selected geofences
     $('#city').val(selectedGeofences.join(','));
 }
 
@@ -102,6 +104,7 @@ function loadGeofence(feature, featureLayer, isClick) {
             featureLayer.setStyle({
                 fillColor: 'green',
             });
+            createCityListItem(feature.properties.name);
         } else {
             // Get index of de-selected geofence
             const index = selectedGeofences.indexOf(feature.properties.name);
@@ -114,6 +117,7 @@ function loadGeofence(feature, featureLayer, isClick) {
             featureLayer.setStyle({
                 fillColor: 'red',
             });
+            removeCityListItem(feature.properties.name);
         }
     } else {
         // Check if geofence is in initially selected geofences to edit
@@ -122,14 +126,46 @@ function loadGeofence(feature, featureLayer, isClick) {
             featureLayer.setStyle({
                 fillColor: 'green',
             });
+            createCityListItem(feature.properties.name);
         } else {
             featureLayer.setStyle({
                 fillColor: 'red',
             });
+            removeCityListItem(feature.properties.name);
         }
     }
     // Set dom value to selected geofences
     $('#city').val(selectedGeofences.join(','));
+}
+
+function createCityListItem(name) {
+    const ul = document.getElementById('city-list');
+    if (!containsCityListItem(name)) {
+        const li = document.createElement('li');
+        li.classList.add('list-group-item');
+        li.id = name;
+        const node = document.createTextNode(name);
+        li.appendChild(node);
+        ul.appendChild(li);
+    }
+}
+
+function removeCityListItem(name) {
+    const ul = document.getElementById('city-list');
+    if (containsCityListItem(name)) {
+        const li = document.getElementById(name);
+        ul.removeChild(li)
+    }
+}
+
+function containsCityListItem(name) {
+    let found = false;
+    $("#city-list li").each((id, elem) => {
+        if (elem.innerText === name) {
+            found = true;
+        }
+    });
+    return found;
 }
 
 function selectGeofences(all) {
@@ -140,6 +176,9 @@ function selectGeofences(all) {
         // Check if we need to select all
         if (all) {
             selectedGeofences.push(layer.feature.properties.name);
+            createCityListItem(layer.feature.properties.name);
+        } else {
+            removeCityListItem(layer.feature.properties.name);
         }
         // Set color based on selection
         layer.setStyle({

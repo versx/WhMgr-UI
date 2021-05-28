@@ -7,17 +7,20 @@
     <div id="error"></div>
 </div>
 
-<h1 align="center" id="header">{{Lures}}</h1>
+<h1 align="center" id="header">{{Invasions}}</h1>
 <br>
 <div style="width:90%; margin-left:calc(5%);">
-    <a href="/lures/delete_all" role="button" style="float: right; margin-left: 5px;" class="btn btn-danger">{{Delete All}}</a>
-    <a href="/lure/new" role="button" style="float: right; margin-right: 5px;" class="btn btn-success">{{New Lure Subscription}}</a>
+    <a href="/invasions/delete_all" role="button" style="float: right; margin-left: 5px;" class="btn btn-danger">{{Delete All}}</a>
+    <a href="/invasion/new" role="button" style="float: right; margin-right: 5px;" class="btn btn-success">{{New Invasion Subscription}}</a>
     <br><br>
     <table id="table" class="table {{table_class}} table-sm table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
         <thead class="thead-dark">
             <tr>
-                <th class="all">{{Lure Type}}</th>
+                <th class="all">{{Pokestop Name}}</th>
+                <th class="all">{{Invasion Type}}</th>
+                <th class="all">{{Reward}}</th>
                 <th class="all">{{City}}</th>
+                <th class="min-desktop">{{Location}}</th>
                 <th class="all" width="5%"></th>
             </tr>
         </thead>
@@ -34,12 +37,12 @@
         window.location.href = '/';
     }
     showError('Select a server from the dropdown menu before creating/editing/deleting any subscriptions!');
-    const table = $('#table').DataTable( {
+    const table = $('#table').DataTable({
         "ajax": {
-            "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=lures",
-            "dataSrc": "data.lures",
+            "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=invasions",
+            "dataSrc": "data.invasions",
             "async": true,
-            "type": "POST"
+            "type": "POST",
         },
         //"dom": "Bfrtip",
         // Reference: https://stackoverflow.com/a/43176143
@@ -52,11 +55,11 @@
                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         "fixedHeader": {
             "header": true,
-            "headerOffset": $('.navbar').height() + 15
+            "headerOffset": $('.navbar').height() + 15,
         },
         "buttons": [
             "colvis",
-            "pageLength"
+            "pageLength",
         ],
         "colReorder": true,
         "stateSave": true,
@@ -64,21 +67,24 @@
         "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
         "pageLength": 100,
         "columns": [
+            { "data": "name" },
             { "data": "type" },
+            { "data": "reward" },
             { "data": "city" },
-            { "data": "buttons" }
+            { "data": "location" },
+            { "data": "buttons" },
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
         "columnDefs": [{
-            "targets": [2],
-            "orderable": false
+            "targets": [4],
+            "orderable": false,
         }],
-        "responsive": true
+        "responsive": true,
     });
 
     function refreshData() {
-        $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=lures").load();
+        $("#table").DataTable().ajax.url("/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=invasions").load();
     }
 </script>

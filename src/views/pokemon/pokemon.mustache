@@ -38,6 +38,7 @@
                         <th class="min-desktop">{{Level}}</th>
                         <th class="min-desktop">{{Gender}}</th>
                         <th class="min-desktop">{{City}}</th>
+                        <th class="min-desktop">{{Location}}</th>
                         <th class="all" width="5%"></th>
                     </tr>
                 </thead>
@@ -59,6 +60,7 @@
                         <th class="all">{{Minimum Rank}}</th>
                         <th class="min-desktop">{{Minimum Percent}}</th>
                         <th class="min-desktop">{{City}}</th>
+                        <th class="min-desktop">{{Location}}</th>
                         <th class="all" width="5%"></th>
                     </tr>
                 </thead>
@@ -91,7 +93,7 @@
             "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pokemon",
             "dataSrc": "data.pokemon",
             "async": true,
-            "type": "POST"
+            "type": "POST",
         },
         //"dom": "Bfrtip",
         // Reference: https://stackoverflow.com/a/43176143
@@ -104,11 +106,11 @@
                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         "fixedHeader": {
             "header": true,
-            "headerOffset": $('.navbar').height() + 15
+            "headerOffset": $('.navbar').height() + 15,
         },
         "buttons": [
             "colvis",
-            "pageLength"
+            "pageLength",
         ],
         "colReorder": true,
         "stateSave": true,
@@ -125,16 +127,17 @@
             { "data": "lvl" },
             { "data": "genderName" },
             { "data": "city" },
-            { "data": "buttons" }
+            { "data": "location" },
+            { "data": "buttons" },
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
         "columnDefs": [{
-            "targets": [9],
-            "orderable": false
+            "targets": [10],
+            "orderable": false,
         }],
-        "responsive": true
+        "responsive": true,
     });
 
     const tablePVP = $('#table-pvp').DataTable({
@@ -142,7 +145,7 @@
             "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=pvp",
             "dataSrc": "data.pvp",
             "async": true,
-            "type": "POST"
+            "type": "POST",
         },
         //"dom": "Bfrtip",
         // Reference: https://stackoverflow.com/a/43176143
@@ -155,11 +158,11 @@
                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         "fixedHeader": {
             "header": true,
-            "headerOffset": $('.navbar').height() + 15
+            "headerOffset": $('.navbar').height() + 15,
         },
         "buttons": [
             "colvis",
-            "pageLength"
+            "pageLength",
         ],
         "colReorder": true,
         "stateSave": true,
@@ -174,16 +177,17 @@
             { "data": "minRank" },
             { "data": "minPercent" },
             { "data": "city" },
-            { "data": "buttons" }
+            { "data": "location" },
+            { "data": "buttons" },
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
         "columnDefs": [{
-            "targets": [7],
-            "orderable": false
+            "targets": [8],
+            "orderable": false,
         }],
-        "responsive": true
+        "responsive": true,
     });
 
     function refreshData() {
