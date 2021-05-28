@@ -7,6 +7,7 @@ let initialSelect = [];
 
 function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, selected = []) {
     const map = L.map('map', {
+        tap: false,
         preferCanvas: true,
         //worldCopyJump: true,
         updateWhenIdle: true,
