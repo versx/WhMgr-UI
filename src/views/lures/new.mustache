@@ -24,10 +24,19 @@
         <div class="form-group">
             {{City}}
             <br>
-            <input type="hidden" id="city" name="city" />
             <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
             <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
-            <div id="map" style="height: 500px;"></div>
+            <br>
+            <input type="input" id="city" name="city" readonly hidden />
+            <div class="row">
+                <div class="col-md-10">
+                    <div id="map" style="height: 500px;"></div>
+                </div>
+                <div class="col-md-2">
+                    <ul id="city-list" class="list-group city-list" style="max-height: 500px; height: 500px; margin-bottom: 10px; overflow:scroll;">
+                    </ul>
+                </div>
+            </div>
         </div>
         <div class="form-group">
             {{Location}}

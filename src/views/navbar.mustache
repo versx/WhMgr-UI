@@ -82,9 +82,6 @@
     const guildId = get("guild_id");
     $("#server_selector").val(guildId);
     $('#guild_id').val(guildId);
-    if (!guildId) {
-        window.location.href = '/';
-    }
     $(document).ready(function() {
         // Get current URL path and assign 'active' class
         var pathname = window.location.pathname;
