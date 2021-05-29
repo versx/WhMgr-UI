@@ -14,6 +14,7 @@ const MapGym = require('../models/map/gym.js');
 const Quest = require('../models/quest.js');
 const Invasion = require('../models/invasion.js');
 const Lure = require('../models/lure.js');
+const Location = require('../models/location.js');
 const Localizer = require('../services/locale.js');
 const utils = require('../services/utils.js');
 const PokestopQuest = require('../models/map/pokestop');
@@ -44,7 +45,7 @@ router.get('/logout', (req, res) => {
 router.get('/pokemon', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('pokemon', data);
+    res.render('pokemon/pokemon', data);
 });
 
 router.get('/pokemon/new', async (req, res) => {
@@ -53,7 +54,8 @@ router.get('/pokemon/new', async (req, res) => {
     data.pokemon = await map.getPokemonNameIdsList();
     data.forms = Localizer.getFormNames();
     data.cities = map.buildCityList(req.session.guilds);
-    res.render('pokemon-new', data);
+    data.locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
+    res.render('pokemon/new', data);
 });
 
 router.get('/pokemon/edit/:id', async (req, res) => {
@@ -91,20 +93,24 @@ router.get('/pokemon/edit/:id', async (req, res) => {
         map.buildCityList(req.session.guilds)
     );
     data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
-    res.render('pokemon-edit', data);
+    data.locations = await Location.getAll(pokemon.guildId, pokemon.userId);
+    data.locations.forEach(loc => {
+        loc.selected = loc.name === pokemon.location;
+    });
+    res.render('pokemon/edit', data);
 });
 
 router.get('/pokemon/delete/:id', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
-    res.render('pokemon-delete', data);
+    res.render('pokemon/delete', data);
 });
 
 router.get('/pokemon/delete_all', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('pokemon-delete-all', data);
+    res.render('pokemon/delete-all', data);
 });
 
 
@@ -115,7 +121,8 @@ router.get('/pvp/new', async (req, res) => {
     data.pokemon = await map.getPokemonNameIdsList();
     data.forms = Localizer.getFormNames();
     data.cities = map.buildCityList(req.session.guilds);
-    res.render('pvp-new', data);
+    data.locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
+    res.render('pvp/new', data);
 });
 
 router.get('/pvp/edit/:id', async (req, res) => {
@@ -148,20 +155,24 @@ router.get('/pvp/edit/:id', async (req, res) => {
         map.buildCityList(req.session.guilds)
     );
     data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
-    res.render('pvp-edit', data);
+    data.locations = await Location.getAll(pvp.guildId, pvp.userId);
+    data.locations.forEach(loc => {
+        loc.selected = loc.name === pvp.location;
+    });
+    res.render('pvp/edit', data);
 });
 
 router.get('/pvp/delete/:id', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
-    res.render('pvp-delete', data);
+    res.render('pvp/delete', data);
 });
 
 router.get('/pvp/delete_all', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('pvp-delete-all', data);
+    res.render('pvp/delete-all', data);
 });
 
 
@@ -169,7 +180,7 @@ router.get('/pvp/delete_all', (req, res) => {
 router.get('/raids', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('raids', data);
+    res.render('raids/raids', data);
 });
 
 router.get('/raid/new', async (req, res) => {
@@ -178,7 +189,8 @@ router.get('/raid/new', async (req, res) => {
     data.pokemon = await map.getPokemonNameIdsList();
     data.forms = Localizer.getFormNames();
     data.cities = map.buildCityList(req.session.guilds);
-    res.render('raid-new', data);
+    data.locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
+    res.render('raids/new', data);
 });
 
 router.get('/raid/edit/:id', async (req, res) => {
@@ -206,20 +218,24 @@ router.get('/raid/edit/:id', async (req, res) => {
         map.buildCityList(req.session.guilds)
     );
     data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
-    res.render('raid-edit', data);
+    data.locations = await Location.getAll(raid.guildId, raid.userId);
+    data.locations.forEach(loc => {
+        loc.selected = loc.name === raid.location;
+    });
+    res.render('raids/edit', data);
 });
 
 router.get('/raid/delete/:id', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
-    res.render('raid-delete', data);
+    res.render('raids/delete', data);
 });
 
 router.get('/raids/delete_all', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('raids-delete-all', data);
+    res.render('raids/delete-all', data);
 });
 
 
@@ -231,7 +247,8 @@ router.get('/gym/new', async (req, res) => {
     const sorted = gyms.map(x => x.name).sort();
     data.gyms = [...new Set(sorted)];
     data.pokemon = await map.getPokemonNameIdsList();
-    res.render('gym-new', data);
+    data.locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
+    res.render('gyms/new', data);
 });
 
 router.get('/gym/edit/:id', async (req, res) => {
@@ -255,20 +272,24 @@ router.get('/gym/edit/:id', async (req, res) => {
     data.name = gym.name;
     data.min_level = gym.minLevel;
     data.max_level = gym.maxLevel;
-    res.render('gym-edit', data);
+    data.locations = await Location.getAll(gym.guildId, gym.userId);
+    data.locations.forEach(loc => {
+        loc.selected = loc.name === gym.location;
+    });
+    res.render('gyms/edit', data);
 });
 
 router.get('/gym/delete/:id', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
-    res.render('gym-delete', data);
+    res.render('gyms/delete', data);
 });
 
 router.get('/gyms/delete_all', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('gyms-delete-all', data);
+    res.render('gyms/delete-all', data);
 });
 
 
@@ -276,7 +297,7 @@ router.get('/gyms/delete_all', (req, res) => {
 router.get('/quests', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('quests', data);
+    res.render('quests/quests', data);
 });
 
 router.get('/quest/new', async (req, res) => {
@@ -284,7 +305,8 @@ router.get('/quest/new', async (req, res) => {
     data.servers = validateRoles(req, res);
     data.rewards = await map.getQuestRewards();
     data.cities = map.buildCityList(req.session.guilds);
-    res.render('quest-new', data);
+    data.locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
+    res.render('quests/new', data);
 });
 
 router.get('/quest/edit/:id', async (req, res) => {
@@ -307,20 +329,24 @@ router.get('/quest/edit/:id', async (req, res) => {
         map.buildCityList(req.session.guilds)
     );
     data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
-    res.render('quest-edit', data);
+    data.locations = await Location.getAll(quest.guildId, quest.userId);
+    data.locations.forEach(loc => {
+        loc.selected = loc.name === quest.location;
+    });
+    res.render('quests/edit', data);
 });
 
 router.get('/quest/delete/:id', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
-    res.render('quest-delete', data);
+    res.render('quests/delete', data);
 });
 
 router.get('/quests/delete_all', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('quests-delete-all', data);
+    res.render('quests/delete-all', data);
 });
 
 
@@ -328,7 +354,7 @@ router.get('/quests/delete_all', (req, res) => {
 router.get('/invasions', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('invasions', data);
+    res.render('invasions/invasions', data);
 });
 
 router.get('/invasion/new', async (req, res) => {
@@ -339,7 +365,8 @@ router.get('/invasion/new', async (req, res) => {
     data.pokestops = [...new Set(pokestopNames)];
     data.rewards = await map.getPokemonNameIdsList();
     data.cities = map.buildCityList(req.session.guilds);
-    res.render('invasion-new', data);
+    data.locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
+    res.render('invasions/new', data);
 });
 
 router.get('/invasion/edit/:id', async (req, res) => {
@@ -372,20 +399,24 @@ router.get('/invasion/edit/:id', async (req, res) => {
         map.buildCityList(req.session.guilds)
     );
     data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
-    res.render('invasion-edit', data);
+    data.locations = await Location.getAll(invasion.guildId, invasion.userId);
+    data.locations.forEach(loc => {
+        loc.selected = loc.name === invasion.location;
+    });
+    res.render('invasions/edit', data);
 });
 
 router.get('/invasion/delete/:id', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
-    res.render('invasion-delete', data);
+    res.render('invasions/delete', data);
 });
 
 router.get('/invasions/delete_all', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('invasions-delete-all', data);
+    res.render('invasions/delete-all', data);
 });
 
 
@@ -393,7 +424,7 @@ router.get('/invasions/delete_all', (req, res) => {
 router.get('/lures', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('lures', data);
+    res.render('lures/lures', data);
 });
 
 router.get('/lure/new', async (req, res) => {
@@ -401,7 +432,8 @@ router.get('/lure/new', async (req, res) => {
     data.servers = validateRoles(req, res);
     data.lureTypes = map.getLureTypes();
     data.cities = map.buildCityList(req.session.guilds);
-    res.render('lure-new', data);
+    data.locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
+    res.render('lures/new', data);
 });
 
 router.get('/lure/edit/:id', async (req, res) => {
@@ -427,20 +459,67 @@ router.get('/lure/edit/:id', async (req, res) => {
         map.buildCityList(req.session.guilds)
     );
     data.cities = JSON.stringify(cities.filter(x => x.selected).map(y => y.name));
-    res.render('lure-edit', data);
+    data.locations = await Location.getAll(lure.guildId, lure.userId);
+    data.locations.forEach(loc => {
+        loc.selected = loc.name === lure.location;
+    });
+    res.render('lures/edit', data);
 });
 
 router.get('/lure/delete/:id', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
     data.id = req.params.id;
-    res.render('lure-delete', data);
+    res.render('lures/delete', data);
 });
 
 router.get('/lures/delete_all', (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
-    res.render('lures-delete-all', data);
+    res.render('lures/delete-all', data);
+});
+
+
+// Location routes
+router.get('/locations', (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    res.render('locations/locations', data);
+});
+
+router.get('/location/new', async (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    res.render('locations/new', data);
+});
+
+router.get('/location/edit/:id', async (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    const id = req.params.id;
+    data.id = id;
+    const location = await Location.getById(id);
+    if (!location) {
+        res.redirect('/locations');
+        return;
+    }
+    data.name = location.name;
+    data.distance = location.distance;
+    data.location = `${location.latitude},${location.longitude}`;
+    res.render('locations/edit', data);
+});
+
+router.get('/location/delete/:id', (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    data.id = req.params.id;
+    res.render('locations/delete', data);
+});
+
+router.get('/locations/delete_all', (req, res) => {
+    const data = { ...defaultData };
+    data.servers = validateRoles(req, res);
+    res.render('locations/delete-all', data);
 });
 
 
@@ -449,34 +528,40 @@ if (config.enableGeofenceRoles) {
     router.get('/roles', (req, res) => {
         const data = { ...defaultData };
         data.servers = validateRoles(req, res);
-        res.render('roles', data);
+        res.render('roles/roles', data);
     });
 
     router.get('/role/add', (req, res) => {
         const data = { ...defaultData };
         data.servers = validateRoles(req, res);
         data.roles = map.buildCityList(req.session.guilds);
-        res.render('role-add', data);
+        res.render('roles/add', data);
     });
 
     router.get('/role/remove/:id', (req, res) => {
         const data = { ...defaultData };
         data.servers = validateRoles(req, res);
-        res.render('role-remove', data);
+        res.render('roles/remove', data);
     });
 
     router.get('/roles/remove_all', (req, res) => {
         const data = { ...defaultData };
         data.servers = validateRoles(req, res);
-        res.render('roles-remove-all', data);
+        res.render('roles/remove-all', data);
     });
 }
 
 
 // Settings routes
-router.get('/settings', (req, res) => {
+router.get('/settings', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
+    const locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
+    data.locations = locations.map(x => { return {
+        name: x.name,
+        guild: x.guild,
+        selected: false,
+    };});
     res.render('settings', data);
 });
 
@@ -522,16 +607,6 @@ const getSelectedAreas = (guildId, currentAreas, availableAreas) => {
             city.selected = currentAreas.includes(city.name.toLowerCase());
         }
     });
-    // If no areas then insert 'None' as selected
-    /*
-    if (currentAreas.length === 0) {
-        availableAreas.splice(0, 0, {
-            name: 'None',
-            guild: guildId,
-            selected: true,
-        });
-    }
-    */
     return availableAreas;
 };
 

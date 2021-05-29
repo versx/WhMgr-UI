@@ -143,6 +143,10 @@ Raid.init({
                 : JSON.parse(data || '[]');
         },
     },
+    location: {
+        type: DataTypes.STRING(32),
+        defaultValue: null,
+    },
 }, {
     sequelize,
     timestamps: false,

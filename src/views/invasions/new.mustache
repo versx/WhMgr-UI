@@ -8,28 +8,43 @@
 </div>
 {{#show_error}}<br>{{/show_error}}
 
-<h1 align="center" id="header">{{New PVP Subscription}}</h1>
+<h1 align="center" id="header">{{New Invasion Subscription}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
-    <form action="/api/pvp/new" method="post">
+    <form action="/api/invasions/new" method="post">
         <div class="form-group">
+            {{Pokestop Name}}
+            <input list="pokestop-names" class="custom-select" name="name" id="name">
+            <datalist id="pokestop-names">
+                {{#pokestops}}
+                <option value="{{.}}">
+                {{/pokestops}}
+            </datalist>
+            {{Invasion Type}}
+            <select name="grunt_type" class="custom-select">
+                <!--<option value="all" selected>{{All}}</option>-->
+                {{#types}}
+                <option value="{{id}}">{{name}}</option>
+                {{/types}}
+            </select>
             <div class="form-group">
                 {{Search}}
                 <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
             </div>
-            {{Pokemon}}
+            {{Reward}}
             <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
-            {{#pokemon}}
+            {{#rewards}}
                 <div class="pokemon-icon-sprite item" id="{{id}}" name="{{name}}" data-value="{{id}}" onclick="onPokemonClicked(this)">
                     <img src="{{image_url}}" width="48" height="48" />
                     <span class="caption">#{{id}}</span>
                 </div>
-            {{/pokemon}}
+            {{/rewards}}
             </div>
             <input type="hidden" id="pokemon" name="pokemon" />
             <br>
             <button id="select_all" type="button" class="btn btn-primary btn-sm">{{Select All}}</button>
             <button id="select_none" type="button" class="btn btn-primary btn-sm">{{Select None}}</button>
+            <button id="select_invert" type="button" class="btn btn-primary btn-sm">{{Invert Selection}}</button>
             <button id="select_gen1" type="button" class="btn btn-warning btn-sm">{{Select Gen1}}</button>
             <button id="select_gen2" type="button" class="btn btn-warning btn-sm">{{Select Gen2}}</button>
             <button id="select_gen3" type="button" class="btn btn-warning btn-sm">{{Select Gen3}}</button>
@@ -40,64 +55,53 @@
             <button id="select_ultra" type="button" class="btn btn-danger btn-sm">{{Select Ultra Rare}}</button>
         </div>
         <div class="form-group">
-            {{Form}}
-            <!--
-            <input type="text" class="form-control" name="form" value="" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
-            -->
-            <input list="forms" class="custom-select" name="form" id="pokemon_form">
-            <datalist id="forms">
-                {{#forms}}
-                <option value="{{.}}">
-                {{/forms}}
-            </datalist>
-        </div>
-        <div class="form-group">
-            {{League}}
-            <select name="league" class="custom-select" required>
-                <option value="" selected disabled hidden>{{Choose a League}}</option>
-                {{#leagues}}
-                <option value="{{name}}">{{name}}</option>
-                {{/leagues}}
-            </select>
-        </div>
-        <div class="form-group">
-            {{Minimum Rank}}
-            <input type="text" class="form-control" name="min_rank" value="" placeholder="i.e. 0-4096" min="0", max="4096">
-        </div>
-        <div class="form-group">
-            {{Minimum Percent}}
-            <input type="text" class="form-control" name="min_percent" value="" placeholder="i.e. 0-100" min="0", max="100">
-        </div>
-        <div class="form-group">
             {{City}}
             <br>
-            <input type="hidden" id="city" name="city" />
             <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
             <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
-            <div id="map" style="height: 500px;"></div>
+            <br>
+            <input type="input" id="city" name="city" readonly hidden />
+            <div class="row">
+                <div class="col-md-10">
+                    <div id="map" style="height: 500px;"></div>
+                </div>
+                <div class="col-md-2">
+                    <ul id="city-list" class="list-group city-list" style="max-height: 500px; height: 500px; margin-bottom: 10px; overflow:scroll;">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            {{Location}}
+            <select id="location" name="location" class="custom-select" required>
+                <option value="">{{None}}</option>
+            </select>
         </div>
         <br>
-        <input type="hidden" id="guild_id" name="guild_id">
+        <input type="hidden" id="guild_id" name="guild_id" required>
         <button type="submit" class="btn btn-primary">{{Create}}</button>
         <br>
     </form>
 </div>
 
 <script type='text/javascript' src="/js/city-map.js"></script>
+<script type='text/javascript' src="/js/fetch-locations.js"></script>
 <script type='text/javascript' src="/js/pokemon-list.js"></script>
 <script type='text/javascript'>
     if (!guildId) {
         window.location.href = '/';
     }
-    var pokemon_form = document.getElementById('pokemon_form');
-    pokemon_form.oninvalid = function (event) {
-        event.target.setCustomValidity('Please leave blank if you want all pokemon forms');
-    }
     $('#guild_id').val(guildId);
+    $('#server_selector').prop('disabled', true);
     const guilds = document.querySelectorAll('*[id^="g_' + guildId + '"]');
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
-    $('#server_selector').prop('disabled', true);
     initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}");
+
+    fetchLocations($('#server_selector').val(), '{{user_id}}', function(result) {
+        for (const location of result.data.locations) {
+            $('#location').append(new Option(location.name, location.name));
+        }
+    });
 </script>

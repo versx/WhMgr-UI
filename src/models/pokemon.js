@@ -174,6 +174,10 @@ Pokemon.init({
         }
         */
     },
+    location: {
+        type: DataTypes.STRING(32),
+        defaultValue: null,
+    },
 }, {
     sequelize,
     timestamps: false,

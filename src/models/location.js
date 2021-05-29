@@ -3,10 +3,10 @@
 const { DataTypes, Model, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
 
-class Lure extends Model {
+class Location extends Model {
 
     static getCount(guildId, userId) {
-        return Lure.count({
+        return Location.count({
             where: {
                 guildId: guildId,
                 userId: userId,
@@ -14,18 +14,16 @@ class Lure extends Model {
         });
     }
 
-    static async create(lures) {
-        if (lures.length === 0) {
-            return;
-        }
-        const results = await Lure.bulkCreate(lures, {
-            updateOnDuplicate: Lure.fromLureFields,
+    static getAllByUserId(userId) {
+        return Location.findAll({
+            where: {
+                userId: userId,
+            }
         });
-        console.log('[Lure] Results:', results);
     }
 
     static getAll(guildId, userId) {
-        return Lure.findAll({
+        return Location.findAll({
             where: {
                 guildId: guildId,
                 userId: userId,
@@ -33,32 +31,32 @@ class Lure extends Model {
         });
     }
 
+    static getByName(guildId, userId, name) {
+        return Location.findOne({
+            where: {
+                guildId: guildId,
+                userId: userId,
+                name: name,
+            }
+        });
+    }
+    
     static getById(id) {
-        return Lure.findByPk(id);
+        return Location.findByPk(id);
     }
 
-    static getByType(guildId, userId, lureType) {
-        return Lure.findOne({
+    static delete(guildId, userId, name) {
+        return Location.destroy({
             where: {
                 guildId: guildId,
                 userId: userId,
-                lureType: lureType,
-            }
-        });
-    }
-
-    static delete(guildId, userId, lureType) {
-        return Lure.destroy({
-            where: {
-                guildId: guildId,
-                userId: userId,
-                lureType: lureType,
+                name: name,
             }
         });
     }
 
     static deleteById(id) {
-        return Lure.destroy({
+        return Location.destroy({
             where: {
                 id: id,
             }
@@ -66,7 +64,7 @@ class Lure extends Model {
     }
 
     static deleteAll(guildId, userId) {
-        return Lure.destroy({
+        return Location.destroy({
             where: {
                 guildId: guildId,
                 userId: userId,
@@ -75,11 +73,12 @@ class Lure extends Model {
     }
 }
 
-Lure.init({
+Location.init({
     id: {
         type: DataTypes.INTEGER(11).UNSIGNED,
         primaryKey: true,
         autoIncrement: true,
+        defaultValue: 0,
     },
     subscriptionId: {
         type: DataTypes.INTEGER(11).UNSIGNED,
@@ -94,24 +93,22 @@ Lure.init({
         type: DataTypes.BIGINT(20).UNSIGNED,
         allowNull: false,
     },
-    lureType: {
-        type: DataTypes.INTEGER(11).UNSIGNED,
+    name: {
+        type: DataTypes.STRING(128),
         allowNull: false,
+        unique: true,
     },
-    city: {
-        type: DataTypes.JSON,
-        allowNull: false,
-        defaultValue: '[]',
-        get() {
-            var data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
-        },
+    distance: {
+        type: DataTypes.INTEGER(11),
+        defaultValue: 0,
     },
-    location: {
-        type: DataTypes.STRING(32),
-        defaultValue: null,
+    latitude: {
+        type: DataTypes.DOUBLE(18, 14),
+        defaultValue: 0,
+    },
+    longitude: {
+        type: DataTypes.DOUBLE(18, 14),
+        defaultValue: 0,
     },
 }, {
     sequelize,
@@ -119,11 +116,11 @@ Lure.init({
     underscored: true,
     indexes: [
         {
-            name: 'FK_lure_subscriptions_subscription_id',
+            name: 'FK_location_subscriptions_subscription_id',
             fields: ['subscription_id'],
         },
     ],
-    tableName: 'lures',
+    tableName: 'locations',
 });
 
-module.exports = Lure;
+module.exports = Location;

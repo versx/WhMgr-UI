@@ -18,6 +18,7 @@
             <tr>
                 <th class="all">{{Reward}}</th>
                 <th class="all">{{City}}</th>
+                <th class="min-desktop">{{Location}}</th>
                 <th class="all" width="5%"></th>
             </tr>
         </thead>
@@ -39,7 +40,7 @@
             "url": "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=quests",
             "dataSrc": "data.quests",
             "async": true,
-            "type": "POST"
+            "type": "POST",
         },
         //"dom": "Bfrtip",
         // Reference: https://stackoverflow.com/a/43176143
@@ -52,11 +53,11 @@
                 "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         "fixedHeader": {
             "header": true,
-            "headerOffset": $('.navbar').height() + 15
+            "headerOffset": $('.navbar').height() + 15,
         },
         "buttons": [
             "colvis",
-            "pageLength"
+            "pageLength",
         ],
         "colReorder": true,
         "stateSave": true,
@@ -66,16 +67,17 @@
         "columns": [
             { "data": "reward" },
             { "data": "city" },
-            { "data": "buttons" }
+            { "data": "location" },
+            { "data": "buttons" },
         ],
         "info": true,
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
         "columnDefs": [{
-            "targets": [2],
-            "orderable": false
+            "targets": [3],
+            "orderable": false,
         }],
-        "responsive": true
+        "responsive": true,
     });
 
     function refreshData() {

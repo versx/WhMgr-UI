@@ -15,32 +15,118 @@
         <div class="card bg-dark">
             <div class="card-body">
                 <div class="container">
-                    <div class="form-group">
-                        {{Icon Style}}
-                        <select id="icon_style" name="icon_style" class="custom-select" required>
-                            <option value="" selected disabled hidden>{{Choose an Icon Style}}</option>
-                            {{#icon_styles}}
-                            <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
-                            {{/icon_styles}}
-                        </select>
+                    <div class="card bg-dark">
+                        <div class="card-header bg-dark text-light text-center"><b>General</b></div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                {{Icon Style}}
+                                <select id="icon_style" name="icon_style" class="custom-select" required>
+                                    <option value="" selected disabled hidden>{{Choose an Icon Style}}</option>
+                                    {{#icon_styles}}
+                                    <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                                    {{/icon_styles}}
+                                </select>
+                            </div>
+                            {{^hide_phone_number}}
+                            <div class="form-group">
+                                {{Phone Number}}
+                                <input type="text" class="form-control" id="phone_number" name="phone_number" pattern="[0-9]{10}" placeholder="i.e 8001234567">
+                            </div>
+                            {{/hide_phone_number}}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{Location}}
-                        <input type="text" class="form-control" id="location" name="location" pattern="^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$" placeholder="i.e. 8.0034,4.9011">
+                    <div class="card bg-dark">
+                        <div class="card-header bg-dark text-light text-center"><b>Global Location</b></div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                Global {{Location}}
+                                <select id="location" name="location" class="custom-select">
+                                    <!--<option value="" selected>{{Choose a Location}}</option>-->
+                                    <option value="">{{None}}</option>
+                                    <!--
+                                    {{#locations}}
+                                    <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                                    {{/locations}}
+                                    -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div id="map" style="height: 500px;"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{Max Distance}}
-                        <input type="number" class="form-control" id="distance" name="distance" min=0 max=99999 placeholder="i.e. 500 (meters)" required>
-                    </div>
-                    {{^hide_phone_number}}
-                    <div class="form-group">
-                        {{Phone Number}}
-                        <input type="text" class="form-control" id="phone_number" name="phone_number" pattern="[0-9]{10}" placeholder="i.e 8001234567">
-                    </div>
-                    {{/hide_phone_number}}
+                    <!--
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="enabled" name="enabled">
                         <label class="form-check-label" for="enabled">{{Enable Subscriptions}}</label>
+                    </div>
+                    -->
+                    <div class="card bg-dark">
+                        <div class="card-header bg-dark text-light text-center"><b>{{Enable Subscriptions}}</b></div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="enable_pokemon" id="enable_pokemon">
+                                        <label class="form-check-label" for="enable_pokemon">
+                                            Pokemon
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="col-sm-4 form-check">
+                                        <input class="form-check-input" type="checkbox" name="enable_pvp" id="enable_pvp">
+                                        <label class="form-check-label" for="enable_pvp">
+                                            PvP
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="col-sm-4 form-check">
+                                        <input class="form-check-input" type="checkbox" name="enable_raids" id="enable_raids">
+                                        <label class="form-check-label" for="enable_raids">
+                                            Raids
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="enable_quests" id="enable_quests">
+                                        <label class="form-check-label" for="enable_quests">
+                                            Quests
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="enable_invasions" id="enable_invasions">
+                                        <label class="form-check-label" for="enable_invasions">
+                                            Invasions
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="enable_lures" id="enable_lures">
+                                        <label class="form-check-label" for="enable_lures">
+                                            Lures
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="enable_gyms" id="enable_gyms">
+                                        <label class="form-check-label" for="enable_gyms">
+                                            Gyms
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <br>
                     <input type="hidden" id="guild_id" name="guild_id">
@@ -52,7 +138,8 @@
     </form>
 </div>
 
-<script>
+<script type='text/javascript' src="/js/location-viewer.js"></script>
+<script type='text/javascript'>
     if (!guildId) {
         window.location.href = '/';
     }
@@ -62,6 +149,19 @@
         guilds.forEach(guild => guild.hidden = false);
     }
 
+    $('#location').change(function(e) {
+        $.ajax({
+            url: "/api/server/" + $('#server_selector').val() + "/user/{{user_id}}?type=get_location&name=" + $('#location').val(),
+            method: "POST",
+            type: "json",
+            success: function(result) {
+                const location = result.data.location;
+                const radius = result.data.radius;
+                loadLocation(location, radius);
+            }
+        });
+    });
+
     function refreshData() {
         showError('Select a server from the dropdown menu before creating/editing/deleting any subscriptions!');
         $.ajax({
@@ -70,10 +170,30 @@
             type: "json",
             success: function(result) {
                 $('#icon_style').val(result.data.settings.iconStyle);
-                $('#distance').val(result.data.settings.distance);
-                $('#location').val(`${result.data.settings.latitude},${result.data.settings.longitude}`);
                 $('#phone_number').val(result.data.settings.phoneNumber);
-                $('#enabled').prop('checked', result.data.settings.enabled);
+                $('#enable_pokemon').prop('checked', result.data.settings.enable_pokemon);
+                $('#enable_pvp').prop('checked', result.data.settings.enable_pvp);
+                $('#enable_raids').prop('checked', result.data.settings.enable_raids);
+                $('#enable_quests').prop('checked', result.data.settings.enable_quests);
+                $('#enable_invasions').prop('checked', result.data.settings.enable_invasions);
+                $('#enable_lures').prop('checked', result.data.settings.enable_lures);
+                $('#enable_gyms').prop('checked', result.data.settings.enable_gyms);
+                for (const location of result.data.settings.locations) {
+                    const selected = location.name === result.data.settings.location;
+                    $('#location').append(new Option(
+                        location.name,
+                        location.name,
+                        selected,
+                        selected
+                    ));
+                    const curLocation = (result.data.settings.locations.filter(x => {
+                        return x.name === result.data.settings.location
+                    }) || []);
+                    if (curLocation.length > 0 && selected) {
+                        const radius = curLocation[0].distance;
+                        initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}", curLocation[0].location, radius);
+                    }
+                }
             }
         });
     }

@@ -8,16 +8,16 @@
 </div>
 {{#show_error}}<br>{{/show_error}}
 
-<h1 align="center" id="header">{{New Gym Subscription}}</h1>
+<h1 align="center" id="header">{{Edit Gym Subscription}} {{id}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
-    <form action="/api/gyms/new" method="post">
+    <form action="/api/gyms/edit/{{id}}" method="post">
         <div class="form-group">
             {{Gym Name}}
             <!--
-            <input type="text" class="form-control" name="name" value="" placeholder="i.e. Starbucks">
+            <input type="text" class="form-control" name="name" value="{{name}}" placeholder="i.e. Starbucks">
             -->
-            <input list="names" class="custom-select" name="name" id="name" required>
+            <input list="names" class="custom-select" name="name" id="name" value="{{name}}" required>
             <datalist id="names">
                 {{#gyms}}
                 <option value="{{.}}">
@@ -26,7 +26,7 @@
         </div>
         <div class="form-group">
             <div class="form-group">
-                {{Search}}
+                Search
                 <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
             </div>
             {{Pokemon}}
@@ -38,10 +38,11 @@
                 </div>
             {{/pokemon}}
             </div>
-            <input type="hidden" id="pokemon" name="pokemon" />
+            <input type="hidden" id="pokemon" name="pokemon" value="{{pokemon_ids}}" />
             <br>
             <button id="select_all" type="button" class="btn btn-primary btn-sm">{{Select All}}</button>
             <button id="select_none" type="button" class="btn btn-primary btn-sm">{{Select None}}</button>
+            <button id="select_invert" type="button" class="btn btn-primary btn-sm">{{Invert Selection}}</button>
             <button id="select_gen1" type="button" class="btn btn-warning btn-sm">{{Select Gen1}}</button>
             <button id="select_gen2" type="button" class="btn btn-warning btn-sm">{{Select Gen2}}</button>
             <button id="select_gen3" type="button" class="btn btn-warning btn-sm">{{Select Gen3}}</button>
@@ -53,15 +54,24 @@
         </div>
         <div class="form-group">
             {{Minimum Level}}
-            <input type="number" class="form-control" name="min_level" value="0" min=0 max=6>
+            <input type="number" class="form-control" name="min_level" value="{{min_level}}" min=0 max=6>
         </div>
         <div class="form-group">
             {{Maximum Level}}
-            <input type="number" class="form-control" name="max_level" value="6" min=0 max=6>
+            <input type="number" class="form-control" name="max_level" value="{{max_level}}"" min=0 max=6>
+        </div>
+        <div class="form-group">
+            {{Location}}
+            <select name="location" class="custom-select" required>
+                <option value="">{{None}}</option>
+                {{#locations}}
+                <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
+                {{/locations}}
+            </select>
         </div>
         <br>
         <input type="hidden" id="guild_id" name="guild_id">
-        <button type="submit" class="btn btn-primary">{{Create}}</button>
+        <button type="submit" class="btn btn-primary">{{Save}}</button>
         <br>
     </form>
 </div>

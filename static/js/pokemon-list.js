@@ -69,14 +69,23 @@ $('#select_ultra').on('click', function() {
             selectItem(item);
         }
     });
-})
+});
 $('#select_raid5star').on('click', function() {
     $.each($('.item'), function(index, item) {
         if (pokemonRarity.raid5star.includes(parseInt(item.id))) {
             selectItem(item);
         }
     });
-})
+});
+$('#select_invert').on('click', function() {
+    $.each($('.item'), function(index, item) {
+        if (!item.classList.value.includes('active')) {
+            selectItem(item);
+        } else {
+            unselectItem(item);
+        }
+    });
+});
 
 function onPokemonClicked(element) {
     if (element.disabled)
