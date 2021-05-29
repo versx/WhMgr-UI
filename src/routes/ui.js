@@ -82,7 +82,7 @@ router.get('/pokemon/edit/:id', async (req, res) => {
         data.selected = gender.id === pokemon.gender;
     });
     data.sizes.forEach(size => {
-        data.selected = size.name === pokemon.size;
+        size.selected = size.value === pokemon.size;
     });
     const cities = getSelectedAreas(
         // Current guild
