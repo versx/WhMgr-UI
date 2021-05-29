@@ -16,6 +16,7 @@ $('#distance').change(function(e) {
 
 function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, location = null, radius = 1000) {
     const map = L.map('map', {
+        tap: false,
         preferCanvas: true,
         //worldCopyJump: true,
         updateWhenIdle: true,

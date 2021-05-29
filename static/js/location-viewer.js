@@ -8,6 +8,7 @@ function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, locatio
         return;
     }
     const map = L.map('map', {
+        tap: false,
         preferCanvas: true,
         //worldCopyJump: true,
         updateWhenIdle: true,
