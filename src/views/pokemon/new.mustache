@@ -101,13 +101,17 @@
         </div>
         <div class="form-group">
             {{Location}}
-            <select id="location" name="location" class="custom-select" required>
+            <select id="location" name="location" class="custom-select">
                 <option value="">{{None}}</option>
             </select>
         </div>
         <br>
         <input type="hidden" id="guild_id" name="guild_id">
         <button type="submit" class="btn btn-primary">{{Create}}</button>
+        <br>
+        <br>
+        <div id="error-div" class="alert alert-danger" style="float: none; margin: 0 auto;" hidden>
+        </div>
         <br>
     </form>
 </div>
