@@ -1140,10 +1140,10 @@ router.post('/location/new', async (req, res) => {
             longitude: split[1],
         });
     } else {
-        exists.name = name,
-        exists.latitude = split[0],
-        exists.longitude = split[1],
+        exists.name = name;
         exists.distance = distance;
+        exists.latitude = split[0];
+        exists.longitude = split[1];
     }
     const results = await exists.save();
     if (results) {
@@ -1152,6 +1152,30 @@ router.post('/location/new', async (req, res) => {
     } else {
         showError(res, 'locations/locations', `Failed to create Location subscription for ${name}`);
         return;
+    }
+    res.redirect('/locations');
+});
+
+router.post('/location/edit/:id', async (req, res) => {
+    const id = req.params.id;
+    const { name, location, distance, } = req.body;
+    const loc = await Location.getById(id);
+    if (loc) {
+        const split = location.split(',');
+        if (split.length !== 2) {
+            // TODO: Failed to parse selected location
+        }
+        loc.name = name;
+        loc.distance = distance;
+        loc.latitude = split[0];
+        loc.longitude = split[1];
+        const result = loc.save();
+        if (result) {
+            // Success
+            console.log('Location subscription', id, 'updated successfully.');
+        } else {
+            showError(res, 'locations/locations', `Failed to update Location subscription ${id}`);
+        }
     }
     res.redirect('/locations');
 });

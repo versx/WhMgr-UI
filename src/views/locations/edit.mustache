@@ -11,7 +11,7 @@
 <h1 align="center" id="header">{{Edit Location}} {{name}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
-    <form action="/api/locations/edit/{{name}}" method="post">
+    <form action="/api/location/edit/{{id}}" method="post">
         <div class="form-group">
             {{Location Name}}
             <input list="names" class="form-control"  name="name" id="name" value="{{name}}" readonly>
