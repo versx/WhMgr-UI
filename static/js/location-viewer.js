@@ -1,8 +1,12 @@
 let tileLayer;
 let locationLayer = new L.LayerGroup();
 let circleMarker;
+let initialized = false;
 
 function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, location = null, radius = 1000) {
+    if (initialized) {
+        return;
+    }
     const map = L.map('map', {
         tap: false,
         preferCanvas: true,
@@ -31,16 +35,21 @@ function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, locatio
 
     if (location) {
         loadLocation(location, radius);
+    } else {
+        removeCircle();
     }
+    initialized = true;
 }
 
 function loadLocation(location, radius) {
     if (circleMarker) {
-        locationLayer.removeLayer(circleMarker);
+        removeCircle();
     }
-    const split = location.split(',');
-    circleMarker = createCircle(split[0], split[1], radius);
-    locationLayer.addLayer(circleMarker);
+    if (location) {
+        const split = location.split(',');
+        circleMarker = createCircle(split[0], split[1], radius);
+        locationLayer.addLayer(circleMarker);
+    }
 }
 
 function createCircle(lat, lng, radius) {
@@ -51,4 +60,10 @@ function createCircle(lat, lng, radius) {
         radius: radius
     });
     return circleMarker;
+}
+
+function removeCircle() {
+    if (circleMarker) {
+        locationLayer.removeLayer(circleMarker);
+    }
 }

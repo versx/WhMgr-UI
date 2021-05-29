@@ -325,10 +325,13 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'get_location':
             const locationName = req.query.name;
-            if (locationName) {
-                const location = await Location.getByName(guild_id, user_id, locationName);
-                res.json({ data: { location: `${location.latitude},${location.longitude}`, radius: location.distance, } });
-            }
+            const location = await Location.getByName(guild_id, user_id, locationName);
+            res.json({
+                data: {
+                    location: location ? `${location.latitude},${location.longitude}` : null,
+                    radius: location ? location.distance : 0,
+                },
+            });
             break;
     }
 });
@@ -1252,7 +1255,6 @@ router.post('/settings', async (req, res) => {
         guild_id,
         icon_style,
         location,
-        distance,
         phone_number,
         enable_pokemon,
         enable_pvp,
@@ -1263,9 +1265,6 @@ router.post('/settings', async (req, res) => {
         enable_gyms,
     } = req.body;
     const userId = req.session.user_id;
-    const split = (location || '0,0').split(',');
-    const lat = parseFloat(split[0]);
-    const lon = parseFloat(split[1]);
     let status = NotificationStatusType.None;
     const sub = await Subscription.getSubscription(guild_id, userId);
     if (enable_pokemon === 'on') {
@@ -1304,7 +1303,7 @@ router.post('/settings', async (req, res) => {
         sub.disableNotificationType(NotificationStatusType.Gyms);
     }
     status = sub.status;
-    const result = await Subscription.updateSubscription(guild_id, userId, status, distance, lat, lon, icon_style, phone_number);
+    const result = await Subscription.updateSubscription(guild_id, userId, status, location, icon_style, phone_number);
     if (result) {
         // Success
         console.log('Successfully updated subscription settings for', userId, 'in guild', guild_id);

@@ -36,12 +36,10 @@ class Subscription extends Model {
         return results;
     }
 
-    static updateSubscription(guildId, userId, status, distance, latitude, longitude, iconStyle, phoneNumber) {
+    static updateSubscription(guildId, userId, status, location, iconStyle, phoneNumber) {
         return Subscription.update({
             status: status,
-            distance: distance || 0,
-            latitude: latitude || 0,
-            longitude: longitude || 0,
+            location: location || null,
             iconStyle: iconStyle || 'Default',
             phoneNumber: phoneNumber || null,
         }, {

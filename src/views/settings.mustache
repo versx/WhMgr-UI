@@ -55,12 +55,6 @@
                             </div>
                         </div>
                     </div>
-                    <!--
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="enabled" name="enabled">
-                        <label class="form-check-label" for="enabled">{{Enable Subscriptions}}</label>
-                    </div>
-                    -->
                     <div class="card bg-dark">
                         <div class="card-header bg-dark text-light text-center"><b>{{Enable Subscriptions}}</b></div>
                         <div class="card-body">
@@ -189,9 +183,9 @@
                     const curLocation = (result.data.settings.locations.filter(x => {
                         return x.name === result.data.settings.location
                     }) || []);
-                    if (curLocation.length > 0 && selected) {
-                        const radius = curLocation[0].distance;
-                        initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}", curLocation[0].location, radius);
+                    if (curLocation.length === 0 || (curLocation.length > 0 && selected)) {
+                        const radius = curLocation.length > 0 ? curLocation[0].distance : 0;
+                        initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}", curLocation.length > 0 ? curLocation[0].location : null, radius);
                     }
                 }
             }
