@@ -92,16 +92,13 @@ function onEachFeature(feature, featureLayer) {
 }
 
 function loadGeofences(selected) {
-    selectGeofences = [];
+    selectedGeofences = [];
     for (const area of selected) {
         // Check if geofence not already selected
         if (!selectedGeofences.includes(area)) {
             // If not then select it
             selectedGeofences.push(area);
             // Set selected layer color
-            featureLayer.setStyle({
-                fillColor: 'green',
-            });
             createCityListItem(area);
         }
     }
