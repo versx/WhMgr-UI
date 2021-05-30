@@ -27,6 +27,17 @@ class Quest extends Model {
         return Quest.findByPk(id);
     }
 
+    static getBy(guildId, userId, pokestopName, reward) {
+        return Quest.findOne({
+            where: {
+                guildId: guildId,
+                userId: userId,
+                pokestopName: pokestopName,
+                reward: reward,
+            }
+        });
+    }
+
     static getByReward(guildId, userId, reward) {
         return Quest.findOne({
             where: {
@@ -83,6 +94,10 @@ Quest.init({
     },
     userId: {
         type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+    },
+    pokestopName: {
+        type: DataTypes.STRING(255),
         allowNull: false,
     },
     reward: {

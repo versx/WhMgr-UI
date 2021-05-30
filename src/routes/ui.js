@@ -303,6 +303,8 @@ router.get('/quests', (req, res) => {
 router.get('/quest/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
+    const pokestopNames = await PokestopQuest.getPokestopNames();
+    data.pokestops = [...new Set(pokestopNames)];
     data.rewards = await map.getQuestRewards();
     data.cities = map.buildCityList(req.session.guilds);
     data.locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
@@ -319,6 +321,9 @@ router.get('/quest/edit/:id', async (req, res) => {
         res.redirect('/quests');
         return;
     }
+    const pokestopNames = await PokestopQuest.getPokestopNames();
+    data.pokestops = [...new Set(pokestopNames)];
+    data.pokestop_name = quest.pokestopName;
     data.reward = quest.reward;
     const cities = getSelectedAreas(
         // Current guild
@@ -430,6 +435,8 @@ router.get('/lures', (req, res) => {
 router.get('/lure/new', async (req, res) => {
     const data = { ...defaultData };
     data.servers = validateRoles(req, res);
+    const pokestopNames = await PokestopQuest.getPokestopNames();
+    data.pokestops = [...new Set(pokestopNames)];
     data.lureTypes = map.getLureTypes();
     data.cities = map.buildCityList(req.session.guilds);
     data.locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
@@ -446,6 +453,7 @@ router.get('/lure/edit/:id', async (req, res) => {
         res.redirect('/lures');
         return;
     }
+    data.pokestop_name = lure.pokestopName;
     data.lureTypes = map.getLureTypes();
     data.lureTypes.forEach(lureType => {
         lureType.selected = lureType === lure.lureType;
