@@ -18,6 +18,7 @@ class Pokemon extends Model {
         'minLvl',
         'maxLvl',
         'gender',
+        'size',
         'city',
     ];
 
@@ -136,6 +137,10 @@ Pokemon.init({
         type: DataTypes.STRING(1),
         allowNull: false,
         defaultValue: '*',
+    },
+    size: {
+        type: DataTypes.STRING(6),
+        defaultValue: 'All',
     },
     ivList: {
         type: DataTypes.JSON,
