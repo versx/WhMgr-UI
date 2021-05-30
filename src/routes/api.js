@@ -70,6 +70,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                             ? 'Male Only'
                             : 'Female Only';
                     pkmn.genderName = pkmn.gender === '*' ? 'All' : pkmn.gender;
+                    pkmn.size = formatPokemonSize(pkmn.size);
                     pkmn.city = formatAreas(guild_id, pkmn.city);
                     pkmn.buttons = `
                     <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
@@ -348,6 +349,7 @@ router.post('/pokemon/new', async (req, res) => {
         min_lvl,
         max_lvl,
         gender,
+        size,
         city,
         location,
     } = req.body;
@@ -370,6 +372,7 @@ router.post('/pokemon/new', async (req, res) => {
             exists.minLvl = min_lvl || 0;
             exists.maxLvl = max_lvl || 35;
             exists.gender = gender || '*';
+            exists.size = size || 0;
             exists.city = utils.arrayUnique(exists.city.concat(areas));
             exists.location = location || null;
         } else {
@@ -386,6 +389,7 @@ router.post('/pokemon/new', async (req, res) => {
                 minLvl: min_lvl || 0,
                 maxLvl: max_lvl || 35,
                 gender: gender || '*',
+                size: size || 0,
                 city: areas,
                 location: location || null,
             });
@@ -413,6 +417,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         min_lvl,
         max_lvl,
         gender,
+        size,
         city,
         location,
     } = req.body;
@@ -430,6 +435,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         pkmn.minLvl = min_lvl || 0;
         pkmn.maxLvl = max_lvl || 35;
         pkmn.gender = gender || '*';
+        pkmn.size = size || 0;
         pkmn.city = areas;
         pkmn.location = location || null;
         const result = await pkmn.save();
@@ -1383,6 +1389,17 @@ const formatAreas = (guildId, subscriptionAreas) => {
     return utils.arraysEqual(subscriptionAreas, config.discord.guilds.filter(x => x.id === guildId)[0].geofences)
         ? 'All' // TODO: Localize
         : ellipsis(subscriptionAreas.join(','));
+};
+
+const formatPokemonSize = (size) => {
+    switch (size) {
+        case 1: return 'Tiny';
+        case 2: return 'Small';
+        case 3: return 'Normal';
+        case 4: return 'Large';
+        case 5: return 'Big';
+        default: return 'All';
+    }
 };
 
 const ellipsis = (str) => {

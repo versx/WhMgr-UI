@@ -22,6 +22,14 @@ data.leagues = [
 data.icon_styles = config.iconStyles;
 data.enable_geofence_roles = config.enableGeofenceRoles;
 data.hide_phone_number = config.hidePhoneNumber;
+data.sizes = [
+    { name: 'All', value: 0, },
+    { name: 'Tiny', value: 1, },
+    { name: 'Small', value: 2, },
+    { name: 'Normal', value: 3, },
+    { name: 'Large', value: 4, },
+    { name: 'Big', value: 5, },
+];
 // Leaflet map properties
 data.start_lat = config.map.startLat;
 data.start_lon = config.map.startLon;
