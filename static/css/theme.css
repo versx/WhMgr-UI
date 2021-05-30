@@ -21,6 +21,11 @@ table.dataTable tbody td {
     border-color: white;
 }
 
+.leaflet-control-locate,
+.leaflet-bar.leaflet-control {
+    color: black;
+}
+
 /*
 '.list-group-item').css('background-color', 'rgb(33, 37, 41)');
 $('.darkInvert').css('filter', 'invert(100%)');
