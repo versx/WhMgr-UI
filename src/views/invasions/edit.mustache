@@ -13,7 +13,7 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/invasions/edit/{{id}}" method="post">
         {{Pokestop Name}}
-        <input list="pokestop-names" class="custom-select" name="name" id="name">
+        <input list="pokestop-names" class="custom-select" name="name" id="name" value="{{name}}">
         <datalist id="pokestop-names">
             {{#pokestops}}
             <option value="{{.}}">

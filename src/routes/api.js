@@ -860,12 +860,12 @@ router.post('/quests/new', async (req, res) => {
 
 router.post('/quests/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, reward, pokestop_name, city, location, } = req.body;
+    const { guild_id, /*reward,*/ pokestop_name, city, location, } = req.body;
     //const user_id = req.session.user_id;
     const quest = await Quest.getById(id);
     if (quest) {
         const areas = getAreas(guild_id, (city || '').split(','));
-        quest.reward = reward;
+        //quest.reward = reward;
         quest.pokestopName = pokestop_name;
         quest.city = areas;
         quest.location = location || null;

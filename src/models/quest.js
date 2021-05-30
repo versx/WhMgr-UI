@@ -98,11 +98,11 @@ Quest.init({
     },
     pokestopName: {
         type: DataTypes.STRING(255),
-        allowNull: false,
+        allowNull: true,
     },
     reward: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
     },
     city: {
         type: DataTypes.JSONTEXT,
