@@ -13,6 +13,15 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/quests/new" method="post">
         <div class="form-group">
+            {{Pokestop Name}}
+            <input list="names" class="custom-select" name="pokestop_name" id="pokestop_name" required>
+            <datalist id="names">
+                {{#pokestops}}
+                <option value="{{.}}">
+                {{/pokestops}}
+            </datalist>
+        </div>
+        <div class="form-group">
             {{Reward}}
             <input list="rewards" class="custom-select" name="reward" id="reward">
             <datalist id="rewards">

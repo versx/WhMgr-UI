@@ -37,11 +37,12 @@ class Lure extends Model {
         return Lure.findByPk(id);
     }
 
-    static getByType(guildId, userId, lureType) {
+    static getBy(guildId, userId, pokestopName, lureType) {
         return Lure.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
+                pokestopName: pokestopName,
                 lureType: lureType,
             }
         });
@@ -92,6 +93,10 @@ Lure.init({
     },
     userId: {
         type: DataTypes.BIGINT(20).UNSIGNED,
+        allowNull: false,
+    },
+    pokestopName: {
+        type: DataTypes.STRING(255),
         allowNull: false,
     },
     lureType: {

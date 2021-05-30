@@ -13,6 +13,15 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/quests/edit/{{id}}" method="post">
         <div class="form-group">
+            {{Pokestop Name}}
+            <input list="names" class="custom-select" name="pokestop_name" id="pokestop_name" value="{{pokestop_name}}" required>
+            <datalist id="names">
+                {{#pokestops}}
+                <option value="{{.}}">
+                {{/pokestops}}
+            </datalist>
+        </div>
+        <div class="form-group">
             {{City}}
             <br>
             <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
