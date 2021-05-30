@@ -9,9 +9,8 @@ $('form').submit(function(e) {
     const city = $('#city').val();
     const location = $('#location').val();
     const result = city !== '' || location !== '';
-    console.log('result:', result);
     if (!result) {
-        // TODO: Show error message about location/areas selection
+        // Show error message about location/areas selection
         $('#error-div').prop('hidden', false);
         $('#error-div').html('<div><strong>Error!</strong> Please select either an area and/or location to receive the notification.</div>');
         e.preventDefault();
