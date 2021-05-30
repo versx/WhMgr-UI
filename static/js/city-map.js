@@ -1,7 +1,6 @@
 let tileLayer;
 let geofenceLayer = new L.LayerGroup();
 let geojsonLayer;
-let geofenceDb = {};
 let selectedGeofences = [];
 let initialSelect = [];
 
@@ -52,13 +51,10 @@ function initMap(startLocation, startZoom, minZoom, maxZoom, tileserver, selecte
         loadGeofences(initialSelect);
     }
     const guildId = get('guild_id') || 'areas';
-    $.getJSON(`/data/${guildId}.json`, function(data) {
-        geofenceDb = data;
-        loadGeofencePolygons();
-    });
+    $.getJSON(`/data/${guildId}.json`, loadGeofencePolygons);
 }
 
-function loadGeofencePolygons () {
+function loadGeofencePolygons(geofenceDb) {
     if (geofenceDb === null) {
         return;
     }
