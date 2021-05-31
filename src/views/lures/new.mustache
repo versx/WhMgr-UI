@@ -76,7 +76,20 @@
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
-    initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}");
+    $.ajax({
+        url: '/api/server/' + $('#server_selector').val() + '/user/{{user_id}}?type=get_map_settings',
+        method: 'POST',
+        type: 'json',
+        success: function(result) {
+            initMap(
+                [result.data.start_lat, result.data.start_lon],
+                result.data.start_zoom,
+                result.data.min_zoom,
+                result.data.max_zoom,
+                result.data.tileserver
+            );
+        },
+    });
 
     fetchLocations($('#server_selector').val(), '{{user_id}}', function(result) {
         for (const location of result.data.locations) {

@@ -336,6 +336,23 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 },
             });
             break;
+        case 'get_map_settings':
+            const guild = config.discord.guilds.find(x => x.id === guild_id);
+            if (!guild) {
+                // Failed to get guild map settings
+                return null;
+            }
+            res.json({
+                data: {
+                    start_lat: guild.startLat,
+                    start_lon: guild.startLon,
+                    start_zoom: guild.startZoom,
+                    min_zoom: config.map.minZoom,
+                    max_zoom: config.map.maxZoom,
+                    tileserver: config.map.tileserver,
+                },
+            });
+            break;
     }
 });
 
