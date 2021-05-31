@@ -18,7 +18,7 @@
         </div>
         <div class="form-group">
             {{Max Distance}}
-            <input type="number" class="form-control" id="distance" name="distance" min=0 max=99999 placeholder="i.e. 500 (meters)" value=1000 required>
+            <input type="number" class="form-control" id="distance" name="distance" min=0 max=99999 step=50 placeholder="i.e. 500 (meters)" value=1000 required>
         </div>
         <br>
         <div id="map" style="height: 500px;"></div>
@@ -35,9 +35,4 @@
     $('#guild_id').val(guildId);
     $('#server_selector').prop('disabled', true);
     initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}");
-
-    $('#distance').change(updateCircleRadius);
-    function updateCircleRadius(value) {
-        console.log('changed:', this.value);
-    }
 </script>
