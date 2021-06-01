@@ -90,13 +90,6 @@ Subscription.init({
         type: DataTypes.BIGINT(20).UNSIGNED,
         allowNull: false,
     },
-    /*
-    enabled: {
-        type: DataTypes.TINYINT(1).UNSIGNED,
-        allowNull: false,
-        defaultValue: 1,
-    },
-    */
     status: {
         type: DataTypes.SMALLINT(5).UNSIGNED,
         require: true,
