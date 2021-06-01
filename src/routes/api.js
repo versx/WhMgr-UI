@@ -60,27 +60,27 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     //if (pkmn.pokemonId === 'All') {
                     //    pkmn.name = `<img src='/img/pokemon.png' width='auto' height='32'>&nbsp;` + Localizer.getValue('All');
                     //} else {
-                        const ids = pkmn.pokemonId.split(',').sort((a, b) => a - b);
-                        const icons = [];
-                        const maxIcons = 8;
-                        if (ids.length === 1) {
-                            const id = ids[0];
-                            const name = Localizer.getPokemonName(id);
+                    const ids = pkmn.pokemonId.split(',').sort((a, b) => a - b);
+                    const icons = [];
+                    const maxIcons = 8;
+                    if (ids.length === 1) {
+                        const id = ids[0];
+                        const name = Localizer.getPokemonName(id);
+                        const icon = await Localizer.getPokemonIcon(id);
+                        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
+                        icons.push(url);
+                    } else  {
+                        for (const [index, id] of ids.entries()) {
                             const icon = await Localizer.getPokemonIcon(id);
-                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
+                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
                             icons.push(url);
-                        } else  {
-                            for (const [index, id] of ids.entries()) {
-                                const icon = await Localizer.getPokemonIcon(id);
-                                const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
-                                icons.push(url);
-                                if (index > maxIcons) {
-                                    icons.push('<span><small style="color: grey;">& ' + (ids.length - 8) + ' more...</small></span>');
-                                    break;
-                                }
+                            if (index > maxIcons) {
+                                icons.push('<span><small style="color: grey;">& ' + (ids.length - 8) + ' more...</small></span>');
+                                break;
                             }
                         }
-                        pkmn.name = icons.join(' ');
+                    }
+                    pkmn.name = icons.join(' ');
                     //}
                     pkmn.cp = `${pkmn.minCp}-4096`;
                     pkmn.iv = pkmn.minIv;
