@@ -43,7 +43,10 @@
                 "roles": [
                     "000000000000000000"
                 ],
-                "geofences": []
+                "geofences": [],
+                "startLat": 4,
+                "startLon": -100,
+                "startZoom": 11
             },
             {
                 "name": "Guild Name2",
@@ -51,7 +54,10 @@
                 "roles": [
                     "000000000000000000"
                 ],
-                "geofences": []
+                "geofences": [],
+                "startLat": 5,
+                "startLon": -200,
+                "startZoom": 11
             }
         ],
         "userIdWhitelist": []
@@ -66,9 +72,6 @@
         { "name": "Shuffle" }
     ],
     "map": {
-        "startLat": 4,
-        "startLon": -100,
-        "startZoom": 10,
         "minZoom": 8,
         "maxZoom": 18,
         "tileserver": "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png;Map tiles by Carto, under CC BY 3.0. Data by  <a href='https://www.openstreetmap.org/'>OpenStreetMap</a>, under ODbL."

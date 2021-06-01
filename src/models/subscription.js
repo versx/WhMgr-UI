@@ -100,7 +100,7 @@ Subscription.init({
     status: {
         type: DataTypes.SMALLINT(5).UNSIGNED,
         require: true,
-        defaultValue: 0,
+        defaultValue: NotificationStatusType.All,
     },
     iconStyle: {
         type: DataTypes.TEXT,
