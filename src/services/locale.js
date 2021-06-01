@@ -43,6 +43,10 @@ class Localizer {
         })();
     }
 
+    getValue(key) {
+        return i18n.__(key);
+    }
+
     getPokemonName(pokemonId) {
         const name = i18n.__('poke_' + pokemonId);
         return name;

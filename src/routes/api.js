@@ -57,27 +57,31 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (pokemon) {
                 for (let pkmn of pokemon) {
                     pkmn = pkmn.toJSON();
-                    const ids = pkmn.pokemonId.split(',').sort((a, b) => a - b);
-                    const icons = [];
-                    const maxIcons = 8;
-                    if (ids.length === 1) {
-                        const id = ids[0];
-                        const name = Localizer.getPokemonName(id);
-                        const icon = await Localizer.getPokemonIcon(id);
-                        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
-                        icons.push(url);
-                    } else  {
-                        for (const [index, id] of ids.entries()) {
+                    //if (pkmn.pokemonId === 'All') {
+                    //    pkmn.name = `<img src='/img/pokemon.png' width='auto' height='32'>&nbsp;` + Localizer.getValue('All');
+                    //} else {
+                        const ids = pkmn.pokemonId.split(',').sort((a, b) => a - b);
+                        const icons = [];
+                        const maxIcons = 8;
+                        if (ids.length === 1) {
+                            const id = ids[0];
+                            const name = Localizer.getPokemonName(id);
                             const icon = await Localizer.getPokemonIcon(id);
-                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
+                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
                             icons.push(url);
-                            if (index > maxIcons) {
-                                icons.push('<span><small style="color: grey;">& ' + (ids.length - 8) + ' more...</small></span>');
-                                break;
+                        } else  {
+                            for (const [index, id] of ids.entries()) {
+                                const icon = await Localizer.getPokemonIcon(id);
+                                const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
+                                icons.push(url);
+                                if (index > maxIcons) {
+                                    icons.push('<span><small style="color: grey;">& ' + (ids.length - 8) + ' more...</small></span>');
+                                    break;
+                                }
                             }
                         }
-                    }
-                    pkmn.name = icons.join(' ');
+                        pkmn.name = icons.join(' ');
+                    //}
                     pkmn.cp = `${pkmn.minCp}-4096`;
                     pkmn.iv = pkmn.minIv;
                     pkmn.ivList = pkmn.ivList.length;
@@ -362,7 +366,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
 router.post('/pokemon/new', async (req, res) => {
     const {
         guild_id,
-        pokemon,
+        //pokemon,
         form,
         iv,
         iv_list,
@@ -373,12 +377,17 @@ router.post('/pokemon/new', async (req, res) => {
         city,
         location,
     } = req.body;
+    let pokemon = req.body.pokemon;
     const user_id = req.session.user_id;
     const areas = getAreas(guild_id, (city || '').split(','));
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
         showError(res, 'pokemon/new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
+    }
+    const count = pokemon.split(',').length;
+    if (count === config.maxPokemonId) {
+        pokemon = 'All';
     }
     const ivList = iv_list ? iv_list.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',') : [];
     let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemon, form);
