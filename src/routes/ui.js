@@ -395,6 +395,7 @@ router.get('/invasion/edit/:id', async (req, res) => {
     data.rewards.forEach(reward => {
         reward.selected = reward.id === invasion.rewardPokemonId;
     });
+    data.pokemon_ids = invasion.rewardPokemonId;
     const cities = getSelectedAreas(
         // Current guild
         invasion.guildId,

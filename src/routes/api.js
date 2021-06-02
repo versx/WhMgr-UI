@@ -187,10 +187,28 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (invasions) {
                 for (let invasion of invasions) {
                     invasion = invasion.toJSON();
-                    const pkmnName = Localizer.getPokemonName(invasion.rewardPokemonId);
-                    const pkmnIcon = await Localizer.getPokemonIcon(invasion.rewardPokemonId);
+                    const ids = invasion.rewardPokemonId.split(',').sort((a, b) => a - b);
+                    const icons = [];
+                    const maxIcons = 8;
+                    if (ids.length === 1) {
+                        const id = ids[0];
+                        const name = Localizer.getPokemonName(id);
+                        const icon = await Localizer.getPokemonIcon(id);
+                        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
+                        icons.push(url);
+                    } else  {
+                        for (const [index, id] of ids.entries()) {
+                            const icon = await Localizer.getPokemonIcon(id);
+                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
+                            icons.push(url);
+                            if (index > maxIcons) {
+                                icons.push('<span><small style="color: grey;">& ' + (ids.length - 8) + ' more...</small></span>');
+                                break;
+                            }
+                        }
+                    }
                     invasion.name = invasion.pokestopName;
-                    invasion.reward = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pkmnName}`;
+                    invasion.reward = icons.join(' ');
                     invasion.type = invasion.gruntType ? Localizer.getInvasionName(invasion.gruntType) : '';
                     invasion.city = formatAreas(guild_id, invasion.city);
                     invasion.buttons = `
@@ -948,47 +966,43 @@ router.post('/invasions/new', async (req, res) => {
         return;
     }
     const areas = getAreas(guild_id, (city || '').split(','));
-    const split = pokemon.split(',');
-    for (let i = 0; i < split.length; i++) {
-        const pokemonId = split[i];
-        let exists = await Invasion.getBy(guild_id, user_id, name, grunt_type, pokemonId);
-        if (exists) {
-            // Already exists
-            exists.city = utils.arrayUnique(exists.city.concat(areas || []));
-            exists.location = location || null;
-        } else {
-            exists = Invasion.build({
-                id: 0,
-                subscriptionId: subscription.id,
-                guildId: guild_id,
-                userId: user_id,
-                pokestopName: name,
-                gruntType: grunt_type,
-                rewardPokemonId: pokemonId,
-                city: areas,
-                location: location || null,
-            });
-        }
-        const results = await exists.save();
-        if (results) {
-            // Success
-            console.log('Invasion subscription for reward', pokemonId, 'created successfully.');
-        } else {
-            showError(res, 'invasions/invasions', `Failed to create Invasion subscription for reward ${pokemonId}`);
-            return;
-        }
+    let exists = await Invasion.getBy(guild_id, user_id, name, grunt_type, pokemon);
+    if (exists) {
+        // Already exists
+        exists.city = utils.arrayUnique(exists.city.concat(areas || []));
+        exists.location = location || null;
+    } else {
+        exists = Invasion.build({
+            id: 0,
+            subscriptionId: subscription.id,
+            guildId: guild_id,
+            userId: user_id,
+            pokestopName: name,
+            gruntType: grunt_type,
+            rewardPokemonId: pokemon,
+            city: areas,
+            location: location || null,
+        });
+    }
+    if (await exists.save()) {
+        // Success
+        console.log('Invasion subscription for reward', pokemon, 'created successfully.');
+    } else {
+        showError(res, 'invasions/invasions', `Failed to create Invasion subscription for reward ${pokemon}`);
+        return;
     }
     res.redirect('/invasions');
 });
 
 router.post('/invasions/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, name, grunt_type, city, location, } = req.body;
+    const { guild_id, name, pokemon, grunt_type, city, location, } = req.body;
     //const user_id = req.session.user_id;
     const invasion = await Invasion.getById(id);
     if (invasion) {
         const areas = getAreas(guild_id, (city || '').split(','));
         invasion.name = name;
+        invasion.rewardPokemonId = pokemon;
         invasion.gruntType = grunt_type;
         invasion.city = areas;
         invasion.location = location || null;
