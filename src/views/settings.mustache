@@ -185,7 +185,16 @@
                     }) || []);
                     if (curLocation.length === 0 || (curLocation.length > 0 && selected)) {
                         const radius = curLocation.length > 0 ? curLocation[0].distance : 0;
-                        initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}", curLocation.length > 0 ? curLocation[0].location : null, radius);
+                        initMap(
+                            [result.data.settings.start_lat, result.data.settings.start_lon],
+                            result.data.settings.start_zoom,
+                            {{min_zoom}},
+                            {{max_zoom}},
+                            "{{{tileserver}}}",
+                            curLocation.length > 0 ? curLocation[0].location : null,
+                            radius
+                        );
+                        // TODO: Center map when location selected
                     }
                 }
             }
