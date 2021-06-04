@@ -172,29 +172,38 @@
                 $('#enable_invasions').prop('checked', result.data.settings.enable_invasions);
                 $('#enable_lures').prop('checked', result.data.settings.enable_lures);
                 $('#enable_gyms').prop('checked', result.data.settings.enable_gyms);
-                for (const location of result.data.settings.locations) {
-                    const selected = location.name === result.data.settings.location;
-                    $('#location').append(new Option(
-                        location.name,
-                        location.name,
-                        selected,
-                        selected
-                    ));
-                    const curLocation = (result.data.settings.locations.filter(x => {
-                        return x.name === result.data.settings.location
-                    }) || []);
-                    if (curLocation.length === 0 || (curLocation.length > 0 && selected)) {
-                        const radius = curLocation.length > 0 ? curLocation[0].distance : 0;
-                        initMap(
-                            [result.data.settings.start_lat, result.data.settings.start_lon],
-                            result.data.settings.start_zoom,
-                            {{min_zoom}},
-                            {{max_zoom}},
-                            "{{{tileserver}}}",
-                            curLocation.length > 0 ? curLocation[0].location : null,
-                            radius
-                        );
-                        // TODO: Center map when location selected
+                const locations = result.data.settings.locations;
+                if (locations.length === 0) {
+                    initMap(
+                        [result.data.settings.start_lat, result.data.settings.start_lon],
+                        result.data.settings.start_zoom,
+                        {{min_zoom}},
+                        {{max_zoom}},
+                        "{{{tileserver}}}"
+                    );
+                } else {
+                    for (const location of locations) {
+                        const selected = location.name === location;
+                        $('#location').append(new Option(
+                            location.name,
+                            location.name,
+                            selected,
+                            selected
+                        ));
+                        const curLocation = (locations.filter(x => x.name === location) || []);
+                        if (curLocation.length === 0 || (curLocation.length > 0 && selected)) {
+                            const radius = curLocation.length > 0 ? curLocation[0].distance : 0;
+                            initMap(
+                                [result.data.settings.start_lat, result.data.settings.start_lon],
+                                result.data.settings.start_zoom,
+                                {{min_zoom}},
+                                {{max_zoom}},
+                                "{{{tileserver}}}",
+                                curLocation.length > 0 ? curLocation[0].location : null,
+                                radius
+                            );
+                            // TODO: Center map when location selected
+                        }
                     }
                 }
             }
