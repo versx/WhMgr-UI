@@ -306,6 +306,15 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             }
             const sub = await Subscription.getSubscription(guild_id, user_id);
             const settings = sub.toJSON();
+            const guildConfig = config.discord.guilds.find(x => x.id === guild_id);
+            if (!guildConfig) {
+                // Failed to get guild map settings
+                return null;
+            }
+            settings.start_lat = guildConfig.startLat;
+            settings.start_lon = guildConfig.startLon;
+            settings.start_zoom = guildConfig.startZoom;
+            
             if (formatted) {
                 const list = [];
                 const keys = Object.keys(settings);
