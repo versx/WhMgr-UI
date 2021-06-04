@@ -188,7 +188,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 for (let invasion of invasions) {
                     invasion = invasion.toJSON();
                     const ids = (invasion.rewardPokemonId || '').split(',').sort((a, b) => a - b);
-                    const icons = [];
+                    let icons = [];
                     const maxIcons = 8;
                     if (ids.length === 1) {
                         const id = ids[0];
