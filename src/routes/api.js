@@ -187,16 +187,18 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (invasions) {
                 for (let invasion of invasions) {
                     invasion = invasion.toJSON();
-                    const ids = invasion.rewardPokemonId.split(',').sort((a, b) => a - b);
+                    const ids = (invasion.rewardPokemonId || '').split(',').sort((a, b) => a - b);
                     const icons = [];
                     const maxIcons = 8;
                     if (ids.length === 1) {
                         const id = ids[0];
-                        const name = Localizer.getPokemonName(id);
-                        const icon = await Localizer.getPokemonIcon(id);
-                        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
-                        icons.push(url);
-                    } else  {
+                        if (id !== '') {
+                            const name = Localizer.getPokemonName(id);
+                            const icon = await Localizer.getPokemonIcon(id);
+                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
+                            icons.push(url);
+                        }
+                    } else if (ids.length > 1) {
                         for (const [index, id] of ids.entries()) {
                             const icon = await Localizer.getPokemonIcon(id);
                             const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
@@ -206,9 +208,11 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                                 break;
                             }
                         }
+                    } else {
+                        icons = [];
                     }
                     invasion.name = invasion.pokestopName;
-                    invasion.reward = icons.join(' ');
+                    invasion.reward = icons.join(' ') || null;
                     invasion.type = invasion.gruntType ? Localizer.getInvasionName(invasion.gruntType) : '';
                     invasion.city = formatAreas(guild_id, invasion.city);
                     invasion.buttons = `

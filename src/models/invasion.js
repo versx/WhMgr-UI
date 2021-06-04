@@ -107,7 +107,7 @@ Invasion.init({
     },
     rewardPokemonId: {
         type: DataTypes.TEXT(),
-        allowNull: true,
+        defaultValue: null,
     },
     city: {
         type: DataTypes.JSON,
