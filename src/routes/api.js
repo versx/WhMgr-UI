@@ -948,7 +948,7 @@ router.post('/quests/delete_all', async (req, res) => {
 
 
 // Invasion routes
-router.post('/invasions/new', async (req, res) => {
+router.post('/invasion/new', async (req, res) => {
     const { guild_id, name, pokemon, grunt_type, city, location, } = req.body;
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
@@ -971,9 +971,9 @@ router.post('/invasions/new', async (req, res) => {
                 subscriptionId: subscription.id,
                 guildId: guild_id,
                 userId: user_id,
-                pokestopName: name,
-                gruntType: grunt_type,
-                rewardPokemonId: pokemonId,
+                pokestopName: name || null,
+                gruntType: grunt_type || null,
+                rewardPokemonId: pokemonId || null,
                 city: areas,
                 location: location || null,
             });
