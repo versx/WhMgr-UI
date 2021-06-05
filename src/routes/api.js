@@ -306,14 +306,6 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         list.push({ 'name': key.toUpperCase(), 'value': settings[key] });
                     }
                 });
-                // Get subscription statuses
-                settings.enable_pokemon = sub.isEnabled(NotificationStatusType.Pokemon);
-                settings.enable_pvp = sub.isEnabled(NotificationStatusType.PvP);
-                settings.enable_raids = sub.isEnabled(NotificationStatusType.Raids);
-                settings.enable_quests = sub.isEnabled(NotificationStatusType.Quests);
-                settings.enable_invasions = sub.isEnabled(NotificationStatusType.Invasions);
-                settings.enable_lures = sub.isEnabled(NotificationStatusType.Lures);
-                settings.enable_gyms = sub.isEnabled(NotificationStatusType.Gyms);
                 res.json({ data: { settings: list, } });
             } else {
                 const locations = await Location.getAll(guild_id, user_id);
