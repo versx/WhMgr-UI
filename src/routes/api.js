@@ -984,7 +984,7 @@ router.post('/invasion/new', async (req, res) => {
             userId: user_id,
             pokestopName: name || null,
             gruntType: grunt_type || null,
-            rewardPokemonId: pokemonId || null,
+            rewardPokemonId: pokemon || null,
             city: areas,
             location: location || null,
         });
