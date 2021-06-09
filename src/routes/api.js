@@ -328,14 +328,6 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         list.push({ 'name': key.toUpperCase(), 'value': settings[key] });
                     }
                 });
-                // Get subscription statuses
-                settings.enable_pokemon = sub.isEnabled(NotificationStatusType.Pokemon);
-                settings.enable_pvp = sub.isEnabled(NotificationStatusType.PvP);
-                settings.enable_raids = sub.isEnabled(NotificationStatusType.Raids);
-                settings.enable_quests = sub.isEnabled(NotificationStatusType.Quests);
-                settings.enable_invasions = sub.isEnabled(NotificationStatusType.Invasions);
-                settings.enable_lures = sub.isEnabled(NotificationStatusType.Lures);
-                settings.enable_gyms = sub.isEnabled(NotificationStatusType.Gyms);
                 res.json({ data: { settings: list, } });
             } else {
                 const locations = await Location.getAll(guild_id, user_id);
@@ -404,7 +396,7 @@ router.post('/pokemon/new', async (req, res) => {
         location,
     } = req.body;
     const user_id = req.session.user_id;
-    const areas = getAreas(guild_id, (city || '').split(','));
+    const areas = city ? getAreas(guild_id, city.split(',')) : [];
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
         showError(res, 'pokemon/new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
@@ -473,7 +465,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     } = req.body;
     //const user_id = req.session.user_id;
     const pkmn = await Pokemon.getById(id);
-    const areas = getAreas(guild_id, (city || '').split(','));
+    const areas = city ? getAreas(guild_id, city.split(',')) : [];
     if (pkmn) {
         const ivList = iv_list ? iv_list.replace('\r', '').split('\n') : [];
         //pkmn.pokemonId = pokemon;
@@ -558,7 +550,7 @@ router.post('/pvp/new', async (req, res) => {
         showError(res, 'pvp/new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
-    const areas = getAreas(guild_id, (city || '').split(','));
+    const areas = city ? getAreas(guild_id, city.split(',')) : [];
     const sql = [];
     const split = pokemon.split(',');
     for (const pokemonId of split) {
@@ -605,7 +597,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
     //const user_id = req.session.user_id;
     const exists = await PVP.getById(id);
     if (exists) {
-        const areas = getAreas(guild_id, (city || '').split(','));
+        const areas = city ? getAreas(guild_id, city.split(',')) : [];
         exists.form = form;
         exists.league = league;
         exists.minRank = min_rank || 25;
@@ -673,7 +665,7 @@ router.post('/raids/new', async (req, res) => {
         showError(res, 'raids/new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
-    const areas = getAreas(guild_id, (city || '').split(','));
+    const areas = city ? getAreas(guild_id, city.split(',')) : [];
     let sql = [];
     const split = pokemon.split(',');
     for (const pokemonId of split) {
@@ -704,7 +696,7 @@ router.post('/raids/edit/:id', async (req, res) => {
     //const user_id = req.session.user_id;
     const exists = await Raid.getById(id);
     if (exists) {
-        const areas = getAreas(guild_id, (city || '').split(','));
+        const areas = city ? getAreas(guild_id, city.split(',')) : [];
         exists.form = form;
         exists.city = areas;
         exists.location = location || null;
@@ -878,7 +870,7 @@ router.post('/quests/new', async (req, res) => {
         showError(res, 'quests/new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
-    const areas = getAreas(guild_id, (city || '').split(','));
+    const areas = city ? getAreas(guild_id, city.split(',')) : [];
     let exists = await Quest.getBy(guild_id, user_id, pokestop_name, reward);
     if (exists) {
         // Already exists
@@ -912,7 +904,7 @@ router.post('/quests/edit/:id', async (req, res) => {
     //const user_id = req.session.user_id;
     const quest = await Quest.getById(id);
     if (quest) {
-        const areas = getAreas(guild_id, (city || '').split(','));
+        const areas = city ? getAreas(guild_id, city.split(',')) : [];
         //quest.reward = reward;
         quest.pokestopName = pokestop_name;
         quest.city = areas;
@@ -970,7 +962,7 @@ router.post('/quests/delete_all', async (req, res) => {
 
 
 // Invasion routes
-router.post('/invasions/new', async (req, res) => {
+router.post('/invasion/new', async (req, res) => {
     const { guild_id, name, pokemon, grunt_type, city, location, } = req.body;
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
@@ -978,7 +970,7 @@ router.post('/invasions/new', async (req, res) => {
         showError(res, 'invasions', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
         return;
     }
-    const areas = getAreas(guild_id, (city || '').split(','));
+    const areas = city ? getAreas(guild_id, city.split(',')) : [];
     let exists = await Invasion.getBy(guild_id, user_id, name, grunt_type, pokemon);
     if (exists) {
         // Already exists
@@ -990,9 +982,9 @@ router.post('/invasions/new', async (req, res) => {
             subscriptionId: subscription.id,
             guildId: guild_id,
             userId: user_id,
-            pokestopName: name,
-            gruntType: grunt_type,
-            rewardPokemonId: pokemon,
+            pokestopName: name || null,
+            gruntType: grunt_type || null,
+            rewardPokemonId: pokemonId || null,
             city: areas,
             location: location || null,
         });
@@ -1013,7 +1005,7 @@ router.post('/invasions/edit/:id', async (req, res) => {
     //const user_id = req.session.user_id;
     const invasion = await Invasion.getById(id);
     if (invasion) {
-        const areas = getAreas(guild_id, (city || '').split(','));
+        const areas = city ? getAreas(guild_id, city.split(',')) : [];
         invasion.name = name;
         invasion.rewardPokemonId = pokemon;
         invasion.gruntType = grunt_type;
@@ -1082,7 +1074,7 @@ router.post('/lures/new', async (req, res) => {
     if (!Array.isArray(lureTypes)) {
         lureTypes = [lureTypes];
     }
-    const areas = getAreas(guild_id, (city || '').split(','));
+    const areas = city ? getAreas(guild_id, city.split(',')) : [];
     //const split = lureTypes.split(',');
     for (let i = 0; i < lureTypes.length; i++) {
         const lureType = lureTypes[i];
@@ -1123,7 +1115,7 @@ router.post('/lures/edit/:id', async (req, res) => {
     //const user_id = defaultData.user_id;
     const lure = await Lure.getById(id);
     if (lure) {
-        const areas = getAreas(guild_id, (city || '').split(','));
+        const areas = city ? getAreas(guild_id, city.split(',')) : [];
         // TODO: Update pokestop lure type
         lure.pokestopName = pokestop_name;
         lure.city = areas;

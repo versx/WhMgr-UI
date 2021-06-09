@@ -14,7 +14,7 @@
     <form action="/api/quests/new" method="post">
         <div class="form-group">
             {{Pokestop Name}}
-            <input list="names" class="custom-select" name="pokestop_name" id="pokestop_name" required>
+            <input list="names" class="custom-select" name="pokestop_name" id="pokestop_name">
             <datalist id="names">
                 {{#pokestops}}
                 <option value="{{.}}">
@@ -61,7 +61,7 @@
             </select>
         </div>
         <br>
-        <input type="hidden" id="guild_id" name="guild_id">
+        <input type="hidden" id="guild_id" name="guild_id" required>
         <button type="submit" class="btn btn-primary">{{Create}}</button>
         <br>
         <br>
