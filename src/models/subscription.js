@@ -21,7 +21,7 @@ const NotificationStatusType = {
     Invasions: 0x10,
     Lures: 0x20,
     Gyms: 0x40,
-    All: this.Pokemon | this.PvP | this.Raids | this.Quests | this.Invasions | this.Lures | this.Gyms,
+    All: NotificationStatusType.Pokemon | NotificationStatusType.PvP | NotificationStatusType.Raids | NotificationStatusType.Quests | NotificationStatusType.Invasions | NotificationStatusType.Lures | NotificationStatusType.Gyms,
 };
 
 class Subscription extends Model {
