@@ -13,6 +13,34 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/pokemon/edit/{{id}}" method="post">
         <div class="form-group">
+            <div class="form-group">
+                {{Search}}
+                <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
+            </div>
+            {{Pokemon}}
+            <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
+            {{#pokemon}}
+                <div class="pokemon-icon-sprite item {{#selected}}active{{/selected}}" style="{{#selected}}background-color: dodgerblue;{{/selected}}" id="{{id}}" name="{{name}}" data-value="{{id}}" onclick="onPokemonClicked(this)">
+                    <img src="{{image_url}}" width="48" height="48" />
+                    <span class="caption">#{{id}}</span>
+                </div>
+            {{/pokemon}}
+            </div>
+            <input type="hidden" id="pokemon" name="pokemon" value="{{pokemon_ids}}" />
+            <br>
+            <button id="select_all" type="button" class="btn btn-primary btn-sm">{{Select All}}</button>
+            <button id="select_none" type="button" class="btn btn-primary btn-sm">{{Select None}}</button>
+            <button id="select_invert" type="button" class="btn btn-primary btn-sm">{{Invert Selection}}</button>
+            <button id="select_gen1" type="button" class="btn btn-warning btn-sm">{{Select Gen1}}</button>
+            <button id="select_gen2" type="button" class="btn btn-warning btn-sm">{{Select Gen2}}</button>
+            <button id="select_gen3" type="button" class="btn btn-warning btn-sm">{{Select Gen3}}</button>
+            <button id="select_gen4" type="button" class="btn btn-warning btn-sm">{{Select Gen4}}</button>
+            <button id="select_gen5" type="button" class="btn btn-warning btn-sm">{{Select Gen5}}</button>
+            <button id="select_gen6" type="button" class="btn btn-warning btn-sm">{{Select Gen6}}</button>
+            <button id="select_rare" type="button" class="btn btn-success btn-sm">{{Select Rare}}</button>
+            <button id="select_ultra" type="button" class="btn btn-danger btn-sm">{{Select Ultra Rare}}</button>
+        </div>
+        <div class="form-group">
             {{Form}}
             <!--
             <input type="text" class="form-control" name="form" value="{{form}}" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >

@@ -69,9 +69,11 @@ router.get('/pokemon/edit/:id', async (req, res) => {
         return;
     }
     data.pokemon = await map.getPokemonNameIdsList();
+    const pokemonIds = pokemon.pokemonId.split(',');
     data.pokemon.forEach(pkmn => {
-        pkmn.selected = parseInt(pkmn.id) === pokemon.pokemonId;
+        pkmn.selected = pokemonIds.includes(pkmn.id.toString());// || pokemon.pokemonId === 'All';
     });
+    data.pokemon_ids = pokemon.pokemonId;
     data.forms = Localizer.getFormNames();
     data.form = pokemon.form;
     data.iv = pokemon.minIv;

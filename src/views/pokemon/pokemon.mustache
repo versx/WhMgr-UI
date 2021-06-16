@@ -29,7 +29,7 @@
             <table id="table" class="table {{table_class}} table-sm table-striped table-bordered table-hover dt-responsive nowrap" style="position: center; width:100%">
                 <thead class="thead-dark">
                     <tr>
-                        <th class="all">{{ID}}</th>
+                        <!--<th class="all">{{ID}}</th>-->
                         <th class="all">{{Pokemon}}</th>
                         <th class="min-desktop">{{Form}}</th>
                         <th class="min-desktop">{{CP}}</th>
@@ -119,7 +119,7 @@
         "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
         "pageLength": 100,
         "columns": [
-            { "data": "pokemonId" },
+            //{ "data": "pokemonId" },
             { "data": "name" },
             { "data": "form" },
             { "data": "cp" },
@@ -136,7 +136,7 @@
         "order": [[ 0, "asc" ]],
         "search.caseInsensitive": true,
         "columnDefs": [{
-            "targets": [10],
+            "targets": [9],
             "orderable": false,
         }],
         "responsive": true,

@@ -57,12 +57,34 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (pokemon) {
                 for (let pkmn of pokemon) {
                     pkmn = pkmn.toJSON();
-                    const pkmnName = Localizer.getPokemonName(pkmn.pokemonId);
-                    const pkmnIcon = await Localizer.getPokemonIcon(pkmn.pokemonId);
-                    pkmn.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pkmnName}`;
+                    //if (pkmn.pokemonId === 'All') {
+                    //    pkmn.name = `<img src='/img/pokemon.png' width='auto' height='32'>&nbsp;` + Localizer.getValue('All');
+                    //} else {
+                    const ids = pkmn.pokemonId.split(',').sort((a, b) => a - b);
+                    const icons = [];
+                    const maxIcons = 8;
+                    if (ids.length === 1) {
+                        const id = ids[0];
+                        const name = Localizer.getPokemonName(id);
+                        const icon = await Localizer.getPokemonIcon(id);
+                        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
+                        icons.push(url);
+                    } else  {
+                        for (const [index, id] of ids.entries()) {
+                            const icon = await Localizer.getPokemonIcon(id);
+                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
+                            icons.push(url);
+                            if (index > maxIcons) {
+                                icons.push('<span><small style="color: grey;">& ' + (ids.length - 8) + ' more...</small></span>');
+                                break;
+                            }
+                        }
+                    }
+                    pkmn.name = icons.join(' ');
+                    //}
                     pkmn.cp = `${pkmn.minCp}-4096`;
                     pkmn.iv = pkmn.minIv;
-                    pkmn.ivList = pkmn.ivList.length;//(JSON.parse(pkmn.iv_list || '[]') || []).length;
+                    pkmn.ivList = pkmn.ivList.length;
                     pkmn.lvl = `${pkmn.minLvl}-${pkmn.maxLvl}`;
                     pkmn.gender = pkmn.gender === '*'
                         ? 'All'
@@ -362,7 +384,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
 router.post('/pokemon/new', async (req, res) => {
     const {
         guild_id,
-        pokemon,
+        //pokemon,
         form,
         iv,
         iv_list,
@@ -373,6 +395,7 @@ router.post('/pokemon/new', async (req, res) => {
         city,
         location,
     } = req.body;
+    let pokemon = req.body.pokemon;
     const user_id = req.session.user_id;
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     const subscription = await Subscription.getSubscription(guild_id, user_id);
@@ -380,44 +403,42 @@ router.post('/pokemon/new', async (req, res) => {
         showError(res, 'pokemon/new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
-    const sql = [];
-    const split = pokemon.split(',');
+    const minIv = iv || 0;
     const ivList = iv_list ? iv_list.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',') : [];
-    for (const pokemonId of split) {
-        let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemonId, form);
-        if (exists) {
-            exists.minCp = 0;
-            exists.minIv = iv || 0;
-            exists.ivList = ivList;
-            exists.minLvl = min_lvl || 0;
-            exists.maxLvl = max_lvl || 35;
-            exists.gender = gender || '*';
-            exists.size = size || 0;
-            exists.city = utils.arrayUnique(exists.city.concat(areas));
-            exists.location = location || null;
-        } else {
-            exists = Pokemon.build({
-                id: 0,
-                subscriptionId: subscription.id,
-                guildId: guild_id,
-                userId: user_id,
-                pokemonId: pokemonId,
-                form: form || null,
-                minCp: 0,
-                minIv: isUltraRarePokemon(pokemonId) ? 0 : iv || 0,
-                ivList: ivList,
-                minLvl: min_lvl || 0,
-                maxLvl: max_lvl || 35,
-                gender: gender || '*',
-                size: size || 0,
-                city: areas,
-                location: location || null,
-            });
-        }
-        sql.push(exists.toJSON());
+    const minLevel = min_lvl || 0;
+    const maxLevel = max_lvl || 35;
+    let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemon, form, minIv, ivList, minLevel, maxLevel, gender, size);
+    if (exists) {
+        exists.minCp = 0;
+        exists.minIv = minIv;
+        exists.ivList = ivList;
+        exists.minLvl = minLevel;
+        exists.maxLvl = maxLevel;
+        exists.gender = gender;
+        exists.size = size;
+        exists.city = utils.arrayUnique(exists.city.concat(areas));
+        exists.location = location || null;
+    } else {
+        exists = Pokemon.build({
+            id: 0,
+            subscriptionId: subscription.id,
+            guildId: guild_id,
+            userId: user_id,
+            pokemonId: pokemon,
+            form: form || null,
+            minCp: 0,
+            minIv: /*isUltraRarePokemon(pokemonId) ? 0 :*/ iv || 0,
+            ivList: ivList,
+            minLvl: min_lvl || 0,
+            maxLvl: max_lvl || 35,
+            gender: gender || '*',
+            size: size || 0,
+            city: areas,
+            location: location || null,
+        });
     }
     try {
-        await Pokemon.create(sql);
+        await Pokemon.create(exists.toJSON());
     } catch (err) {
         console.error(err);
         showError(res, 'pokemon/new', `Failed to create Pokemon ${pokemon} subscriptions for guild: ${guild_id} user: ${user_id}`);
@@ -430,7 +451,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     const id = req.params.id;
     const {
         guild_id,
-        //pokemon,
+        pokemon,
         form,
         iv,
         iv_list,
@@ -446,7 +467,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     if (pkmn) {
         const ivList = iv_list ? iv_list.replace('\r', '').split('\n') : [];
-        //pkmn.pokemonId = pokemon;
+        pkmn.pokemonId = pokemon;
         pkmn.form = form;
         pkmn.minCp = 0;
         // If pokemon is rare (Unown, Azelf, etc), set IV value to 0

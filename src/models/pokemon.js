@@ -5,23 +5,6 @@ const sequelize = require('../services/sequelize.js')(true);
 
 class Pokemon extends Model {
 
-    static fromPokemonFields = [
-        //'id',
-        'guildId',
-        'userId',
-        'subscriptionId',
-        'pokemonId',
-        'form',
-        'minCp',
-        'minIv',
-        'ivList',
-        'minLvl',
-        'maxLvl',
-        'gender',
-        'size',
-        'city',
-    ];
-
     static getCount(guildId, userId) {
         return Pokemon.count({
             where: {
@@ -29,16 +12,6 @@ class Pokemon extends Model {
                 userId: userId,
             }
         });
-    }
-
-    static async create(pokemon) {
-        if (pokemon.length === 0) {
-            return;
-        }
-        const results = await Pokemon.bulkCreate(pokemon, {
-            updateOnDuplicate: Pokemon.fromPokemonFields,
-        });
-        console.log('[Pokemon] Results:', results);
     }
 
     static getAll(guildId, userId) {
@@ -50,15 +23,21 @@ class Pokemon extends Model {
         });
     }
 
-    static getByPokemon(guildId, userId, pokemonId, form) {
+    static getByPokemon(guildId, userId, pokemon, form, iv, ivList, minLevel, maxLevel, gender, size) {
         return Pokemon.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
-                pokemonId: pokemonId,
+                pokemonId: pokemon,
                 form: {
                     [Op.or]: [null, form],
                 },
+                minIv: iv,
+                ivList: ivList,
+                minLvl: minLevel,
+                maxLvl: maxLevel,
+                gender: gender,
+                size: size,
             }
         });
     }
@@ -105,7 +84,7 @@ Pokemon.init({
         allowNull: false,
     },
     pokemonId: {
-        type: DataTypes.INTEGER(11).UNSIGNED,
+        type: DataTypes.TEXT(),
         allowNull: false,
     },
     form: {

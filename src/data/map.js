@@ -7,7 +7,7 @@ const config = require('../config.json');
 
 const getPokemonNameIdsList = async () => {
     const pokemon = [];
-    for (let i = 1; i < config.maxPokemonId; i++) {
+    for (let i = 1; i <= config.maxPokemonId; i++) {
         const pkmnIcon = await Localizer.getPokemonIcon(i);
         pokemon.push({
             'id': i,
