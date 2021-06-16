@@ -23,7 +23,7 @@ class Pokemon extends Model {
         });
     }
 
-    static getByPokemon(guildId, userId, pokemon, form) {
+    static getByPokemon(guildId, userId, pokemon, form, iv, ivList, minLevel, maxLevel, gender, size) {
         return Pokemon.findOne({
             where: {
                 guildId: guildId,
@@ -32,6 +32,12 @@ class Pokemon extends Model {
                 form: {
                     [Op.or]: [null, form],
                 },
+                minIv: iv,
+                ivList: ivList,
+                minLvl: minLevel,
+                maxLvl: maxLevel,
+                gender: gender,
+                size: size,
             }
         });
     }

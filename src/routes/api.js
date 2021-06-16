@@ -403,20 +403,19 @@ router.post('/pokemon/new', async (req, res) => {
         showError(res, 'pokemon/new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
-    const count = pokemon.split(',').length;
-    if (count === config.maxPokemonId) {
-        pokemon = 'All';
-    }
+    const minIv = iv || 0;
     const ivList = iv_list ? iv_list.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',') : [];
-    let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemon, form);
+    const minLevel = min_lvl || 0;
+    const maxLevel = max_lvl || 35;
+    let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemon, form, minIv, ivList, minLevel, maxLevel, gender, size);
     if (exists) {
         exists.minCp = 0;
-        exists.minIv = iv || 0;
+        exists.minIv = minIv;
         exists.ivList = ivList;
-        exists.minLvl = min_lvl || 0;
-        exists.maxLvl = max_lvl || 35;
-        exists.gender = gender || '*';
-        exists.size = size || 0;
+        exists.minLvl = minLevel;
+        exists.maxLvl = maxLevel;
+        exists.gender = gender;
+        exists.size = size;
         exists.city = utils.arrayUnique(exists.city.concat(areas));
         exists.location = location || null;
     } else {
