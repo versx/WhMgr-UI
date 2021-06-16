@@ -107,7 +107,12 @@ function onPokemonSearch() {
     for (let element of pokemon) {
         const name = element.getAttribute('name');
         const id = element.getAttribute('id');
-        const matches = !name.toLowerCase().includes(search) && !id.includes(search) && search;
+        let matches = false;
+        if (search.includes(' ')) {
+            matches = !search.includes(name.toLowerCase()) && !search.includes(id) && search;
+        } else {
+            matches = !name.toLowerCase().includes(search) && !id.includes(search) && search;
+        }
         element.hidden = matches;
     }
 }

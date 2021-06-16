@@ -120,7 +120,7 @@
             </select>
         </div>
         <br>
-        <input type="hidden" id="guild_id" name="guild_id">
+        <input type="hidden" id="guild_id" name="guild_id" required>
         <button type="submit" class="btn btn-primary">{{Create}}</button>
         <br>
         <br>
@@ -154,7 +154,20 @@
     $('#iv_list').change(function() {
         $('#iv').prop('disabled', this.value.length > 0);
     });
-    initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}");
+    $.ajax({
+        url: '/api/server/' + $('#server_selector').val() + '/user/{{user_id}}?type=get_map_settings',
+        method: 'POST',
+        type: 'json',
+        success: function(result) {
+            initMap(
+                [result.data.start_lat, result.data.start_lon],
+                result.data.start_zoom,
+                result.data.min_zoom,
+                result.data.max_zoom,
+                result.data.tileserver
+            );
+        },
+    });
 
     fetchLocations($('#server_selector').val(), '{{user_id}}', function(result) {
         for (const location of result.data.locations) {

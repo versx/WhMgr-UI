@@ -11,7 +11,7 @@
 <h1 align="center" id="header">{{New Invasion Subscription}}</h1>
 <br>
 <div class="w-75" style="float: none; margin: 0 auto;">
-    <form action="/api/invasions/new" method="post">
+    <form action="/api/invasion/new" method="post">
         <div class="form-group">
             {{Pokestop Name}}
             <input list="pokestop-names" class="custom-select" name="name" id="name">
@@ -101,7 +101,20 @@
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
-    initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}");
+    $.ajax({
+        url: '/api/server/' + $('#server_selector').val() + '/user/{{user_id}}?type=get_map_settings',
+        method: 'POST',
+        type: 'json',
+        success: function(result) {
+            initMap(
+                [result.data.start_lat, result.data.start_lon],
+                result.data.start_zoom,
+                result.data.min_zoom,
+                result.data.max_zoom,
+                result.data.tileserver
+            );
+        },
+    });
 
     fetchLocations($('#server_selector').val(), '{{user_id}}', function(result) {
         for (const location of result.data.locations) {

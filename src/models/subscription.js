@@ -21,8 +21,23 @@ const NotificationStatusType = {
     Invasions: 0x10,
     Lures: 0x20,
     Gyms: 0x40,
-    All: this.Pokemon | this.PvP | this.Raids | this.Quests | this.Invasions | this.Lures | this.Gyms,
+    /*
+    All: this.Pokemon
+        | this.PvP
+        | this.Raids
+        | this.Quests
+        | this.Invasions
+        | this.Lures
+        | this.Gyms,
+    */
 };
+NotificationStatusType.All = NotificationStatusType.Pokemon
+    | NotificationStatusType.PvP
+    | NotificationStatusType.Raids
+    | NotificationStatusType.Quests
+    | NotificationStatusType.Invasions
+    | NotificationStatusType.Lures
+    | NotificationStatusType.Gyms;
 
 class Subscription extends Model {
   
@@ -100,7 +115,7 @@ Subscription.init({
     status: {
         type: DataTypes.SMALLINT(5).UNSIGNED,
         require: true,
-        defaultValue: 0,
+        defaultValue: NotificationStatusType.All,
     },
     iconStyle: {
         type: DataTypes.TEXT,

@@ -48,7 +48,7 @@
             </select>
         </div>
         <br>
-        <input type="hidden" id="guild_id" name="guild_id">
+        <input type="hidden" id="guild_id" name="guild_id" required>
         <button type="submit" class="btn btn-primary">{{Save}}</button>
         <br>
         <br>
@@ -72,5 +72,19 @@
     if (guilds) {
         guilds.forEach(guild => guild.hidden = false);
     }
-    initMap([{{start_lat}}, {{start_lon}}], {{start_zoom}}, {{min_zoom}}, {{max_zoom}}, "{{{tileserver}}}", {{{cities}}});
+    $.ajax({
+        url: '/api/server/' + $('#server_selector').val() + '/user/{{user_id}}?type=get_map_settings',
+        method: 'POST',
+        type: 'json',
+        success: function(result) {
+            initMap(
+                [result.data.start_lat, result.data.start_lon],
+                result.data.start_zoom,
+                result.data.min_zoom,
+                result.data.max_zoom,
+                result.data.tileserver,
+                {{{cities}}}
+            );
+        },
+    });
 </script>
