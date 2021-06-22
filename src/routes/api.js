@@ -80,8 +80,10 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                             }
                         }
                     }
-                    pkmn.name = icons.join(' ');
-                    //}
+                    pkmn.name = {
+                        formatted: icons.join(' '),
+                        sort: ids,
+                    };
                     pkmn.cp = `${pkmn.minCp}-4096`;
                     pkmn.iv = pkmn.minIv;
                     pkmn.ivList = pkmn.ivList.length;

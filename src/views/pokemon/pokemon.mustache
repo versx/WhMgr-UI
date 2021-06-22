@@ -120,7 +120,12 @@
         "pageLength": 100,
         "columns": [
             //{ "data": "pokemonId" },
-            { "data": "name" },
+            {
+                "data": {
+                    "_": "name.formatted",
+                    "sort": "name.sort",
+                },
+            },
             { "data": "form" },
             { "data": "cp" },
             { "data": "iv" },
