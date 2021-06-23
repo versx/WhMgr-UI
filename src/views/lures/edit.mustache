@@ -14,7 +14,7 @@
     <form action="/api/lures/edit/{{id}}" method="post">
         <div class="form-group">
             {{Pokestop Name}}
-            <input list="names" class="custom-select" name="pokestop_name" id="pokestop_name" value="{{pokestop_name}}" required>
+            <input list="names" class="custom-select" name="pokestop_name" id="pokestop_name" value="{{pokestop_name}}">
             <datalist id="names">
                 {{#pokestops}}
                 <option value="{{.}}">
