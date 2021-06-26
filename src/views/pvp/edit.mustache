@@ -13,7 +13,7 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/pvp/edit/{{id}}" method="post">
         <div class="form-group">
-            {{Form}}
+            {{Form}} <small>(Separate by comma <code>,</code> to allow multiple forms)</small>
             <!--
             <input type="text" class="form-control" name="form" value="{{form}}" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
             -->
@@ -34,14 +34,17 @@
             </select>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Minimum PvP rank that should be met."></i>
             {{Minimum Rank}}
             <input type="number" inputmode="numeric" class="form-control" name="min_rank" value="{{min_rank}}" placeholder="i.e. 1-100" min="0" max="100" step="1">
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Minimum PvP product percent that should be met."></i>
             {{Minimum Percent}}
             <input type="number" inputmode="decimal" class="form-control" name="min_percent" value="{{min_percent}}" placeholder="i.e. 1-100" min="0" max="100" step="0.01">
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Possible cities the Pokemon could be found in."></i>
             {{City}}
             <br>
             <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
@@ -59,6 +62,7 @@
             </div>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Specific set location radius the Pokemon should meet."></i>
             {{Location}}
             <select name="location" class="custom-select">
                 <option value="">{{None}}</option>
