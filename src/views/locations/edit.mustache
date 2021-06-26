@@ -13,13 +13,16 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/location/edit/{{id}}" method="post">
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Enter a unique location name."></i>
             {{Location Name}}
             <input list="names" class="form-control"  name="name" id="name" value="{{name}}" readonly>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Maximum distance radius for the location."></i>
             {{Max Distance}}
             <input type="number" class="form-control" id="distance" name="distance" min=0 max=99999 step=50 placeholder="i.e. 500 (meters)" value="{{distance}}" required>
         </div>
+        <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Click on the map to create a circle marker showing the distance radius."></i>
         <br>
         <div id="map" style="height: 500px;"></div>
         <input type="hidden" id="location" name="location" pattern="^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$" value="{{location}}" />

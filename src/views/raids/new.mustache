@@ -13,10 +13,12 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/raids/new" method="post">
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Search by Pokemon name and pokedex id, search multiple using spaces."></i>
             <div class="form-group">
                 {{Search}}
                 <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
             </div>
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Select Pokemon to subscribe to."></i>
             {{Pokemon}}
             <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
             {{#pokemon}}
@@ -42,7 +44,8 @@
             <button id="select_raid5star" type="button" class="btn btn-danger btn-sm">{{Select 5 Star Raid}}</button>
         </div>
         <div class="form-group">
-            {{Form}}
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Enter specific Pokemon forms of interest or leave blank for any."></i>
+            {{Form}} <small>(Separate by comma <code>,</code> to allow multiple forms)</small>
             <!--
             <input type="text" class="form-control" name="form" value="" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
             -->
@@ -56,6 +59,7 @@
         <div class="form-group">
             {{City}}
             <br>
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Possible cities the Pokemon could be found in."></i>
             <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
             <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
             <br>
@@ -71,6 +75,7 @@
             </div>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Specific set location radius the Pokemon should meet."></i>
             {{Location}}
             <select id="location" name="location" class="custom-select">
                 <option value="">{{None}}</option>

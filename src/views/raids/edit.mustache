@@ -13,7 +13,8 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/raids/edit/{{id}}" method="post">
         <div class="form-group">
-            {{Form}}
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Enter specific Pokemon forms of interest or leave blank for any."></i>
+            {{Form}} <small>(Separate by comma <code>,</code> to allow multiple forms)</small>
             <!--
             <input type="text" class="form-control" name="form" value="{{form}}" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
             -->
@@ -27,6 +28,7 @@
         <div class="form-group">
             {{City}}
             <br>
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Possible cities the Pokemon could be found in."></i>
             <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
             <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
             <br>
@@ -42,6 +44,7 @@
             </div>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Specific set location radius the Pokemon should meet."></i>
             {{Location}}
             <select name="location" class="custom-select">
                 <option value="">{{None}}</option>
@@ -53,7 +56,6 @@
         <br>
         <input type="hidden" id="guild_id" name="guild_id" required>
         <button type="submit" class="btn btn-primary">{{Save}}</button>
-        <br>
         <br>
         <div id="error-div" class="alert alert-danger" style="float: none; margin: 0 auto;" hidden>
         </div>

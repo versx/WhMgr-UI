@@ -13,6 +13,7 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/lures/new" method="post">
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Enter a full Pokesop name or partial name."></i>
             {{Pokestop Name}}
             <input list="names" class="custom-select" name="pokestop_name" id="pokestop_name">
             <datalist id="names">
@@ -22,6 +23,7 @@
             </datalist>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Select interested Pokestop Lure type(s) to receive."></i>
             {{Lure Type}}
             <select name="lure_types" class="custom-select" multiple required>
                 <option value="all" selected>{{All}}</option>
@@ -33,6 +35,7 @@
         <div class="form-group">
             {{City}}
             <br>
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Possible cities the Pokemon could be found in."></i>
             <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
             <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
             <br>
@@ -48,6 +51,7 @@
             </div>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Specific set location radius the Pokemon should meet."></i>
             {{Location}}
             <select id="location" name="location" class="custom-select">
                 <option value="">{{None}}</option>
