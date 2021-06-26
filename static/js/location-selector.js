@@ -5,6 +5,16 @@ let initialLocation;
 let lastLocation;
 let circleMarker;
 
+$('form').submit(function(e) {
+    const location = $('#location').val();
+    if (location == '') {
+        // Show error message about invalid location
+        $('#error-div').prop('hidden', false);
+        $('#error-div').html('<div><strong>Error!</strong> Click on map to create your location.</div>');
+        e.preventDefault();
+    }
+});
+
 // TODO: Maybe upon location found, set circle position.
 
 $('#distance').change(function(e) {
