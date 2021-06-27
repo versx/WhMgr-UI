@@ -1,22 +1,9 @@
 'use strict';
 
-const { DataTypes, Model, Op, } = require('sequelize');
+const { DataTypes, Model, Op, TEXT, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
 
 class PVP extends Model {
-
-    static fromPokemonFields = [
-        //'id',
-        'guildId',
-        'userId',
-        'subscriptionId',
-        'pokemonId',
-        'form',
-        'league',
-        'minRank',
-        'minPercent',
-        'city',
-    ];
 
     static getCount(guildId, userId) {
         return PVP.count({
@@ -27,17 +14,6 @@ class PVP extends Model {
         });
     }
 
-    static async create(pokemon) {
-        if (pokemon.length === 0) {
-            return;
-        }
-        const results = await PVP.bulkCreate(pokemon, {
-            updateOnDuplicate: PVP.fromPokemonFields,
-        });
-        console.log('[PVP] Results:', results);
-    }
-
-
     static getAll(guildId, userId) {
         return PVP.findAll({
             where: {
@@ -47,12 +23,12 @@ class PVP extends Model {
         });
     }
     
-    static getPokemonByLeague(guildId, userId, pokemonId, form, league) {
+    static getPokemonByLeague(guildId, userId, pokemon, form, league) {
         return PVP.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
-                pokemonId: pokemonId,
+                pokemonId: pokemon,
                 form: {
                     [Op.or]: [null, form],
                 },
@@ -123,7 +99,7 @@ PVP.init({
         allowNull: false,
     },
     pokemonId: {
-        type: DataTypes.INTEGER(11).UNSIGNED,
+        type: TEXT(),
         allowNull: false,
     },
     form: {
