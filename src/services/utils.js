@@ -91,7 +91,7 @@ const arraysEqual = (array1, array2) => {
 };
 
 const arrayUnique = (array) => {
-    var newArray = array.concat();
+    let newArray = array.concat();
     for (let i = 0; i < newArray.length; i++) {
         for (let j = i + 1; j < newArray.length; j++) {
             if (newArray[i] === newArray[j]) {

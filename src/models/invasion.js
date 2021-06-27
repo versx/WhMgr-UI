@@ -37,14 +37,14 @@ class Invasion extends Model {
         return Invasion.findByPk(id);
     }
 
-    static getBy(guildId, userId, pokestopName, gruntType, rewardPokemonId) {
+    static getBy(guildId, userId, pokestopName, gruntType, rewardPokemonIds) {
         return Invasion.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
                 pokestopName: pokestopName,
                 gruntType: gruntType,
-                rewardPokemonId: rewardPokemonId,
+                rewardPokemonId: rewardPokemonIds,
             }
         });
     }
@@ -106,8 +106,8 @@ Invasion.init({
         allowNull: true,
     },
     rewardPokemonId: {
-        type: DataTypes.INTEGER(11).UNSIGNED,
-        allowNull: true,
+        type: DataTypes.TEXT(),
+        defaultValue: null,
     },
     city: {
         type: DataTypes.JSON,
