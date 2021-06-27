@@ -19,6 +19,7 @@
                         <div class="card-header bg-dark text-light text-center"><b>General</b></div>
                         <div class="card-body">
                             <div class="form-group">
+                                <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Set the icon style to use in notiifications."></i>
                                 {{Icon Style}}
                                 <select id="icon_style" name="icon_style" class="custom-select" required>
                                     <option value="" selected disabled hidden>{{Choose an Icon Style}}</option>
@@ -39,7 +40,8 @@
                         <div class="card-header bg-dark text-light text-center"><b>Global Location</b></div>
                         <div class="card-body">
                             <div class="form-group">
-                                Global {{Location}}
+                                <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip"  data-html="true" title="When set notifications will also check if they match your global location as well as invidual locations per subscription, if set."></i>
+                                {{Global Location}}
                                 <select id="location" name="location" class="custom-select">
                                     <!--<option value="" selected>{{Choose a Location}}</option>-->
                                     <option value="">{{None}}</option>

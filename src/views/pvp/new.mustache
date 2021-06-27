@@ -45,7 +45,7 @@
             <button id="select_ultra" type="button" class="btn btn-danger btn-sm">{{Select Ultra Rare}}</button>
         </div>
         <div class="form-group">
-            {{Form}}
+            {{Form}} <small>(Separate by comma <code>,</code> to allow multiple forms)</small>
             <!--
             <input type="text" class="form-control" name="form" value="" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
             -->
@@ -67,11 +67,11 @@
         </div>
         <div class="form-group">
             {{Minimum Rank}}
-            <input type="text" class="form-control" name="min_rank" value="" placeholder="i.e. 0-4096" min="0", max="4096">
+            <input type="number" inputmode="numeric" class="form-control" name="min_rank" value="" placeholder="i.e. 1-100" min=0 max=100 step="1">
         </div>
         <div class="form-group">
             {{Minimum Percent}}
-            <input type="text" class="form-control" name="min_percent" value="" placeholder="i.e. 0-100" min="0", max="100">
+            <input type="number" inputmode="decimal" class="form-control" name="min_percent" value="" placeholder="i.e. 1-100" min=0 max=100 step="0.01">
         </div>
         <div class="form-group">
             {{City}}

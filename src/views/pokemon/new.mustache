@@ -13,10 +13,12 @@
 <div class="w-75" style="float: none; margin: 0 auto;">
     <form action="/api/pokemon/new" method="post">
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Search by Pokemon name and pokedex id, search multiple using spaces."></i>
             <div class="form-group">
                 {{Search}}
-                <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
+                <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()" data-toggle="tooltip" data-html="true" title="Search by pokemon name and pokedex id.">
             </div>
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Select Pokemon to subscribe to."></i>
             {{Pokemon}}
             <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
             {{#pokemon}}
@@ -41,7 +43,8 @@
             <button id="select_ultra" type="button" class="btn btn-danger btn-sm">{{Select Ultra Rare}}</button>
         </div>
         <div class="form-group">
-            {{Form}}
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Enter specific Pokemon forms of interest or leave blank for any."></i>
+            {{Form}} <small>(Separate by comma <code>,</code> to allow multiple forms)</small>
             <!--
             <input type="text" class="form-control" name="form" value="" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
             -->
@@ -53,22 +56,26 @@
             </datalist>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Minimum IV value the Pokemon should meet."></i>
             {{Minimum IV}}
             <input type="number" class="form-control" name="iv" id="iv" min=0 max=100 pattern="^([0-9]|[1-9][0-9]|100)$" placeholder="i.e. 100">
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="List of possible IV combinations."></i>
             {{IV List}}
             <textarea class="form-control" name="iv_list" id="iv_list" placeholder="i.e. 0/15/14&#10;0/15/15&#10;1/15/15" rows="5"></textarea>
         </div>
         <div class="row">
             <div class="col">
                 <div class="form-group">
+                    <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Minimum level the interested Pokemon should be."></i>
                     {{Minimum Level}}
                     <input type="number" class="form-control" name="min_lvl" value="" min=0 max=35 placeholder="i.e. 0">
                 </div>
             </div>
             <div class="col">
                 <div class="form-group">
+                    <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Maximum level the interested Pokemon should be."></i>
                     {{Maximum Level}}
                     <input type="number" class="form-control" name="max_lvl" value="" min=0 max=35 placeholder="i.e. 35">
                 </div>
@@ -77,6 +84,7 @@
         <div class="row">
             <div class="col">
                 <div class="form-group">
+                    <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Specific gender the interested Pokemon should be."></i>
                     {{Gender}}
                     <select name="gender" class="custom-select" required>
                         {{#genders}}
@@ -87,6 +95,7 @@
             </div>
             <div class="col">
                 <div class="form-group">
+                    <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Size the interested Pokemon should be."></i>
                     {{Size}}
                     <select name="size" class="custom-select" required>
                         {{#sizes}}
@@ -99,6 +108,7 @@
         <div class="form-group">
             {{City}}
             <br>
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Possible cities the Pokemon could be found in."></i>
             <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
             <button id="geofences-select-none" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(false)">{{Select None}}</button>
             <br>
@@ -114,6 +124,7 @@
             </div>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Specific set location radius the Pokemon should meet."></i>
             {{Location}}
             <select id="location" name="location" class="custom-select">
                 <option value="">{{None}}</option>
@@ -123,11 +134,16 @@
         <input type="hidden" id="guild_id" name="guild_id" required>
         <button type="submit" class="btn btn-primary">{{Create}}</button>
         <br>
-        <br>
         <div id="error-div" class="alert alert-danger" style="float: none; margin: 0 auto;" hidden>
         </div>
-        <br>
     </form>
+    <br>
+    <div class="alert alert-warning" role="alert">
+        <b>Notes:</b><br>
+        - Selecting a city from the map will send the notification if found in that city.<br>
+        - Selecting a location will send the notification if found within that location's maximum radius.<br>
+        - Selecting both a city and location will send the notification if either match.<br>
+    </div>
 </div>
 
 <script type='text/javascript' src="/js/city-map.js"></script>

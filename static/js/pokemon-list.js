@@ -1,4 +1,15 @@
 let pokemonRarity = {};
+
+$('form').submit(function(e) {
+    const pokemon = $('#pokemon').val();
+    if (pokemon == '') {
+        // Show error message about pokemon selection
+        $('#error-div').prop('hidden', false);
+        $('#error-div').html('<div><strong>Error!</strong> Please select one or more pokemon.</div>');
+        e.preventDefault();
+    }
+});
+
 $.getJSON('/data/rarity.json', function(data) {
     pokemonRarity = data;
 });
