@@ -16,7 +16,7 @@ const Location = require('../models/location.js');
 const { Subscription, NotificationStatusType, } = require('../models/subscription.js');
 const DiscordClient = require('../services/discord.js');
 const Localizer = require('../services/locale.js');
-const utils = require('../services/utils.js');
+const { getAreas, arrayUnique, formatAreas, } = require('../services/utils.js');
 
 /* eslint-disable no-case-declarations */
 router.post('/server/:guild_id/user/:user_id', async (req, res) => {
@@ -186,7 +186,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 for (let gym of gyms) {
                     gym = gym.toJSON();
                     const images = [];
-                    for (const id of gym.pokemonIds.sort()) { // TODO: Use map instead
+                    for (const id of gym.pokemonIds.sort()) {
                         images.push(`<img src='${await Localizer.getPokemonIcon(id)}' width='18' height='18'>`);
                     }
                     gym.pokemonIds = images.join(' ');
@@ -342,7 +342,6 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     results.push({
                         id: roleId,
                         name: name,
-                        // TODO: Make a javascript confirm alert
                         buttons: `<a href='/api/role/remove/${guild_id}/${roleId}' onclick="return confirm('Are you sure you want to remove role ${name}?');"><button type='button'class='btn btn-sm btn-danger'>Remove</button></a>`
                     });
                 }
@@ -461,10 +460,9 @@ router.post('/pokemon/new', async (req, res) => {
         exists.maxLvl = maxLevel;
         exists.gender = gender;
         exists.size = size;
-        exists.city = utils.arrayUnique(exists.city.concat(areas));
+        exists.city = arrayUnique(exists.city.concat(areas));
         exists.location = location || null;
     } else {
-        // TODO: Parse as int array
         const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
         exists = Pokemon.build({
             id: 0,
@@ -603,7 +601,7 @@ router.post('/pvp/new', async (req, res) => {
         // Already exists
         exists.minRank = min_rank || 5;
         exists.minPercent = min_percent || 99;
-        exists.city = utils.arrayUnique(exists.city.concat(areas));
+        exists.city = arrayUnique(exists.city.concat(areas));
         exists.location = location || null;
     } else {
         const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
@@ -727,7 +725,7 @@ router.post('/raids/new', async (req, res) => {
                 location: location || null,
             });
         } else {
-            exists.city = utils.arrayUnique(exists.city.concat(areas));
+            exists.city = arrayUnique(exists.city.concat(areas));
         }
         sql.push(exists.toJSON());
     }
@@ -919,7 +917,7 @@ router.post('/quests/new', async (req, res) => {
     let exists = await Quest.getBy(guild_id, user_id, pokestop_name, reward);
     if (exists) {
         // Already exists
-        exists.city = utils.arrayUnique(exists.city.concat(areas || []));
+        exists.city = arrayUnique(exists.city.concat(areas || []));
     } else {
         exists = Quest.build({
             id: 0,
@@ -1019,7 +1017,7 @@ router.post('/invasion/new', async (req, res) => {
     let exists = await Invasion.getBy(guild_id, user_id, name, grunt_type, pokemon);
     if (exists) {
         // Already exists
-        exists.city = utils.arrayUnique(exists.city.concat(areas || []));
+        exists.city = arrayUnique(exists.city.concat(areas || []));
         exists.location = location || null;
     } else {
         exists = Invasion.build({
@@ -1126,9 +1124,8 @@ router.post('/lures/new', async (req, res) => {
         let exists = await Lure.getBy(guild_id, user_id, pokestop_name, lureType);
         if (exists) {
             // Already exists
-            // TODO: Update pokestop lure type
             exists.pokestopName = pokestop_name;
-            exists.city = utils.arrayUnique(exists.city.concat(areas || []));
+            exists.city = arrayUnique(exists.city.concat(areas || []));
             exists.location = location || null;
         } else {
             exists = Lure.build({
@@ -1261,6 +1258,7 @@ router.post('/location/edit/:id', async (req, res) => {
         const split = location.split(',');
         if (split.length !== 2) {
             // TODO: Failed to parse selected location
+            return;
         }
         loc.name = name;
         loc.distance = distance;
@@ -1435,6 +1433,7 @@ router.post('/settings', async (req, res) => {
     res.redirect('/settings');
 });
 
+
 const isUltraRarePokemon = (pokemonId) => {
     const ultraRareList = [
         201, //Unown
@@ -1443,43 +1442,6 @@ const isUltraRarePokemon = (pokemonId) => {
         482 //Azelf
     ];
     return ultraRareList.includes(pokemonId);
-};
-
-const getAreas = (guildId, city) => {
-    let areas;
-    if (city === 'All' || (Array.isArray(city) && city.includes('All'))) {
-        config.discord.guilds.map(x => {
-            if (x.id === guildId) {
-                areas = x.geofences;
-            }
-        });
-    } else if (city === 'None') {
-        // No areas specified
-        areas = [];
-    } else if (!Array.isArray(city)) {
-        // Only one area specified, make array
-        areas = [city];
-    } else {
-        // If all and none are both specified, all supersedes none or individual areas
-        // or if all is specified, none is not, set all areas and disregard individual
-        // areas that might be included
-        if ((city.includes('All') && city.includes('None')) ||
-            (city.includes('All') && !city.includes('None'))) {
-            return getAreas(guildId, 'All');
-        } else if (city.includes('None') && city.length > 1) {
-            city = city.splice(city.indexOf('None'), 1);
-        } else {
-            // Only individual areas are provided
-            areas = city;
-        }
-    }
-    return areas || [];
-};
-
-const formatAreas = (guildId, subscriptionAreas) => {
-    return utils.arraysEqual(subscriptionAreas, config.discord.guilds.filter(x => x.id === guildId)[0].geofences)
-        ? 'All' // TODO: Localize
-        : ellipsis(subscriptionAreas.join(','));
 };
 
 const formatPokemonSize = (size) => {
@@ -1491,11 +1453,6 @@ const formatPokemonSize = (size) => {
         case 5: return 'Big';
         default: return 'All';
     }
-};
-
-const ellipsis = (str) => {
-    const value = str.substring(0, Math.min(64, str.length));
-    return value === str ? value : value + '...';
 };
 
 const showError = (res, page, message) => {

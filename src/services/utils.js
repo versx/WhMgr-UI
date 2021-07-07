@@ -108,6 +108,48 @@ const parseJsonColumn = (data) => {
         : JSON.parse(data || '[]');
 };
 
+const getAreas = (guildId, city) => {
+    let areas;
+    if (city === 'All' || (Array.isArray(city) && city.includes('All'))) {
+        config.discord.guilds.map(x => {
+            if (x.id === guildId) {
+                areas = x.geofences;
+            }
+        });
+    } else if (city === 'None') {
+        // No areas specified
+        areas = [];
+    } else if (!Array.isArray(city)) {
+        // Only one area specified, make array
+        areas = [city];
+    } else {
+        // If all and none are both specified, all supersedes none or individual areas
+        // or if all is specified, none is not, set all areas and disregard individual
+        // areas that might be included
+        if ((city.includes('All') && city.includes('None')) ||
+            (city.includes('All') && !city.includes('None'))) {
+            return getAreas(guildId, 'All');
+        } else if (city.includes('None') && city.length > 1) {
+            city = city.splice(city.indexOf('None'), 1);
+        } else {
+            // Only individual areas are provided
+            areas = city;
+        }
+    }
+    return areas || [];
+};
+
+const formatAreas = (guildId, subscriptionAreas) => {
+    return arraysEqual(subscriptionAreas, config.discord.guilds.filter(x => x.id === guildId)[0].geofences)
+        ? 'All' // TODO: Localize
+        : ellipsis(subscriptionAreas.join(','));
+};
+
+const ellipsis = (str) => {
+    const value = str.substring(0, Math.min(64, str.length));
+    return value === str ? value : value + '...';
+};
+
 module.exports = {
     generateString,
     hasGuild,
@@ -118,4 +160,7 @@ module.exports = {
     arraysEqual,
     arrayUnique,
     parseJsonColumn,
+    getAreas,
+    formatAreas,
+    ellipsis,
 };
