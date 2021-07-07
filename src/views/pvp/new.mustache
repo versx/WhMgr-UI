@@ -17,10 +17,12 @@
     <br>
     <form action="/api/pvp/new" method="post">
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Search by Pokemon name and pokedex id, search multiple using spaces."></i>
             <div class="form-group">
                 {{Search}}
                 <input type="text" class="form-control" id="search" value="" placeholder="i.e Pikachu or 25" onkeyup="onPokemonSearch()">
             </div>
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Select Pokemon to subscribe to."></i>
             {{Pokemon}}
             <div id="pokemon-list" name="pokemon-list" class="pokemon-list custom-control">
             {{#pokemon}}
@@ -45,6 +47,7 @@
             <button id="select_ultra" type="button" class="btn btn-danger btn-sm">{{Select Ultra Rare}}</button>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Enter specific Pokemon forms of interest or leave blank for any."></i>
             {{Form}} <small>(Separate by comma <code>,</code> to allow multiple forms)</small>
             <!--
             <input type="text" class="form-control" name="form" value="" pattern="^((?![aA][lL][lL]).)*$" placeholder="i.e. Sunny" id="pokemon_form" >
@@ -57,6 +60,7 @@
             </datalist>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Choose PvP league."></i>
             {{League}}
             <select name="league" class="custom-select" required>
                 <option value="" selected disabled hidden>{{Choose a League}}</option>
@@ -66,14 +70,17 @@
             </select>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Minimum PvP rank that should be met."></i>
             {{Minimum Rank}}
             <input type="number" inputmode="numeric" class="form-control" name="min_rank" value="" placeholder="i.e. 1-100" min=0 max=100 step="1">
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Minimum PvP product percent that should be met."></i>
             {{Minimum Percent}}
             <input type="number" inputmode="decimal" class="form-control" name="min_percent" value="" placeholder="i.e. 1-100" min=0 max=100 step="0.01">
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Possible cities the Pokemon could be found in."></i>
             {{City}}
             <br>
             <button id="geofences-select-all" type="button" class="btn btn-primary btn-sm" onclick="selectGeofences(true)">{{Select All}}</button>
@@ -91,6 +98,7 @@
             </div>
         </div>
         <div class="form-group">
+            <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Specific set location radius the Pokemon should meet."></i>
             {{Location}}
             <select id="location" name="location" class="custom-select">
                 <option value="">{{None}}</option>

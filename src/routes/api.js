@@ -116,9 +116,30 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (pvp) {
                 for (let pvpSub of pvp) {
                     pvpSub = pvpSub.toJSON();
-                    const pkmnName = Localizer.getPokemonName(pvpSub.pokemonId);
-                    const pkmnIcon = await Localizer.getPokemonIcon(pvpSub.pokemonId);
-                    pvpSub.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pkmnName}`;
+                    const ids = (pvpSub.pokemonId || '').split(',').sort((a, b) => a - b);
+                    const icons = [];
+                    const maxIcons = 8;
+                    if (ids.length === 1) {
+                        const id = ids[0];
+                        const name = Localizer.getPokemonName(id);
+                        const icon = await Localizer.getPokemonIcon(id);
+                        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
+                        icons.push(url);
+                    } else  {
+                        for (const [index, id] of ids.entries()) {
+                            const icon = await Localizer.getPokemonIcon(id);
+                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
+                            icons.push(url);
+                            if (index > maxIcons) {
+                                icons.push('<span><small style="color: grey;">& ' + (ids.length - 8) + ' more...</small></span>');
+                                break;
+                            }
+                        }
+                    }
+                    pvpSub.name = {
+                        formatted: icons.join(' '),
+                        sort: ids,
+                    };
                     pvpSub.city = formatAreas(guild_id, pvpSub.city);
                     pvpSub.buttons = `
                     <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
@@ -574,34 +595,29 @@ router.post('/pvp/new', async (req, res) => {
         return;
     }
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
-    const sql = [];
-    const split = pokemon.split(',');
-    for (const pokemonId of split) {
-        let exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemonId, form, league);
-        if (exists) {
-            // Already exists
-            exists.minRank = min_rank || 5;
-            exists.minPercent = min_percent || 99;
-            exists.city = utils.arrayUnique(exists.city.concat(areas));
-            exists.location = location || null;
-        } else {
-            exists = PVP.build({
-                id: 0,
-                subscriptionId: subscription.id,
-                guildId: guild_id,
-                userId: user_id,
-                pokemonId: pokemonId,
-                form: form,
-                league: league,
-                minRank: min_rank || 5,
-                minPercent: min_percent || 99,
-                city: areas,
-                location: location || null,
-            });
-        }
-        sql.push(exists.toJSON());
+    let exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemon, form, league);
+    if (exists) {
+        // Already exists
+        exists.minRank = min_rank || 5;
+        exists.minPercent = min_percent || 99;
+        exists.city = utils.arrayUnique(exists.city.concat(areas));
+        exists.location = location || null;
+    } else {
+        exists = PVP.build({
+            id: 0,
+            subscriptionId: subscription.id,
+            guildId: guild_id,
+            userId: user_id,
+            pokemonId: pokemon,
+            form: form,
+            league: league,
+            minRank: min_rank || 5,
+            minPercent: min_percent || 99,
+            city: areas,
+            location: location || null,
+        });
     }
-    await PVP.create(sql);
+    await PVP.create(exists.toJSON());
     res.redirect('/pokemon#pvp');
 });
 
@@ -609,7 +625,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
     const id = req.params.id;
     const {
         guild_id,
-        //pokemon,
+        pokemon,
         form,
         league,
         min_rank,
@@ -621,6 +637,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
     const exists = await PVP.getById(id);
     if (exists) {
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
+        exists.pokemonId = pokemon;
         exists.form = form;
         exists.league = league;
         exists.minRank = min_rank || 25;
