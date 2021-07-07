@@ -110,9 +110,7 @@ Quest.init({
         defaultValue: '[]',
         get() {
             const data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            return parseJsonColumn(data);
         }
     },
     location: {

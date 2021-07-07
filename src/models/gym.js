@@ -100,12 +100,9 @@ Gym.init({
     pokemonIds: {
         type: DataTypes.JSON,
         defaultValue: null,
-        //defaultValue: '[]',
         get() {
             var data = this.getDataValue('pokemonIds');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            return parseJsonColumn(data);
         },
     },
     location: {

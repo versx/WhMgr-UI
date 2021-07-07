@@ -60,7 +60,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     //if (pkmn.pokemonId === 'All') {
                     //    pkmn.name = `<img src='/img/pokemon.png' width='auto' height='32'>&nbsp;` + Localizer.getValue('All');
                     //} else {
-                    const ids = (pkmn.pokemonId || '').split(',').sort((a, b) => a - b);
+                    const ids = (pkmn.pokemonId || []).sort((a, b) => a - b);
                     const icons = [];
                     const maxIcons = 8;
                     if (ids.length === 1) {
@@ -116,7 +116,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (pvp) {
                 for (let pvpSub of pvp) {
                     pvpSub = pvpSub.toJSON();
-                    const ids = (pvpSub.pokemonId || '').split(',').sort((a, b) => a - b);
+                    const ids = (pvpSub.pokemonId || []).sort((a, b) => a - b);
                     const icons = [];
                     const maxIcons = 8;
                     if (ids.length === 1) {
@@ -232,17 +232,15 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (invasions) {
                 for (let invasion of invasions) {
                     invasion = invasion.toJSON();
-                    const ids = (invasion.rewardPokemonId || '').split(',').sort((a, b) => a - b);
+                    const ids = (invasion.rewardPokemonId || []).sort((a, b) => a - b);
                     let icons = [];
                     const maxIcons = 8;
                     if (ids.length === 1) {
                         const id = ids[0];
-                        if (id !== '') {
-                            const name = Localizer.getPokemonName(id);
-                            const icon = await Localizer.getPokemonIcon(id);
-                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
-                            icons.push(url);
-                        }
+                        const name = Localizer.getPokemonName(id);
+                        const icon = await Localizer.getPokemonIcon(id);
+                        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
+                        icons.push(url);
                     } else if (ids.length > 1) {
                         for (const [index, id] of ids.entries()) {
                             const icon = await Localizer.getPokemonIcon(id);
@@ -257,7 +255,10 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         icons = [];
                     }
                     invasion.name = invasion.pokestopName;
-                    invasion.reward = icons.join(' ') || null;
+                    invasion.reward = {
+                        formatted: icons.join(' '),
+                        sort: ids,
+                    };
                     invasion.type = invasion.gruntType ? Localizer.getInvasionName(invasion.gruntType) : '';
                     invasion.city = formatAreas(guild_id, invasion.city);
                     invasion.buttons = `
@@ -429,7 +430,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
 router.post('/pokemon/new', async (req, res) => {
     const {
         guild_id,
-        //pokemon,
+        pokemon,
         form,
         iv,
         iv_list,
@@ -440,7 +441,6 @@ router.post('/pokemon/new', async (req, res) => {
         city,
         location,
     } = req.body;
-    let pokemon = req.body.pokemon;
     const user_id = req.session.user_id;
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     const subscription = await Subscription.getSubscription(guild_id, user_id);
@@ -464,12 +464,14 @@ router.post('/pokemon/new', async (req, res) => {
         exists.city = utils.arrayUnique(exists.city.concat(areas));
         exists.location = location || null;
     } else {
+        // TODO: Parse as int array
+        const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
         exists = Pokemon.build({
             id: 0,
             subscriptionId: subscription.id,
             guildId: guild_id,
             userId: user_id,
-            pokemonId: pokemon,
+            pokemonId: pokemonIDs,
             form: form || null,
             minCp: 0,
             minIv: /*isUltraRarePokemon(pokemonId) ? 0 :*/ iv || 0,
@@ -512,7 +514,8 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     if (pkmn) {
         const ivList = iv_list ? iv_list.replace('\r', '').split('\n') : [];
-        pkmn.pokemonId = pokemon;
+        const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
+        pkmn.pokemonId = pokemonIDs;
         pkmn.form = form;
         pkmn.minCp = 0;
         // If pokemon is rare (Unown, Azelf, etc), set IV value to 0
@@ -603,12 +606,13 @@ router.post('/pvp/new', async (req, res) => {
         exists.city = utils.arrayUnique(exists.city.concat(areas));
         exists.location = location || null;
     } else {
+        const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
         exists = PVP.build({
             id: 0,
             subscriptionId: subscription.id,
             guildId: guild_id,
             userId: user_id,
-            pokemonId: pokemon,
+            pokemonId: pokemonIDs,
             form: form,
             league: league,
             minRank: min_rank || 5,
@@ -636,8 +640,9 @@ router.post('/pvp/edit/:id', async (req, res) => {
     //const user_id = req.session.user_id;
     const exists = await PVP.getById(id);
     if (exists) {
+        const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
-        exists.pokemonId = pokemon;
+        exists.pokemonId = pokemonIDs;
         exists.form = form;
         exists.league = league;
         exists.minRank = min_rank || 25;

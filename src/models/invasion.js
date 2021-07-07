@@ -2,6 +2,7 @@
 
 const { DataTypes, Model, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class Invasion extends Model {
 
@@ -106,8 +107,12 @@ Invasion.init({
         allowNull: true,
     },
     rewardPokemonId: {
-        type: DataTypes.TEXT(),
+        type: DataTypes.JSON,//TEXT(),
         defaultValue: null,
+        get() {
+            var data = this.getDataValue('rewardPokemonId');
+            return parseJsonColumn(data);
+        },
     },
     city: {
         type: DataTypes.JSON,
@@ -115,9 +120,7 @@ Invasion.init({
         defaultValue: '[]',
         get() {
             var data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            return parseJsonColumn(data);
         },
     },
     location: {

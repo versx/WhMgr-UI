@@ -102,6 +102,12 @@ const arrayUnique = (array) => {
     return newArray;
 };
 
+const parseJsonColumn = (data) => {
+    return Array.isArray(data)
+        ? data
+        : JSON.parse(data || '[]');
+};
+
 module.exports = {
     generateString,
     hasGuild,
@@ -111,4 +117,5 @@ module.exports = {
     formatDate,
     arraysEqual,
     arrayUnique,
+    parseJsonColumn,
 };

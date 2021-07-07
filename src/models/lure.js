@@ -109,9 +109,7 @@ Lure.init({
         defaultValue: '[]',
         get() {
             var data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            return parseJsonColumn(data);
         },
     },
     location: {

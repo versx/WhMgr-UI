@@ -2,6 +2,7 @@
 
 const { DataTypes, Model, Op, TEXT, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class PVP extends Model {
 
@@ -99,8 +100,12 @@ PVP.init({
         allowNull: false,
     },
     pokemonId: {
-        type: TEXT(),
+        type: DataTypes.JSON,//TEXT(),
         allowNull: false,
+        get() {
+            var data = this.getDataValue('pokemonId');
+            return parseJsonColumn(data);
+        },
     },
     form: {
         type: DataTypes.TEXT,
@@ -127,9 +132,7 @@ PVP.init({
         defaultValue: '[]',
         get() {
             var data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            return parseJsonColumn(data);
         },
         /*
         set(val) {

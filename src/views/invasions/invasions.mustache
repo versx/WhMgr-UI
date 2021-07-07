@@ -69,7 +69,12 @@
         "columns": [
             { "data": "name" },
             { "data": "type" },
-            { "data": "reward" },
+            {
+                "data": {
+                    "_": "reward.formatted",
+                    "sort": "reward.sort",
+                },
+            },
             { "data": "city" },
             { "data": "location" },
             { "data": "buttons" },
