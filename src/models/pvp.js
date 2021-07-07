@@ -1,6 +1,6 @@
 'use strict';
 
-const { DataTypes, Model, Op, TEXT, } = require('sequelize');
+const { DataTypes, Model, Op, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
 const { parseJsonColumn } = require('../services/utils.js');
 
@@ -100,7 +100,7 @@ PVP.init({
         allowNull: false,
     },
     pokemonId: {
-        type: DataTypes.JSON,//TEXT(),
+        type: DataTypes.JSON,
         allowNull: false,
         get() {
             var data = this.getDataValue('pokemonId');

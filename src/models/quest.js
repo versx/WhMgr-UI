@@ -106,7 +106,7 @@ Quest.init({
         allowNull: true,
     },
     city: {
-        type: DataTypes.JSONTEXT,
+        type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {

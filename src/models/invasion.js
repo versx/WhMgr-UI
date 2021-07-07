@@ -107,7 +107,7 @@ Invasion.init({
         allowNull: true,
     },
     rewardPokemonId: {
-        type: DataTypes.JSON,//TEXT(),
+        type: DataTypes.JSON,
         defaultValue: null,
         get() {
             var data = this.getDataValue('rewardPokemonId');
