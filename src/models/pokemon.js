@@ -2,6 +2,7 @@
 
 const { DataTypes, Model, Op, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class Pokemon extends Model {
 
@@ -84,8 +85,17 @@ Pokemon.init({
         allowNull: false,
     },
     pokemonId: {
-        type: DataTypes.TEXT(),
+        type: DataTypes.JSON,
         allowNull: false,
+        get() {
+            var data = this.getDataValue('pokemonId');
+            return parseJsonColumn(data);
+        },
+        /*
+        set(val) {
+            this.setDataValue('city', JSON.stringify(val || []));
+        }
+        */
     },
     form: {
         type: DataTypes.TEXT,
@@ -127,9 +137,7 @@ Pokemon.init({
         defaultValue: '[]',
         get() {
             var data = this.getDataValue('ivList');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            return parseJsonColumn(data);
         },
         /*
         set(val) {
@@ -143,9 +151,7 @@ Pokemon.init({
         defaultValue: '[]',
         get() {
             var data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            return parseJsonColumn(data);
         },
         /*
         set(val) {

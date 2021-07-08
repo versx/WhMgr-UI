@@ -2,6 +2,7 @@
 
 const { DataTypes, Model, Op, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class Raid extends Model {
 
@@ -124,7 +125,7 @@ Raid.init({
         allowNull: false,
     },
     pokemonId: {
-        type: DataTypes.INTEGER(11).UNSIGNED,
+        type: DataTypes.TEXT(),
         allowNull: false,
     },
     form: {
@@ -138,9 +139,7 @@ Raid.init({
         defaultValue: '[]',
         get() {
             var data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            return parseJsonColumn(data);
         },
     },
     location: {

@@ -2,6 +2,7 @@
 
 const { DataTypes, Model, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class Gym extends Model {
 
@@ -100,12 +101,9 @@ Gym.init({
     pokemonIds: {
         type: DataTypes.JSON,
         defaultValue: null,
-        //defaultValue: '[]',
         get() {
             var data = this.getDataValue('pokemonIds');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            return parseJsonColumn(data);
         },
     },
     location: {
