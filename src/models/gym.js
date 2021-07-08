@@ -2,6 +2,7 @@
 
 const { DataTypes, Model, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class Gym extends Model {
 
