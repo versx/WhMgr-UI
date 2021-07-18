@@ -203,6 +203,7 @@ router.get('/raid/edit/:id', async (req, res) => {
         res.redirect('/raids');
         return;
     }
+    data.ex_eligible = raid.exEliglble;
     data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
         pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
@@ -270,6 +271,7 @@ router.get('/gym/edit/:id', async (req, res) => {
     data.name = gym.name;
     data.min_level = gym.minLevel;
     data.max_level = gym.maxLevel;
+    data.ex_eligible = gym.exEliglble;
     data.locations = await Location.getAll(gym.guildId, gym.userId);
     data.locations.forEach(loc => {
         loc.selected = loc.name === gym.location;

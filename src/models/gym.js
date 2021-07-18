@@ -106,6 +106,10 @@ Gym.init({
             return parseJsonColumn(data);
         },
     },
+    exEliglble: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
     location: {
         type: DataTypes.STRING(32),
         defaultValue: null,

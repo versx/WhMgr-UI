@@ -164,6 +164,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     const pkmnName = Localizer.getPokemonName(raid.pokemonId);
                     const pkmnIcon = await Localizer.getPokemonIcon(raid.pokemonId);
                     raid.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pkmnName}`;
+                    data.exEligible = raid.exEligible ? 'Yes' : 'No',
                     raid.city = formatAreas(guild_id, raid.city);
                     raid.buttons = `
                     <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
@@ -190,6 +191,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         images.push(`<img src='${await Localizer.getPokemonIcon(id)}' width='18' height='18'>`);
                     }
                     gym.pokemonIds = images.join(' ');
+                    gym.exEligible = gym.exEligible ? 'Yes' : 'No',
                     gym.buttons = `
                     <a href='/gym/edit/${gym.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -701,7 +703,7 @@ router.post('/pvp/delete_all', async (req, res) => {
 
 // Raid routes
 router.post('/raids/new', async (req, res) => {
-    const { guild_id, pokemon, form, city, location, } = req.body;
+    const { guild_id, pokemon, form, ex_eligible, city, location, } = req.body;
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
@@ -721,6 +723,7 @@ router.post('/raids/new', async (req, res) => {
                 userId: user_id,
                 pokemonId: pokemonId,
                 form: form,
+                exEligible: ex_eligible,
                 city: areas,
                 location: location || null,
             });
@@ -735,12 +738,13 @@ router.post('/raids/new', async (req, res) => {
 
 router.post('/raids/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, /*pokemon,*/ form, city, location, } = req.body;
+    const { guild_id, /*pokemon,*/ form, ex_eligible, city, location, } = req.body;
     //const user_id = req.session.user_id;
     const exists = await Raid.getById(id);
     if (exists) {
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
         exists.form = form;
+        exists.exEligible = ex_eligible;
         exists.city = areas;
         exists.location = location || null;
         const result = await exists.save();
@@ -795,7 +799,7 @@ router.post('/raids/delete_all', async (req, res) => {
 
 // Gym routes
 router.post('/gyms/new', async (req, res) => {
-    const { guild_id, name, min_level, max_level, pokemon, location, } = req.body;
+    const { guild_id, name, min_level, max_level, pokemon, ex_eligible, location, } = req.body;
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
@@ -818,6 +822,7 @@ router.post('/gyms/new', async (req, res) => {
             minLevel: min_level,
             maxLevel: max_level,
             pokemonIds: (pokemon || '').split(','),
+            exEligible: ex_eligible,
             location: location || null,
         });
         const result = await gym.save();
@@ -833,7 +838,7 @@ router.post('/gyms/new', async (req, res) => {
 });
 
 router.post('/gyms/edit/:id', async (req, res) => {
-    const { guild_id, name, min_level, max_level, pokemon, location, } = req.body;
+    const { guild_id, name, min_level, max_level, pokemon, ex_eligible, location, } = req.body;
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
@@ -850,6 +855,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
         exists.minLevel = min_level;
         exists.maxLevel = max_level;
         exists.pokemonIds = (pokemon || '').split(',');
+        exists.exEligible = ex_eligible,
         exists.location = location || null;
         const result = await exists.save();
         if (result) {

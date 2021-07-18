@@ -133,6 +133,10 @@ Raid.init({
         allowNull: true,
         defaultValue: null,
     },
+    exEliglble: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
     city: {
         type: DataTypes.JSON,
         allowNull: false,
