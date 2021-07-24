@@ -165,7 +165,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     const pkmnName = Localizer.getPokemonName(raid.pokemonId);
                     const pkmnIcon = await Localizer.getPokemonIcon(raid.pokemonId);
                     raid.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pkmnName}`;
-                    data.exEligible = raid.exEligible ? 'Yes' : 'No',
+                    raid.exEligible = raid.exEligible ? 'Yes' : 'No',
                     raid.city = formatAreas(guild_id, raid.city);
                     raid.buttons = `
                     <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
@@ -1513,6 +1513,6 @@ const showErrorJson = (res, guildId, message, otherData) => {
     });
 };
 
-const updateLastModified = async () => await Metadata.update("LAST_MODIFIED", Date.now());
+const updateLastModified = async () => await Metadata.update('LAST_MODIFIED', Date.now());
 
 module.exports = router;
