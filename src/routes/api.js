@@ -17,6 +17,7 @@ const { Subscription, NotificationStatusType, } = require('../models/subscriptio
 const DiscordClient = require('../services/discord.js');
 const Localizer = require('../services/locale.js');
 const { getAreas, arrayUnique, formatAreas, } = require('../services/utils.js');
+const Metadata = require('../models/metadata');
 
 /* eslint-disable no-case-declarations */
 router.post('/server/:guild_id/user/:user_id', async (req, res) => {
@@ -486,6 +487,7 @@ router.post('/pokemon/new', async (req, res) => {
     }
     try {
         await Pokemon.create(exists.toJSON());
+        await updateLastModified();
     } catch (err) {
         console.error(err);
         showError(res, 'pokemon/new', `Failed to create Pokemon ${pokemon} subscriptions for guild: ${guild_id} user: ${user_id}`);
@@ -530,6 +532,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         const result = await pkmn.save();
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Pokemon subscription', id, 'updated successfully.');
         } else {
             showError(res, 'pokemon/edit', `Failed to update Pokemon subscription ${id}`);
@@ -546,6 +549,7 @@ router.post('/pokemon/delete/:id', async (req, res) => {
         const result = await Pokemon.deleteById(id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Pokemon subscription', id, 'deleted successfully.');
         } else {
             showError(res, 'pokemon/delete', `Failed to delete Pokemon subscription ${id}`);
@@ -566,6 +570,7 @@ router.post('/pokemon/delete_all', async (req, res) => {
         const result = await Pokemon.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('All Pokemon subscriptions deleted for guild:', guild_id, 'user:', user_id);
         } else {
             showError(res, 'pokemon/delete-all', `Failed to delete all Pokemon subscriptions for guild: ${guild_id} user: ${user_id}`);
@@ -622,6 +627,7 @@ router.post('/pvp/new', async (req, res) => {
         });
     }
     await PVP.create(exists.toJSON());
+    await updateLastModified();
     res.redirect('/pokemon#pvp');
 });
 
@@ -652,6 +658,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
         const result = await exists.save();
         if (result) {
             // Success
+            await updateLastModified();
             console.log('PVP subscription', id, 'updated successfully.');
         } else {
             showError(res, 'pvp/edit', `Failed to update PvP subscription ${id}`);
@@ -668,6 +675,7 @@ router.post('/pvp/delete/:id', async (req, res) => {
         const result = await PVP.deleteById(id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('PVP subscription with id', id, 'deleted successfully.');
         } else {
             showError(res, 'pvp/delete', `Failed to delete PvP subscription ${id}`);
@@ -688,6 +696,7 @@ router.post('/pvp/delete_all', async (req, res) => {
         const result = await PVP.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('All PVP subscriptions deleted for guild:', guild_id, 'user:', user_id);
         } else {
             showError(res, 'pvp/delete-all', `Failed to delete all PvP subscriptions for guild: ${guild_id} user: ${user_id}`);
@@ -733,6 +742,7 @@ router.post('/raids/new', async (req, res) => {
         sql.push(exists.toJSON());
     }
     await Raid.create(sql);
+    await updateLastModified();
     res.redirect('/raids');
 });
 
@@ -750,6 +760,7 @@ router.post('/raids/edit/:id', async (req, res) => {
         const result = await exists.save();
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Raid subscription', id, 'updated successfully.');
         } else {
             showError(res, 'raids/edit', `Failed to update Raid subscription ${id}`);
@@ -766,6 +777,7 @@ router.post('/raids/delete/:id', async (req, res) => {
         const result = await Raid.deleteById(id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Raid subscription with id', id, 'deleted successfully.');
         } else {
             console.error('Failed to delete Raid subscription', id);
@@ -787,6 +799,7 @@ router.post('/raids/delete_all', async (req, res) => {
         const result = await Raid.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('All raid subscriptions deleted for guild:', guild_id, 'user:', user_id);
         }
     } else {
@@ -828,6 +841,7 @@ router.post('/gyms/new', async (req, res) => {
         const result = await gym.save();
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Gym subscription for gym', name, 'created successfully.');
         } else {
             showError(res, 'gyms/new', `Failed to create Gym subscription ${name}`);
@@ -860,6 +874,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
         const result = await exists.save();
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Gym subscription for gym', name, 'updated successfully.');
         } else {
             showError(res, 'gyms/edit', `Failed to update Gym subscription ${name}`);
@@ -876,6 +891,7 @@ router.post('/gyms/delete/:id', async (req, res) => {
         const result = await Gym.deleteById(id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Gym subscription with id', id, 'deleted successfully.');
         } else {
             showError(res, 'gyms/delete', `Failed to delete Gym subscription ${id}`);
@@ -896,6 +912,7 @@ router.post('/gyms/delete_all', async (req, res) => {
         const result = await Gym.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('All Gym subscriptions deleted for guild:', guild_id, 'user:', user_id);
         } else {
             showError(res, 'gyms/delete-all', `Failed to delete all Gym subscriptions for guild: ${guild_id} and user: ${user_id}`);
@@ -939,6 +956,7 @@ router.post('/quests/new', async (req, res) => {
     const results = await exists.save();
     if (results) {
         // Success
+        await updateLastModified();
         console.log('Quest subscription for reward', reward, 'at pokestop', pokestop_name, 'created successfully.');
     } else {
         showError(res, 'quest-new', `Failed to create or update Quest subscription reward ${reward} and pokestop ${pokestop_name}`);
@@ -961,6 +979,7 @@ router.post('/quests/edit/:id', async (req, res) => {
         const result = await quest.save();
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Quest subscription', id, 'updated successfully.');
         } else {
             showError(res, 'quests/edit', `Failed to update Quest subscription ${id}`);
@@ -977,6 +996,7 @@ router.post('/quests/delete/:id', async (req, res) => {
         const result = await Quest.deleteById(id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Quest subscription with id', id, 'deleted successfully.');
         } else {
             showError(res, 'quests/delete', `Failed to delete Quest subscription ${id}`);
@@ -997,6 +1017,7 @@ router.post('/quests/delete_all', async (req, res) => {
         const result = await Quest.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('All quest subscriptions deleted for guild:', guild_id, 'user:', user_id);
         } else {
             showError(res, 'quests/delete-all', `Failed to delete all Quest subscriptions for guild: ${guild_id} user: ${user_id}`);
@@ -1040,6 +1061,7 @@ router.post('/invasion/new', async (req, res) => {
     }
     if (await exists.save()) {
         // Success
+        await updateLastModified();
         console.log('Invasion subscription for reward', pokemon, 'created successfully.');
     } else {
         showError(res, 'invasions/invasions', `Failed to create Invasion subscription for reward ${pokemon}`);
@@ -1063,6 +1085,7 @@ router.post('/invasions/edit/:id', async (req, res) => {
         const result = invasion.save();
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Invasion subscription', id, 'updated successfully.');
         } else {
             showError(res, 'invasions/invasions', `Failed to update Invasion subscription ${id}`);
@@ -1078,6 +1101,7 @@ router.post('/invasions/delete/:id', async (req, res) => {
         const result = await Invasion.deleteById(id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Invasion subscription with id', id, 'deleted successfully.');
         } else {
             showError(res, 'invasions/invasions', `Failed to delete Invasion subscription ${id}`);
@@ -1098,6 +1122,7 @@ router.post('/invasions/delete_all', async (req, res) => {
         const result = await Invasion.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('All Invasion subscriptions deleted for guild:', guild_id, 'user:', user_id);
         } else {
             console.error('Failed to delete all Invasion subscriptions for guild:', guild_id, 'user_id:', user_id);
@@ -1148,6 +1173,7 @@ router.post('/lures/new', async (req, res) => {
         const results = await exists.save();
         if (results) {
             // Success
+            await updateLastModified();
             console.log('Lure subscription for type', lureType, 'with pokestop', pokestop_name, 'created successfully.');
         } else {
             showError(res, 'lures', `Failed to create Lure subscription for type ${lureType} with pokestop ${pokestop_name}`);
@@ -1171,6 +1197,7 @@ router.post('/lures/edit/:id', async (req, res) => {
         const result = lure.save();
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Lure subscription', id, 'updated successfully.');
         } else {
             showError(res, 'lures/lures', `Failed to update Lure subscription ${id}`);
@@ -1186,6 +1213,7 @@ router.post('/lures/delete/:id', async (req, res) => {
         const result = await Lure.deleteById(id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Lure subscription with id', id, 'deleted successfully.');
         } else {
             showError(res, 'lures/lures', `Failed to delete Lure subscription ${id}`);
@@ -1206,6 +1234,7 @@ router.post('/lures/delete_all', async (req, res) => {
         const result = await Lure.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('All Lure subscriptions deleted for guild:', guild_id, 'user:', user_id);
         } else {
             console.error('Failed to delete all Lure subscriptions for guild:', guild_id, 'user_id:', user_id);
@@ -1248,6 +1277,7 @@ router.post('/location/new', async (req, res) => {
     const results = await exists.save();
     if (results) {
         // Success
+        await updateLastModified();
         console.log('Location ', name, ' with distance', distance, 'and location', location, 'created successfully.');
     } else {
         showError(res, 'locations/locations', `Failed to create Location subscription for ${name}`);
@@ -1273,6 +1303,7 @@ router.post('/location/edit/:id', async (req, res) => {
         const result = loc.save();
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Location subscription', id, 'updated successfully.');
         } else {
             showError(res, 'locations/locations', `Failed to update Location subscription ${id}`);
@@ -1288,6 +1319,7 @@ router.post('/locations/delete/:id', async (req, res) => {
         const result = await Location.deleteById(id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('Location with name', exists.name, 'deleted successfully.');
         } else {
             showError(res, 'locations/locations', `Failed to delete location ${exists.name}`);
@@ -1308,6 +1340,7 @@ router.post('/locations/delete_all', async (req, res) => {
         const result = await Location.deleteAll(guild_id, user_id);
         if (result) {
             // Success
+            await updateLastModified();
             console.log('All locations deleted for guild:', guild_id, 'user:', user_id);
         } else {
             console.error('Failed to delete all locations for guild:', guild_id, 'user_id:', user_id);
@@ -1431,6 +1464,7 @@ router.post('/settings', async (req, res) => {
     const result = await Subscription.updateSubscription(guild_id, userId, status, location, icon_style, phone_number);
     if (result) {
         // Success
+        await updateLastModified();
         console.log('Successfully updated subscription settings for', userId, 'in guild', guild_id);
     } else {
         showError(res, 'settings', 'Failed to update settings.');
@@ -1478,5 +1512,7 @@ const showErrorJson = (res, guildId, message, otherData) => {
         }
     });
 };
+
+const updateLastModified = async () => await Metadata.update("LAST_MODIFIED", Date.now());
 
 module.exports = router;
