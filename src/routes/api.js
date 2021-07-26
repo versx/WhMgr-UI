@@ -1513,6 +1513,6 @@ const showErrorJson = (res, guildId, message, otherData) => {
     });
 };
 
-const updateLastModified = async () => await Metadata.update('LAST_MODIFIED', Date.now());
+const updateLastModified = async () => await Metadata.update('LAST_MODIFIED', Date.now() / 1000);
 
 module.exports = router;
