@@ -61,26 +61,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     //if (pkmn.pokemonId === 'All') {
                     //    pkmn.name = `<img src='/img/pokemon.png' width='auto' height='32'>&nbsp;` + Localizer.getValue('All');
                     //} else {
-                    const ids = (pkmn.pokemonId || []).sort((a, b) => a - b);
-                    const icons = [];
-                    const maxIcons = 8;
-                    if (ids.length === 1) {
-                        const id = ids[0];
-                        const name = Localizer.getPokemonName(id);
-                        const icon = await Localizer.getPokemonIcon(id);
-                        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
-                        icons.push(url);
-                    } else  {
-                        for (const [index, id] of ids.entries()) {
-                            const icon = await Localizer.getPokemonIcon(id);
-                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
-                            icons.push(url);
-                            if (index > maxIcons) {
-                                icons.push('<span><small style="color: grey;">& ' + (ids.length - 8) + ' more...</small></span>');
-                                break;
-                            }
-                        }
-                    }
+                    const { icons, ids } = await groupPokemonIconUrls(pkmn.pokemonId);
                     pkmn.name = {
                         formatted: icons.join(' '),
                         sort: ids,
@@ -117,26 +98,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (pvp) {
                 for (let pvpSub of pvp) {
                     pvpSub = pvpSub.toJSON();
-                    const ids = (pvpSub.pokemonId || []).sort((a, b) => a - b);
-                    const icons = [];
-                    const maxIcons = 8;
-                    if (ids.length === 1) {
-                        const id = ids[0];
-                        const name = Localizer.getPokemonName(id);
-                        const icon = await Localizer.getPokemonIcon(id);
-                        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
-                        icons.push(url);
-                    } else  {
-                        for (const [index, id] of ids.entries()) {
-                            const icon = await Localizer.getPokemonIcon(id);
-                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
-                            icons.push(url);
-                            if (index > maxIcons) {
-                                icons.push('<span><small style="color: grey;">& ' + (ids.length - 8) + ' more...</small></span>');
-                                break;
-                            }
-                        }
-                    }
+                    const { icons, ids } = await groupPokemonIconUrls(pvpSub.pokemonId);
                     pvpSub.name = {
                         formatted: icons.join(' '),
                         sort: ids,
@@ -162,9 +124,11 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (raids) {
                 for (let raid of raids) {
                     raid = raid.toJSON();
-                    const pkmnName = Localizer.getPokemonName(raid.pokemonId);
-                    const pkmnIcon = await Localizer.getPokemonIcon(raid.pokemonId);
-                    raid.name = `<img src='${pkmnIcon}' width='auto' height='32'>&nbsp;${pkmnName}`;
+                    const { icons, ids } = await groupPokemonIconUrls(raid.pokemonId);
+                    raid.name = {
+                        formatted: icons.join(' '),
+                        sort: ids,
+                    };
                     raid.exEligible = raid.exEligible ? 'Yes' : 'No',
                     raid.city = formatAreas(guild_id, raid.city);
                     raid.buttons = `
@@ -235,28 +199,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (invasions) {
                 for (let invasion of invasions) {
                     invasion = invasion.toJSON();
-                    const ids = (invasion.rewardPokemonId || []).sort((a, b) => a - b);
-                    let icons = [];
-                    const maxIcons = 8;
-                    if (ids.length === 1) {
-                        const id = ids[0];
-                        const name = Localizer.getPokemonName(id);
-                        const icon = await Localizer.getPokemonIcon(id);
-                        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
-                        icons.push(url);
-                    } else if (ids.length > 1) {
-                        for (const [index, id] of ids.entries()) {
-                            const icon = await Localizer.getPokemonIcon(id);
-                            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
-                            icons.push(url);
-                            if (index > maxIcons) {
-                                icons.push('<span><small style="color: grey;">& ' + (ids.length - 8) + ' more...</small></span>');
-                                break;
-                            }
-                        }
-                    } else {
-                        icons = [];
-                    }
+                    const { icons, ids } = await groupPokemonIconUrls(invasion.rewardPokemonId);
                     invasion.name = invasion.pokestopName;
                     invasion.reward = {
                         formatted: icons.join(' '),
@@ -486,7 +429,7 @@ router.post('/pokemon/new', async (req, res) => {
         });
     }
     try {
-        await Pokemon.create(exists.toJSON());
+        await exists.save();
         await updateLastModified();
     } catch (err) {
         console.error(err);
@@ -626,7 +569,7 @@ router.post('/pvp/new', async (req, res) => {
             location: location || null,
         });
     }
-    await PVP.create(exists.toJSON());
+    await exists.save();
     await updateLastModified();
     res.redirect('/pokemon#pvp');
 });
@@ -720,41 +663,50 @@ router.post('/raids/new', async (req, res) => {
         return;
     }
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
-    let sql = [];
-    const split = pokemon.split(',');
-    for (const pokemonId of split) {
-        let exists = await Raid.getByPokemon(guild_id, user_id, pokemonId, form);
-        if (!exists) {
-            exists = Raid.build({
-                id: 0,
-                subscriptionId: subscription.id,
-                guildId: guild_id,
-                userId: user_id,
-                pokemonId: pokemonId,
-                form: form,
-                exEligible: ex_eligible,
-                city: areas,
-                location: location || null,
-            });
-        } else {
-            exists.city = arrayUnique(exists.city.concat(areas));
-        }
-        sql.push(exists.toJSON());
+    const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
+    let exists = await Raid.getByPokemon(guild_id, user_id, pokemon, form);
+    if (exists) {
+        // Raid subscription already exists
+        exists.pokemonId = pokemonIDs;
+        exists.form = form;
+        exists.exEligible = ex_eligible;
+        exists.location = location;
+        exists.city = arrayUnique(exists.city.concat(areas));
+    } else {
+        exists = Raid.build({
+            id: 0,
+            subscriptionId: subscription.id,
+            guildId: guild_id,
+            userId: user_id,
+            pokemonId: pokemonIDs,
+            form: form,
+            exEligible: ex_eligible === 'on',
+            city: areas,
+            location: location || null,
+        });
     }
-    await Raid.create(sql);
-    await updateLastModified();
+    try {
+        await exists.save();
+        await updateLastModified();
+    } catch (err) {
+        console.error(err);
+        showError(res, 'raids/new', `Failed to create Raid ${pokemon} subscriptions for guild: ${guild_id} user: ${user_id}`);
+        return;
+    }
     res.redirect('/raids');
 });
 
 router.post('/raids/edit/:id', async (req, res) => {
     const id = req.params.id;
-    const { guild_id, /*pokemon,*/ form, ex_eligible, city, location, } = req.body;
+    const { guild_id, pokemon, form, ex_eligible, city, location, } = req.body;
     //const user_id = req.session.user_id;
     const exists = await Raid.getById(id);
     if (exists) {
+        const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
+        exists.pokemonId = pokemonIDs;
         exists.form = form;
-        exists.exEligible = ex_eligible;
+        exists.exEligible = ex_eligible === 'on',
         exists.city = areas;
         exists.location = location || null;
         const result = await exists.save();
@@ -835,7 +787,7 @@ router.post('/gyms/new', async (req, res) => {
             minLevel: min_level,
             maxLevel: max_level,
             pokemonIds: (pokemon || '').split(','),
-            exEligible: ex_eligible,
+            exEligible: ex_eligible === 'on',
             location: location || null,
         });
         const result = await gym.save();
@@ -869,7 +821,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
         exists.minLevel = min_level;
         exists.maxLevel = max_level;
         exists.pokemonIds = (pokemon || '').split(',');
-        exists.exEligible = ex_eligible,
+        exists.exEligible = ex_eligible === 'on',
         exists.location = location || null;
         const result = await exists.save();
         if (result) {
@@ -1042,8 +994,12 @@ router.post('/invasion/new', async (req, res) => {
     }
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     let exists = await Invasion.getBy(guild_id, user_id, name, grunt_type, pokemon);
+    const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
     if (exists) {
         // Already exists
+        exists.pokestopName = name || null;
+        exists.gruntType = grunt_type || null;
+        exists.rewardPokemonId = pokemonIDs;
         exists.city = arrayUnique(exists.city.concat(areas || []));
         exists.location = location || null;
     } else {
@@ -1054,7 +1010,7 @@ router.post('/invasion/new', async (req, res) => {
             userId: user_id,
             pokestopName: name || null,
             gruntType: grunt_type || null,
-            rewardPokemonId: pokemon || null,
+            rewardPokemonId: pokemonIDs,
             city: areas,
             location: location || null,
         });
@@ -1514,5 +1470,29 @@ const showErrorJson = (res, guildId, message, otherData) => {
 };
 
 const updateLastModified = async () => await Metadata.update('LAST_MODIFIED', Date.now() / 1000);
+
+const groupPokemonIconUrls = async (pokemonIDs) => {
+    const ids = (pokemonIDs || []).sort((a, b) => a - b);
+    const icons = [];
+    const maxIcons = 7;
+    if (ids.length === 1) {
+        const id = ids[0];
+        const name = Localizer.getPokemonName(id);
+        const icon = await Localizer.getPokemonIcon(id);
+        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
+        icons.push(url);
+    } else  {
+        for (const [index, id] of ids.entries()) {
+            const icon = await Localizer.getPokemonIcon(id);
+            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
+            icons.push(url);
+            if (index + 1 > maxIcons - 1) {
+                icons.push('<span><small style="color: grey;">& ' + (ids.length - maxIcons + 1) + ' more...</small></span>');
+                break;
+            }
+        }
+    }
+    return { icons, ids, };
+};
 
 module.exports = router;

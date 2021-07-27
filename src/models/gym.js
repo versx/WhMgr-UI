@@ -106,7 +106,7 @@ Gym.init({
             return parseJsonColumn(data);
         },
     },
-    exEliglble: {
+    exEligible: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },

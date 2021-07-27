@@ -6,16 +6,6 @@ const { parseJsonColumn } = require('../services/utils.js');
 
 class Raid extends Model {
 
-    static fromGymFields = [
-        //'id',
-        'guildId',
-        'userId',
-        'subscriptionId',
-        'pokemonId',
-        'form',
-        'city',
-    ];
-
     static getCount(guildId, userId) {
         return Raid.count({
             where: {
@@ -23,16 +13,6 @@ class Raid extends Model {
                 userId: userId,
             }
         });
-    }
-
-    static async create(raids) {
-        if (raids.length === 0) {
-            return;
-        }
-        const results = await Raid.bulkCreate(raids, {
-            updateOnDuplicate: Raid.fromGymFields,
-        });
-        console.log('[Raid] Results:', results);
     }
 
     static getAll(guildId, userId) {
@@ -88,21 +68,6 @@ class Raid extends Model {
             }
         });
     }
-
-    async save() {
-        const results = Raid.update({
-            pokemonId: this.pokemonId,
-            form: this.form,
-            city: this.city,
-        }, {
-            where: {
-                id: this.id,
-                //guildId: this.guildId,
-                //userId: this.userId,
-            }
-        });
-        return results;
-    }
 }
 
 Raid.init({
@@ -125,15 +90,24 @@ Raid.init({
         allowNull: false,
     },
     pokemonId: {
-        type: DataTypes.TEXT(),
+        type: DataTypes.JSON,
         allowNull: false,
+        get() {
+            var data = this.getDataValue('pokemonId');
+            return parseJsonColumn(data);
+        },
+        /*
+        set(val) {
+            this.setDataValue('city', JSON.stringify(val || []));
+        }
+        */
     },
     form: {
         type: DataTypes.TEXT,
         allowNull: true,
         defaultValue: null,
     },
-    exEliglble: {
+    exEligible: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
