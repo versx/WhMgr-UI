@@ -106,7 +106,57 @@ const toNumbers = (array) => {
     const pokemonIds = (array || '').split(',');
     const ids = (pokemonIds || []).map(Number);
     return ids.join(',');
-}
+};
+
+const isUltraRarePokemon = (pokemonId) => {
+    const ultraRareList = [
+        201, // Unown
+        480, // Uxie
+        481, // Mesprit
+        482, // Azelf
+    ];
+    return ultraRareList.includes(pokemonId);
+};
+
+const formatPokemonSize = (size) => {
+    switch (size) {
+        case 1: return 'Tiny';
+        case 2: return 'Small';
+        case 3: return 'Normal';
+        case 4: return 'Large';
+        case 5: return 'Big';
+        default: return 'All';
+    }
+};
+
+const formatAreas = (guildId, subscriptionAreas) => {
+    return arraysEqual(subscriptionAreas, config.discord.guilds.filter(x => x.id === guildId)[0].geofences)
+        ? 'All' // TODO: Localize
+        : ellipsis(subscriptionAreas.join(','));
+};
+
+const ellipsis = (str) => {
+    const value = str.substring(0, Math.min(64, str.length));
+    return value === str ? value : value + '...';
+};
+
+const showError = (res, page, message) => {
+    console.error(message);
+    const errorData = { ...defaultData };
+    errorData.error = message;
+    errorData.show_error = true;
+    res.render(page, errorData);
+};
+
+const showErrorJson = (res, guildId, message, otherData) => {
+    res.json({
+        data: {
+            error: message,
+            show_error: true,
+            ...otherData,
+        }
+    });
+};
 
 module.exports = {
     generateString,
@@ -118,4 +168,10 @@ module.exports = {
     arraysEqual,
     arrayUnique,
     toNumbers,
+    isUltraRarePokemon,
+    formatPokemonSize,
+    formatAreas,
+    ellipsis,
+    showError,
+    showErrorJson,
 };
