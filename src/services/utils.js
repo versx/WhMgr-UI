@@ -1,6 +1,7 @@
 'use strict';
 
 const config = require('../config.json');
+const defaultData = require('../data/default.js');
 
 const generateString = () => {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);

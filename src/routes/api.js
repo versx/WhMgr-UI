@@ -512,7 +512,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     if (pkmn) {
         const ivList = iv_list ? iv_list.replace('\r', '').split('\n') : [];
-        pkmn.pokemonId = utils.toNumbers(pokemon);;
+        pkmn.pokemonId = utils.toNumbers(pokemon);
         pkmn.form = form;
         pkmn.minCp = 0;
         // If pokemon is rare (Unown, Azelf, etc), set IV value to 0
@@ -626,7 +626,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
     const id = req.params.id;
     const {
         guild_id,
-        pokemon,
+        //pokemon,
         form,
         league,
         min_rank,
@@ -634,11 +634,12 @@ router.post('/pvp/edit/:id', async (req, res) => {
         city,
         location,
     } = req.body;
+    const pokemon = utils.toNumbers(req.body.pokemon);
     //const user_id = req.session.user_id;
     const exists = await PVP.getById(id);
     if (exists) {
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
-        exists.pokemonId = utils.toNumbers(req.body.pokemon);
+        exists.pokemonId = pokemon;
         exists.form = form;
         exists.league = league;
         exists.minRank = min_rank || 25;
