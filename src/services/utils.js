@@ -102,6 +102,12 @@ const arrayUnique = (array) => {
     return newArray;
 };
 
+const toNumbers = (array) => {
+    const pokemonIds = (array || '').split(',');
+    const ids = (pokemonIds || []).map(Number);
+    return ids.join(',');
+}
+
 module.exports = {
     generateString,
     hasGuild,
@@ -111,4 +117,5 @@ module.exports = {
     formatDate,
     arraysEqual,
     arrayUnique,
+    toNumbers,
 };

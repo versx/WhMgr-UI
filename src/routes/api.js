@@ -440,7 +440,7 @@ router.post('/pokemon/new', async (req, res) => {
         city,
         location,
     } = req.body;
-    let pokemon = req.body.pokemon;
+    const pokemon = utils.toNumbers(req.body.pokemon);
     const user_id = req.session.user_id;
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     const subscription = await Subscription.getSubscription(guild_id, user_id);
@@ -512,7 +512,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     if (pkmn) {
         const ivList = iv_list ? iv_list.replace('\r', '').split('\n') : [];
-        pkmn.pokemonId = pokemon;
+        pkmn.pokemonId = utils.toNumbers(pokemon);;
         pkmn.form = form;
         pkmn.minCp = 0;
         // If pokemon is rare (Unown, Azelf, etc), set IV value to 0
@@ -580,7 +580,7 @@ router.post('/pokemon/delete_all', async (req, res) => {
 router.post('/pvp/new', async (req, res) => {
     const {
         guild_id,
-        pokemon,
+        //pokemon,
         form,
         league,
         min_rank,
@@ -588,6 +588,7 @@ router.post('/pvp/new', async (req, res) => {
         city,
         location,
     } = req.body;
+    const pokemon = utils.toNumbers(req.body.pokemon);
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
@@ -637,7 +638,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
     const exists = await PVP.getById(id);
     if (exists) {
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
-        exists.pokemonId = pokemon;
+        exists.pokemonId = utils.toNumbers(req.body.pokemon);
         exists.form = form;
         exists.league = league;
         exists.minRank = min_rank || 25;
