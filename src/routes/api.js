@@ -470,7 +470,7 @@ router.post('/pokemon/new', async (req, res) => {
             guildId: guild_id,
             userId: user_id,
             pokemonId: pokemon,
-            form: form || null,
+            form: utils.cleanArray(form),
             minCp: 0,
             minIv: /*utils.isUltraRarePokemon(pokemonId) ? 0 :*/ iv || 0,
             ivList: ivList,
@@ -513,7 +513,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
     if (pkmn) {
         const ivList = iv_list ? iv_list.replace('\r', '').split('\n') : [];
         pkmn.pokemonId = utils.toNumbers(pokemon);
-        pkmn.form = form;
+        pkmn.form = utils.cleanArray(form);
         pkmn.minCp = 0;
         // If pokemon is rare (Unown, Azelf, etc), set IV value to 0
         pkmn.minIv = /*utils.isUltraRarePokemon(pkmn.pokemonId) ? 0 :*/ iv || 0;
@@ -610,7 +610,7 @@ router.post('/pvp/new', async (req, res) => {
             guildId: guild_id,
             userId: user_id,
             pokemonId: pokemon,
-            form: form,
+            form: utils.cleanArray(form),
             league: league,
             minRank: min_rank || 5,
             minPercent: min_percent || 99,
@@ -640,7 +640,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
     if (exists) {
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
         exists.pokemonId = pokemon;
-        exists.form = form;
+        exists.form = utils.cleanArray(form);
         exists.league = league;
         exists.minRank = min_rank || 25;
         exists.minPercent = min_percent || 98;
@@ -719,7 +719,7 @@ router.post('/raids/new', async (req, res) => {
                 guildId: guild_id,
                 userId: user_id,
                 pokemonId: pokemonId,
-                form: form,
+                form: utils.cleanArray(form),
                 city: areas,
                 location: location || null,
             });
@@ -739,7 +739,7 @@ router.post('/raids/edit/:id', async (req, res) => {
     const exists = await Raid.getById(id);
     if (exists) {
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
-        exists.form = form;
+        exists.form = utils.cleanArray(form);
         exists.city = areas;
         exists.location = location || null;
         const result = await exists.save();

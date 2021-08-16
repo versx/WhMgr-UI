@@ -159,6 +159,15 @@ const showErrorJson = (res, guildId, message, otherData) => {
     });
 };
 
+const cleanArray = (array) => {
+    if (!array) {
+        return null;
+    }
+    const arr = (array || '').split(',');
+    const cleanedArr = arr.map(String);
+    return cleanedArr;
+};
+
 module.exports = {
     generateString,
     hasGuild,
@@ -175,4 +184,5 @@ module.exports = {
     ellipsis,
     showError,
     showErrorJson,
+    cleanArray,
 };
