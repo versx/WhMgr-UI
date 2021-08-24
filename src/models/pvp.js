@@ -1,6 +1,6 @@
 'use strict';
 
-const { DataTypes, Model, Op, TEXT, } = require('sequelize');
+const { DataTypes, Model, Op, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
 
 class PVP extends Model {
