@@ -128,7 +128,7 @@ Raid.init({
         allowNull: false,
     },
     form: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING(255),
         allowNull: true,
         defaultValue: null,
     },
