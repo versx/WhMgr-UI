@@ -88,7 +88,7 @@ Pokemon.init({
         allowNull: false,
     },
     form: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.TEXT(),
         allowNull: true,
         defaultValue: null,
     },

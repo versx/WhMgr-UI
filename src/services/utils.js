@@ -165,7 +165,7 @@ const cleanArray = (array) => {
     }
     const arr = (array || '').split(',');
     const cleanedArr = arr.map(String);
-    return cleanedArr;
+    return cleanedArr.join(',');
 };
 
 module.exports = {
