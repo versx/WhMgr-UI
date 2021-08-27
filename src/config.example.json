@@ -5,7 +5,7 @@
     "locale": "en",
     "style": "dark",
     "favicon": "default.png",
-    "maxPokemonId": 721,
+    "maxPokemonId": 898,
     "lastNestMigration": "2019-03-07T01:00:00Z",
     "showFooter": true,
     "enableGeofenceRoles": true,
