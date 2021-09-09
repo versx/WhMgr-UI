@@ -452,7 +452,7 @@ router.get('/lure/edit/:id', async (req, res) => {
     data.pokestop_name = lure.pokestopName;
     data.lureTypes = map.getLureTypes();
     data.lureTypes.forEach(lureType => {
-        lureType.selected = lureType === lure.lureType;
+        lureType.selected = lure.lureType.includes(lureType.id);
     });
     const cities = getSelectedAreas(
         // Currently subscribed areas list

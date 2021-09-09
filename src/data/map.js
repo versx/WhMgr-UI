@@ -76,11 +76,11 @@ const getInvasionTypes = () => {
 
 const getLureTypes = () => {
     return [
-        { name: 'Normal' },
-        { name: 'Glacial' },
-        { name: 'Mossy' },
-        { name: 'Magnetic' },
-        { name: 'Rainy' },
+        { id: 501, name: 'Normal' },
+        { id: 502, name: 'Glacial' },
+        { id: 503, name: 'Mossy' },
+        { id: 504, name: 'Magnetic' },
+        { id: 505, name: 'Rainy' },
     ];
 };
 

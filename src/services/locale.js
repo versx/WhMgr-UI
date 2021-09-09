@@ -53,24 +53,12 @@ class Localizer {
     }
 
     getLureName(lureType) {
-        switch (lureType.toLowerCase()) {
-            case 'normal': return i18n.__('lure_501');
-            case 'glacial': return i18n.__('lure_502');
-            case 'mossy': return i18n.__('lure_503');
-            case 'magnetic': return i18n.__('lure_504');
-        }
-        return lureType;
+        const value = i18n.__('lure_' + lureType);
+        return value;
     }
 
-    getLureIcon(lureType) {
-        let id = '501';
-        switch (lureType.toLowerCase()) {
-            case 'normal': id = '501'; break;
-            case 'glacial': id = '502'; break;
-            case 'mossy': id = '503'; break;
-            case 'magnetic': id = '504'; break;
-        }
-        return `../../img/lures/${id}.png`;
+    getLureIcon(lureTypeId) {
+        return `../../img/lures/${lureTypeId}.png`;
     }
 
     getInvasionName(gruntType) {

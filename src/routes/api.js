@@ -231,10 +231,12 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             if (lures) {
                 for (let lure of lures) {
                     lure = lure.toJSON();
-                    const lureName = Localizer.getLureName(lure.lureType);
-                    const lureIcon = Localizer.getLureIcon(lure.lureType);
+                    const { icons, ids } = groupLuresIconUrls(lure.lureType);
                     lure.pokestop_name = lure.pokestopName;
-                    lure.type = `<img src='${lureIcon}' width='auto' height='32'>&nbsp;${lureName}`;
+                    lure.type = {
+                        formatted: icons.join(' '),
+                        sort: ids,
+                    };
                     lure.city = formatAreas(guild_id, lure.city);
                     lure.buttons = `
                     <a href='/lure/edit/${lure.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
@@ -1111,37 +1113,34 @@ router.post('/lures/new', async (req, res) => {
     if (!Array.isArray(lureTypes)) {
         lureTypes = [lureTypes];
     }
+    const lureTypeIds = lureTypes ? lureTypes.map(x => +x) : [];
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
-    //const split = lureTypes.split(',');
-    for (let i = 0; i < lureTypes.length; i++) {
-        const lureType = lureTypes[i];
-        let exists = await Lure.getBy(guild_id, user_id, pokestop_name, lureType);
-        if (exists) {
-            // Already exists
-            exists.pokestopName = pokestop_name;
-            exists.city = arrayUnique(exists.city.concat(areas || []));
-            exists.location = location || null;
-        } else {
-            exists = Lure.build({
-                id: 0,
-                subscriptionId: subscription.id,
-                guildId: guild_id,
-                userId: user_id,
-                pokestopName: pokestop_name,
-                lureType: lureType,
-                city: areas,
-                location: location || null,
-            });
-        }
-        const results = await exists.save();
-        if (results) {
-            // Success
-            await updateLastModified();
-            console.log('Lure subscription for type', lureType, 'with pokestop', pokestop_name, 'created successfully.');
-        } else {
-            showError(res, 'lures', `Failed to create Lure subscription for type ${lureType} with pokestop ${pokestop_name}`);
-            return;
-        }
+    let exists = await Lure.getBy(guild_id, user_id, pokestop_name, lureTypeIds);
+    if (exists) {
+        // Already exists
+        exists.pokestopName = pokestop_name;
+        exists.city = arrayUnique(exists.city.concat(areas || []));
+        exists.location = location || null;
+    } else {
+        exists = Lure.build({
+            id: 0,
+            subscriptionId: subscription.id,
+            guildId: guild_id,
+            userId: user_id,
+            pokestopName: pokestop_name,
+            lureType: lureTypeIds,
+            city: areas,
+            location: location || null,
+        });
+    }
+    const results = await exists.save();
+    if (results) {
+        // Success
+        await updateLastModified();
+        console.log('Lure subscription for type', lureTypes, 'with pokestop', pokestop_name, 'created successfully.');
+    } else {
+        showError(res, 'lures', `Failed to create Lure subscription for type ${lureType} with pokestop ${pokestop_name}`);
+        return;
     }
     res.redirect('/lures');
 });
@@ -1149,12 +1148,17 @@ router.post('/lures/new', async (req, res) => {
 router.post('/lures/edit/:id', async (req, res) => {
     const id = req.params.id;
     const { guild_id, pokestop_name, city, location, } = req.body;
+    let lureTypes = req.body.lure_types;
+    if (!Array.isArray(lureTypes)) {
+        lureTypes = [lureTypes];
+    }
     //const user_id = defaultData.user_id;
     const lure = await Lure.getById(id);
     if (lure) {
+        const lureTypeIds = lureTypes ? lureTypes.map(x => +x) : [];
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
-        // TODO: Update pokestop lure type
         lure.pokestopName = pokestop_name;
+        lure.lureType = lureTypeIds;
         lure.city = areas;
         lure.location = location || null;
         const result = lure.save();
@@ -1493,7 +1497,7 @@ const groupPokemonIconUrls = async (pokemonIDs) => {
             const icon = await Localizer.getPokemonIcon(id);
             const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
             icons.push(url);
-            if (index + 1 > maxIcons - 1) {
+            if (index > maxIcons - 1) {
                 icons.push('<span><small style="color: grey;">& ' + (ids.length - maxIcons + 1) + ' more...</small></span>');
                 break;
             }
@@ -1513,13 +1517,37 @@ const groupInvasions = (gruntTypes) => {
         for (const [index, gruntType] of gruntTypes.entries()) {
             const name = Localizer.getInvasionName(gruntType);
             names.push(name);
-            if (index + 1 > maxItems - 1) {
+            if (index > maxItems - 1) {
                 names.push('<span><small style="color: grey;">& ' + (gruntTypes.length - maxItems + 1) + ' more...</small></span>');
                 break;
             }
         }
     }
     return names;
+};
+
+const groupLuresIconUrls = (lureTypes) => {
+    const ids = (lureTypes || []).sort((a, b) => a - b);
+    const icons = [];
+    const maxIcons = 3;
+    if (ids.length === 1) {
+        const id = ids[0];
+        const name = Localizer.getLureName(id);
+        const icon = Localizer.getLureIcon(id);
+        const url = `<img src='${icon}' width='auto' height='32'>&nbsp;${name}`;
+        icons.push(url);
+    } else  {
+        for (const [index, id] of ids.entries()) {
+            const icon = Localizer.getLureIcon(id);
+            const url = `<img src='${icon}' width='auto' height='32'>&nbsp;`;
+            icons.push(url);
+            if (index > maxIcons - 1) {
+                icons.push('<span><small style="color: grey;">& ' + (ids.length - maxIcons + 1) + ' more...</small></span>');
+                break;
+            }
+        }
+    }
+    return { icons, ids, };
 };
 
 module.exports = router;

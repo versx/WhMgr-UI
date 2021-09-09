@@ -101,8 +101,12 @@ Lure.init({
         allowNull: false,
     },
     lureType: {
-        type: DataTypes.INTEGER(11).UNSIGNED,
-        allowNull: false,
+        type: DataTypes.JSON,
+        defaultValue: null,
+        get() {
+            var data = this.getDataValue('lureType');
+            return parseJsonColumn(data);
+        },
     },
     city: {
         type: DataTypes.JSON,
