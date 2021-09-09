@@ -15,16 +15,6 @@ class Invasion extends Model {
         });
     }
 
-    static async create(invasions) {
-        if (invasions.length === 0) {
-            return;
-        }
-        const results = await Invasion.bulkCreate(invasions, {
-            updateOnDuplicate: Invasion.fromInvasionFields,
-        });
-        console.log('[Invasion] Results:', results);
-    }
-
     static getAll(guildId, userId) {
         return Invasion.findAll({
             where: {
@@ -103,8 +93,12 @@ Invasion.init({
         //unique: true,
     },
     gruntType: {
-        type: DataTypes.INTEGER(2).UNSIGNED,
-        allowNull: true,
+        type: DataTypes.JSON,
+        defaultValue: null,
+        get() {
+            var data = this.getDataValue('gruntType');
+            return parseJsonColumn(data);
+        },
     },
     rewardPokemonId: {
         type: DataTypes.JSON,

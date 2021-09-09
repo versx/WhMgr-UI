@@ -200,12 +200,16 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 for (let invasion of invasions) {
                     invasion = invasion.toJSON();
                     const { icons, ids } = await groupPokemonIconUrls(invasion.rewardPokemonId);
+                    const gruntNames = groupInvasions(invasion.gruntType);
                     invasion.name = invasion.pokestopName;
                     invasion.reward = {
                         formatted: icons.join(' '),
                         sort: ids,
                     };
-                    invasion.type = invasion.gruntType ? Localizer.getInvasionName(invasion.gruntType) : '';
+                    invasion.type = {
+                        formatted: gruntNames.join(', '),
+                        sort: gruntNames,
+                    };
                     invasion.city = formatAreas(guild_id, invasion.city);
                     invasion.buttons = `
                     <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
@@ -995,10 +999,11 @@ router.post('/invasion/new', async (req, res) => {
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     let exists = await Invasion.getBy(guild_id, user_id, name, grunt_type, pokemon);
     const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
+    const gruntTypeIds = grunt_type ? grunt_type.map(x => +x) : [];
     if (exists) {
         // Already exists
         exists.pokestopName = name || null;
-        exists.gruntType = grunt_type || null;
+        exists.gruntType = gruntTypeIds;
         exists.rewardPokemonId = pokemonIDs;
         exists.city = arrayUnique(exists.city.concat(areas || []));
         exists.location = location || null;
@@ -1009,7 +1014,7 @@ router.post('/invasion/new', async (req, res) => {
             guildId: guild_id,
             userId: user_id,
             pokestopName: name || null,
-            gruntType: grunt_type || null,
+            gruntType: gruntTypeIds,
             rewardPokemonId: pokemonIDs,
             city: areas,
             location: location || null,
@@ -1032,10 +1037,12 @@ router.post('/invasions/edit/:id', async (req, res) => {
     //const user_id = req.session.user_id;
     const invasion = await Invasion.getById(id);
     if (invasion) {
+        const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
+        const gruntTypeIds = grunt_type ? grunt_type.map(x => +x) : [];
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
         invasion.name = name;
-        invasion.rewardPokemonId = pokemon;
-        invasion.gruntType = grunt_type;
+        invasion.rewardPokemonId = pokemonIDs;
+        invasion.gruntType = gruntTypeIds;
         invasion.city = areas;
         invasion.location = location || null;
         const result = invasion.save();
@@ -1493,6 +1500,26 @@ const groupPokemonIconUrls = async (pokemonIDs) => {
         }
     }
     return { icons, ids, };
+};
+
+const groupInvasions = (gruntTypes) => {
+    const names = [];
+    const maxItems = 3;
+    if (gruntTypes.length === 1) {
+        const gruntType = gruntTypes[0];
+        const name = Localizer.getInvasionName(gruntType);
+        names.push(name);
+    } else {
+        for (const [index, gruntType] of gruntTypes.entries()) {
+            const name = Localizer.getInvasionName(gruntType);
+            names.push(name);
+            if (index + 1 > maxItems - 1) {
+                names.push('<span><small style="color: grey;">& ' + (gruntTypes.length - maxItems + 1) + ' more...</small></span>');
+                break;
+            }
+        }
+    }
+    return names;
 };
 
 module.exports = router;

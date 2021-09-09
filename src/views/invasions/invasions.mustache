@@ -68,7 +68,13 @@
         "pageLength": 100,
         "columns": [
             { "data": "name" },
-            { "data": "type" },
+            //{ "data": "type" },
+            {
+                "data": {
+                    "_": "type.formatted",
+                    "sort": "type.sort",
+                },
+            },
             {
                 "data": {
                     "_": "reward.formatted",
