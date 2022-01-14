@@ -895,8 +895,8 @@ router.post('/gyms/delete_all', async (req, res) => {
             return;
         }
     } else {
-        console.error('');
-        utils.showError(res, 'gyms/delete-all', 'Guild ID or User ID not set, failed to delete all gym subscriptions for user.');
+        console.error('Guild ID or User ID are not set, failed to delete all gym subscriptions for user.');
+        utils.showError(res, 'gyms/delete-all', 'Guild ID or User ID are not set, failed to delete all gym subscriptions for user.');
         return;
     }
     res.redirect('/raids#gyms');
@@ -1053,7 +1053,7 @@ router.post('/invasions/edit/:id', async (req, res) => {
         invasion.gruntType = grunt_type;
         invasion.city = areas;
         invasion.location = location || null;
-        const result = invasion.save();
+        const result = await invasion.save();
         if (result) {
             // Success
             console.log('Invasion subscription', id, 'updated successfully.');
@@ -1162,7 +1162,7 @@ router.post('/lures/edit/:id', async (req, res) => {
         lure.pokestopName = pokestop_name;
         lure.city = areas;
         lure.location = location || null;
-        const result = lure.save();
+        const result = await lure.save();
         if (result) {
             // Success
             console.log('Lure subscription', id, 'updated successfully.');
@@ -1263,7 +1263,7 @@ router.post('/location/edit/:id', async (req, res) => {
         loc.distance = distance;
         loc.latitude = split[0];
         loc.longitude = split[1];
-        const result = loc.save();
+        const result = await loc.save();
         if (result) {
             // Success
             console.log('Location subscription', id, 'updated successfully.');
