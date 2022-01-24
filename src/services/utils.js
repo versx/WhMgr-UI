@@ -1,6 +1,7 @@
 'use strict';
 
 const config = require('../config.json');
+const defaultData = require('../data/default.js');
 
 const generateString = () => {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
@@ -139,6 +140,33 @@ const getAreas = (guildId, city) => {
     return areas || [];
 };
 
+const toNumbers = (array) => {
+    const pokemonIds = (array || '').split(',');
+    const ids = (pokemonIds || []).map(Number);
+    return ids.join(',');
+};
+
+const isUltraRarePokemon = (pokemonId) => {
+    const ultraRareList = [
+        201, // Unown
+        480, // Uxie
+        481, // Mesprit
+        482, // Azelf
+    ];
+    return ultraRareList.includes(pokemonId);
+};
+
+const formatPokemonSize = (size) => {
+    switch (size) {
+        case 1: return 'Tiny';
+        case 2: return 'Small';
+        case 3: return 'Normal';
+        case 4: return 'Large';
+        case 5: return 'Big';
+        default: return 'All';
+    }
+};
+
 const formatAreas = (guildId, subscriptionAreas) => {
     return arraysEqual(subscriptionAreas, config.discord.guilds.filter(x => x.id === guildId)[0].geofences)
         ? 'All' // TODO: Localize
@@ -148,6 +176,33 @@ const formatAreas = (guildId, subscriptionAreas) => {
 const ellipsis = (str) => {
     const value = str.substring(0, Math.min(64, str.length));
     return value === str ? value : value + '...';
+};
+
+const showError = (res, page, message) => {
+    console.error(message);
+    const errorData = { ...defaultData };
+    errorData.error = message;
+    errorData.show_error = true;
+    res.render(page, errorData);
+};
+
+const showErrorJson = (res, guildId, message, otherData) => {
+    res.json({
+        data: {
+            error: message,
+            show_error: true,
+            ...otherData,
+        }
+    });
+};
+
+const cleanArray = (array) => {
+    if (!array) {
+        return null;
+    }
+    const arr = (array || '').split(',');
+    const cleanedArr = arr.map(String);
+    return cleanedArr.join(',');
 };
 
 module.exports = {
@@ -161,6 +216,12 @@ module.exports = {
     arrayUnique,
     parseJsonColumn,
     getAreas,
-    formatAreas,
     ellipsis,
+    toNumbers,
+    isUltraRarePokemon,
+    formatPokemonSize,
+    formatAreas,
+    showError,
+    showErrorJson,
+    cleanArray,
 };
