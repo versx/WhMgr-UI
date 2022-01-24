@@ -109,7 +109,13 @@
         "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
         "pageLength": 100,
         "columns": [
-            { "data": "name" },
+            //{ "data": "name" },
+            {
+                "data": {
+                    "_": "name.formatted",
+                    "sort": "name.sort",
+                },
+            },
             { "data": "form" },
             { "data": "city" },
             { "data": "location" },

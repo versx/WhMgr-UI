@@ -2,6 +2,7 @@
 
 const { DataTypes, Model, Op, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class Pokemon extends Model {
 
@@ -23,14 +24,14 @@ class Pokemon extends Model {
         });
     }
 
-    static getByPokemon(guildId, userId, pokemon, form, iv, ivList, minLevel, maxLevel, gender, size) {
+    static getByPokemon(guildId, userId, pokemon, forms, iv, ivList, minLevel, maxLevel, gender, size) {
         return Pokemon.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
                 pokemonId: pokemon,
-                form: {
-                    [Op.or]: [null, form],
+                forms: {
+                    [Op.or]: [null, forms],
                 },
                 minIv: iv,
                 ivList: ivList,
@@ -84,13 +85,25 @@ Pokemon.init({
         allowNull: false,
     },
     pokemonId: {
-        type: DataTypes.TEXT(),
+        type: DataTypes.JSON,
         allowNull: false,
+        get() {
+            var data = this.getDataValue('pokemonId');
+            return parseJsonColumn(data);
+        },
+        /*
+        set(val) {
+            this.setDataValue('city', JSON.stringify(val || []));
+        }
+        */
     },
-    form: {
-        type: DataTypes.TEXT(),
-        allowNull: true,
-        defaultValue: null,
+    forms: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        get() {
+            var data = this.getDataValue('forms');
+            return parseJsonColumn(data);
+        },
     },
     minCp: {
         type: DataTypes.INTEGER(11),
@@ -127,9 +140,7 @@ Pokemon.init({
         defaultValue: '[]',
         get() {
             var data = this.getDataValue('ivList');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            return parseJsonColumn(data);
         },
         /*
         set(val) {
@@ -137,15 +148,13 @@ Pokemon.init({
         }
         */
     },
-    city: {
+    areas: {
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            var data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            var data = this.getDataValue('areas');
+            return parseJsonColumn(data);
         },
         /*
         set(val) {

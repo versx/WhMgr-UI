@@ -2,6 +2,7 @@
 
 const { DataTypes, Model, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class Invasion extends Model {
 
@@ -12,16 +13,6 @@ class Invasion extends Model {
                 userId: userId,
             }
         });
-    }
-
-    static async create(invasions) {
-        if (invasions.length === 0) {
-            return;
-        }
-        const results = await Invasion.bulkCreate(invasions, {
-            updateOnDuplicate: Invasion.fromInvasionFields,
-        });
-        console.log('[Invasion] Results:', results);
     }
 
     static getAll(guildId, userId) {
@@ -102,22 +93,28 @@ Invasion.init({
         //unique: true,
     },
     gruntType: {
-        type: DataTypes.INTEGER(2).UNSIGNED,
-        allowNull: true,
+        type: DataTypes.JSON,
+        defaultValue: null,
+        get() {
+            var data = this.getDataValue('gruntType');
+            return parseJsonColumn(data);
+        },
     },
     rewardPokemonId: {
-        type: DataTypes.TEXT(),
+        type: DataTypes.JSON,
         defaultValue: null,
+        get() {
+            var data = this.getDataValue('rewardPokemonId');
+            return parseJsonColumn(data);
+        },
     },
-    city: {
+    areas: {
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            var data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            var data = this.getDataValue('areas');
+            return parseJsonColumn(data);
         },
     },
     location: {

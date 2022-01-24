@@ -2,6 +2,7 @@
 
 const { DataTypes, Model, Op, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class PVP extends Model {
 
@@ -23,14 +24,14 @@ class PVP extends Model {
         });
     }
     
-    static getPokemonByLeague(guildId, userId, pokemon, form, league) {
+    static getPokemonByLeague(guildId, userId, pokemon, forms, league) {
         return PVP.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
                 pokemonId: pokemon,
-                form: {
-                    [Op.or]: [null, form],
+                forms: {
+                    [Op.or]: [null, forms],
                 },
                 league: league,
             }
@@ -99,13 +100,20 @@ PVP.init({
         allowNull: false,
     },
     pokemonId: {
-        type: DataTypes.TEXT(),
+        type: DataTypes.JSON,
         allowNull: false,
+        get() {
+            var data = this.getDataValue('pokemonId');
+            return parseJsonColumn(data);
+        },
     },
-    form: {
-        type: DataTypes.TEXT(),
-        allowNull: true,
-        defaultValue: null,
+    forms: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        get() {
+            var data = this.getDataValue('forms');
+            return parseJsonColumn(data);
+        },
     },
     minRank: {
         type: DataTypes.INTEGER(11),
@@ -121,15 +129,13 @@ PVP.init({
         type: DataTypes.STRING(255),
         allowNull: false,
     },
-    city: {
+    areas: {
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            var data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            var data = this.getDataValue('areas');
+            return parseJsonColumn(data);
         },
         /*
         set(val) {

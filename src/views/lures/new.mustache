@@ -26,9 +26,9 @@
             <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Select interested Pokestop Lure type(s) to receive."></i>
             {{Lure Type}}
             <select name="lure_types" class="custom-select" multiple required>
-                <option value="all" selected>{{All}}</option>
+                <!--<option value="all" selected>{{All}}</option>-->
                 {{#lureTypes}}
-                <option value="{{name}}">{{name}}</option>
+                <option value="{{id}}">{{name}}</option>
                 {{/lureTypes}}
             </select>
         </div>

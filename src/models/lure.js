@@ -2,6 +2,7 @@
 
 const { DataTypes, Model, } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class Lure extends Model {
 
@@ -100,18 +101,20 @@ Lure.init({
         allowNull: false,
     },
     lureType: {
-        type: DataTypes.INTEGER(11).UNSIGNED,
-        allowNull: false,
+        type: DataTypes.JSON,
+        defaultValue: null,
+        get() {
+            var data = this.getDataValue('lureType');
+            return parseJsonColumn(data);
+        },
     },
-    city: {
+    areas: {
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            var data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            var data = this.getDataValue('areas');
+            return parseJsonColumn(data);
         },
     },
     location: {

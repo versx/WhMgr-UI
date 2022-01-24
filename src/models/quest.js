@@ -2,6 +2,7 @@
 
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../services/sequelize.js')(true);
+const { parseJsonColumn } = require('../services/utils.js');
 
 class Quest extends Model {
 
@@ -104,15 +105,13 @@ Quest.init({
         type: DataTypes.TEXT,
         allowNull: true,
     },
-    city: {
-        type: DataTypes.JSONTEXT,
+    areas: {
+        type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            const data = this.getDataValue('city');
-            return Array.isArray(data)
-                ? data
-                : JSON.parse(data || '[]');
+            const data = this.getDataValue('areas');
+            return parseJsonColumn(data);
         }
     },
     location: {

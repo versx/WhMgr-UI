@@ -69,13 +69,12 @@ router.get('/pokemon/edit/:id', async (req, res) => {
         return;
     }
     data.pokemon = await map.getPokemonNameIdsList();
-    const pokemonIds = pokemon.pokemonId.split(',');
     data.pokemon.forEach(pkmn => {
-        pkmn.selected = pokemonIds.includes(pkmn.id.toString());// || pokemon.pokemonId === 'All';
+        pkmn.selected = pokemon.pokemonId.includes(pkmn.id);// || pokemon.pokemonId === 'All';
     });
-    data.pokemon_ids = pokemon.pokemonId;
+    data.pokemon_ids = (pokemon.pokemonId || []).join(',');
     data.forms = Localizer.getFormNames();
-    data.form = pokemon.form;
+    data.form = pokemon.forms;
     data.iv = pokemon.minIv;
     data.iv_list = (pokemon.ivList || []).join('\n');
     data.min_lvl = pokemon.minLvl;
@@ -88,7 +87,7 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     });
     const cities = getSelectedAreas(
         // Currently subscribed areas list
-        pokemon.city.map(x => x.toLowerCase()),
+        pokemon.areas.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );
@@ -136,13 +135,12 @@ router.get('/pvp/edit/:id', async (req, res) => {
         return;
     }
     data.pokemon = await map.getPokemonNameIdsList();
-    const pokemonIds = pvp.pokemonId.split(',');
     data.pokemon.forEach(pkmn => {
-        pkmn.selected = pokemonIds.includes(pkmn.id.toString());// || pokemon.pokemonId === 'All';
+        pkmn.selected = pvp.pokemonId.includes(pkmn.id);// || pokemon.pokemonId === 'All';
     });
-    data.pokemon_ids = pvp.pokemonId;
+    data.pokemon_ids = (pvp.pokemonId || []).join(',');
     data.forms = Localizer.getFormNames();
-    data.form = pvp.form;
+    data.form = pvp.forms;
     data.leagues.forEach(league => {
         league.selected = league.name === pvp.league;
     });
@@ -150,7 +148,7 @@ router.get('/pvp/edit/:id', async (req, res) => {
     data.min_percent = pvp.minPercent;
     const cities = getSelectedAreas(
         // Currently subscribed areas list
-        pvp.city.map(x => x.toLowerCase()),
+        pvp.areas.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );
@@ -203,15 +201,17 @@ router.get('/raid/edit/:id', async (req, res) => {
         res.redirect('/raids');
         return;
     }
+    data.ex_eligible = raid.exEliglble;
     data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
-        pkmn.selected = parseInt(pkmn.id) === raid.pokemonId;
+        pkmn.selected = raid.pokemonId.includes(pkmn.id);// || pokemon.pokemonId === 'All';
     });
+    data.pokemon_ids = (raid.pokemonId || []).join(',');
     data.forms = Localizer.getFormNames();
-    data.form = raid.form;
+    data.form = raid.forms;
     const cities = getSelectedAreas(
         // Currently subscribed areas list
-        raid.city.map(x => x.toLowerCase()),
+        raid.areas.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );
@@ -264,12 +264,13 @@ router.get('/gym/edit/:id', async (req, res) => {
     data.gyms = [...new Set(sorted)];
     data.pokemon = await map.getPokemonNameIdsList();
     data.pokemon.forEach(pkmn => {
-        pkmn.selected = gym.pokemonIds.includes(pkmn.id.toString());
+        pkmn.selected = gym.pokemonIds.includes(pkmn.id);
     });
-    data.pokemon_ids = gym.pokemonIds;
+    data.pokemon_ids = (gym.pokemonIds || []).join(',');
     data.name = gym.name;
     data.min_level = gym.minLevel;
     data.max_level = gym.maxLevel;
+    data.ex_eligible = gym.exEliglble;
     data.locations = await Location.getAll(gym.guildId, gym.userId);
     data.locations.forEach(loc => {
         loc.selected = loc.name === gym.location;
@@ -325,7 +326,7 @@ router.get('/quest/edit/:id', async (req, res) => {
     data.reward = quest.reward;
     const cities = getSelectedAreas(
         // Currently subscribed areas list
-        quest.city.map(x => x.toLowerCase()),
+        quest.areas.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );
@@ -389,12 +390,12 @@ router.get('/invasion/edit/:id', async (req, res) => {
     });
     data.rewards = await map.getPokemonNameIdsList();
     data.rewards.forEach(reward => {
-        reward.selected = reward.id === invasion.rewardPokemonId;
+        reward.selected = invasion.rewardPokemonId.includes(reward.id);
     });
-    data.pokemon_ids = invasion.rewardPokemonId;
+    data.pokemon_ids = (invasion.rewardPokemonId || []).join(',');
     const cities = getSelectedAreas(
         // Currently subscribed areas list
-        invasion.city.map(x => x.toLowerCase()),
+        invasion.areas.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );
@@ -451,11 +452,11 @@ router.get('/lure/edit/:id', async (req, res) => {
     data.pokestop_name = lure.pokestopName;
     data.lureTypes = map.getLureTypes();
     data.lureTypes.forEach(lureType => {
-        lureType.selected = lureType === lure.lureType;
+        lureType.selected = lure.lureType.includes(lureType.id);
     });
     const cities = getSelectedAreas(
         // Currently subscribed areas list
-        lure.city.map(x => x.toLowerCase()),
+        lure.areas.map(x => x.toLowerCase()),
         // All areas list
         map.buildCityList(req.session.guilds)
     );
