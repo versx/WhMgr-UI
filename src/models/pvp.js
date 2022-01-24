@@ -24,14 +24,14 @@ class PVP extends Model {
         });
     }
     
-    static getPokemonByLeague(guildId, userId, pokemon, form, league) {
+    static getPokemonByLeague(guildId, userId, pokemon, forms, league) {
         return PVP.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
                 pokemonId: pokemon,
-                form: {
-                    [Op.or]: [null, form],
+                forms: {
+                    [Op.or]: [null, forms],
                 },
                 league: league,
             }
@@ -107,10 +107,14 @@ PVP.init({
             return parseJsonColumn(data);
         },
     },
-    form: {
+    forms: {
         type: DataTypes.TEXT,
         allowNull: true,
         defaultValue: null,
+        get() {
+            var data = this.getDataValue('forms');
+            return parseJsonColumn(data);
+        },
     },
     minRank: {
         type: DataTypes.INTEGER(11),
@@ -126,12 +130,12 @@ PVP.init({
         type: DataTypes.STRING(255),
         allowNull: false,
     },
-    city: {
+    areas: {
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            var data = this.getDataValue('city');
+            var data = this.getDataValue('areas');
             return parseJsonColumn(data);
         },
         /*

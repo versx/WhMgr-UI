@@ -66,6 +66,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         formatted: icons.join(' '),
                         sort: ids,
                     };
+                    pkmn.form = pkmn.forms;
                     pkmn.cp = `${pkmn.minCp}-4096`;
                     pkmn.iv = pkmn.minIv;
                     pkmn.ivList = pkmn.ivList.length;
@@ -77,7 +78,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                             : 'Female Only';
                     pkmn.genderName = pkmn.gender === '*' ? 'All' : pkmn.gender;
                     pkmn.size = formatPokemonSize(pkmn.size);
-                    pkmn.city = formatAreas(guild_id, pkmn.city);
+                    pkmn.city = formatAreas(guild_id, pkmn.areas);
                     pkmn.buttons = `
                     <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -103,7 +104,8 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         formatted: icons.join(' '),
                         sort: ids,
                     };
-                    pvpSub.city = formatAreas(guild_id, pvpSub.city);
+                    pvpSub.form = pvpSub.forms;
+                    pvpSub.city = formatAreas(guild_id, pvpSub.areas);
                     pvpSub.buttons = `
                     <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -129,8 +131,9 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         formatted: icons.join(' '),
                         sort: ids,
                     };
+                    raid.form = raid.forms;
                     raid.exEligible = raid.exEligible ? 'Yes' : 'No',
-                    raid.city = formatAreas(guild_id, raid.city);
+                    raid.city = formatAreas(guild_id, raid.areas);
                     raid.buttons = `
                     <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -178,7 +181,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 for (let quest of quests) {
                     quest = quest.toJSON();
                     quest.pokestop_name = quest.pokestopName;
-                    quest.city = formatAreas(guild_id, quest.city);
+                    quest.city = formatAreas(guild_id, quest.areas);
                     quest.buttons = `
                     <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -210,7 +213,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         formatted: gruntNames.join(', '),
                         sort: gruntNames,
                     };
-                    invasion.city = formatAreas(guild_id, invasion.city);
+                    invasion.city = formatAreas(guild_id, invasion.areas);
                     invasion.buttons = `
                     <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -237,7 +240,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         formatted: icons.join(' '),
                         sort: ids,
                     };
-                    lure.city = formatAreas(guild_id, lure.city);
+                    lure.city = formatAreas(guild_id, lure.areas);
                     lure.buttons = `
                     <a href='/lure/edit/${lure.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -412,7 +415,7 @@ router.post('/pokemon/new', async (req, res) => {
         exists.maxLvl = maxLevel;
         exists.gender = gender;
         exists.size = size;
-        exists.city = arrayUnique(exists.city.concat(areas));
+        exists.areas = arrayUnique(exists.areas.concat(areas));
         exists.location = location || null;
     } else {
         const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
@@ -430,7 +433,7 @@ router.post('/pokemon/new', async (req, res) => {
             maxLvl: max_lvl || 35,
             gender: gender || '*',
             size: size || 0,
-            city: areas,
+            areas: areas,
             location: location || null,
         });
     }
@@ -476,7 +479,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         pkmn.maxLvl = max_lvl || 35;
         pkmn.gender = gender || '*';
         pkmn.size = size || 0;
-        pkmn.city = areas;
+        pkmn.areas = areas;
         pkmn.location = location || null;
         const result = await pkmn.save();
         if (result) {
@@ -557,7 +560,7 @@ router.post('/pvp/new', async (req, res) => {
         // Already exists
         exists.minRank = min_rank || 5;
         exists.minPercent = min_percent || 99;
-        exists.city = arrayUnique(exists.city.concat(areas));
+        exists.areas = arrayUnique(exists.areas.concat(areas));
         exists.location = location || null;
     } else {
         const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
@@ -571,7 +574,7 @@ router.post('/pvp/new', async (req, res) => {
             league: league,
             minRank: min_rank || 5,
             minPercent: min_percent || 99,
-            city: areas,
+            areas: areas,
             location: location || null,
         });
     }
@@ -602,7 +605,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
         exists.league = league;
         exists.minRank = min_rank || 25;
         exists.minPercent = min_percent || 98;
-        exists.city = areas;
+        exists.areas = areas;
         exists.location = location || null;
         const result = await exists.save();
         if (result) {
@@ -677,7 +680,7 @@ router.post('/raids/new', async (req, res) => {
         exists.form = form;
         exists.exEligible = ex_eligible;
         exists.location = location;
-        exists.city = arrayUnique(exists.city.concat(areas));
+        exists.areas = arrayUnique(exists.areas.concat(areas));
     } else {
         exists = Raid.build({
             id: 0,
@@ -687,7 +690,7 @@ router.post('/raids/new', async (req, res) => {
             pokemonId: pokemonIDs,
             form: form,
             exEligible: ex_eligible === 'on',
-            city: areas,
+            areas: areas,
             location: location || null,
         });
     }
@@ -713,7 +716,7 @@ router.post('/raids/edit/:id', async (req, res) => {
         exists.pokemonId = pokemonIDs;
         exists.form = form;
         exists.exEligible = ex_eligible === 'on',
-        exists.city = areas;
+        exists.areas = areas;
         exists.location = location || null;
         const result = await exists.save();
         if (result) {
@@ -898,7 +901,7 @@ router.post('/quests/new', async (req, res) => {
     let exists = await Quest.getBy(guild_id, user_id, pokestop_name, reward);
     if (exists) {
         // Already exists
-        exists.city = arrayUnique(exists.city.concat(areas || []));
+        exists.areas = arrayUnique(exists.areas.concat(areas || []));
     } else {
         exists = Quest.build({
             id: 0,
@@ -907,7 +910,7 @@ router.post('/quests/new', async (req, res) => {
             userId: user_id,
             pokestopName: pokestop_name,
             reward: reward,
-            city: areas,
+            areas: areas,
             location: location || null,
         });
     }
@@ -932,7 +935,7 @@ router.post('/quests/edit/:id', async (req, res) => {
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
         //quest.reward = reward;
         quest.pokestopName = pokestop_name;
-        quest.city = areas;
+        quest.areas = areas;
         quest.location = location || null;
         const result = await quest.save();
         if (result) {
@@ -1007,7 +1010,7 @@ router.post('/invasion/new', async (req, res) => {
         exists.pokestopName = name || null;
         exists.gruntType = gruntTypeIds;
         exists.rewardPokemonId = pokemonIDs;
-        exists.city = arrayUnique(exists.city.concat(areas || []));
+        exists.areas = arrayUnique(exists.areas.concat(areas || []));
         exists.location = location || null;
     } else {
         exists = Invasion.build({
@@ -1018,7 +1021,7 @@ router.post('/invasion/new', async (req, res) => {
             pokestopName: name || null,
             gruntType: gruntTypeIds,
             rewardPokemonId: pokemonIDs,
-            city: areas,
+            areas: areas,
             location: location || null,
         });
     }
@@ -1045,7 +1048,7 @@ router.post('/invasions/edit/:id', async (req, res) => {
         invasion.name = name;
         invasion.rewardPokemonId = pokemonIDs;
         invasion.gruntType = gruntTypeIds;
-        invasion.city = areas;
+        invasion.areas = areas;
         invasion.location = location || null;
         const result = invasion.save();
         if (result) {
@@ -1119,7 +1122,7 @@ router.post('/lures/new', async (req, res) => {
     if (exists) {
         // Already exists
         exists.pokestopName = pokestop_name;
-        exists.city = arrayUnique(exists.city.concat(areas || []));
+        exists.areas = arrayUnique(exists.city.concat(areas || []));
         exists.location = location || null;
     } else {
         exists = Lure.build({
@@ -1129,7 +1132,7 @@ router.post('/lures/new', async (req, res) => {
             userId: user_id,
             pokestopName: pokestop_name,
             lureType: lureTypeIds,
-            city: areas,
+            areas: areas,
             location: location || null,
         });
     }
@@ -1159,7 +1162,7 @@ router.post('/lures/edit/:id', async (req, res) => {
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
         lure.pokestopName = pokestop_name;
         lure.lureType = lureTypeIds;
-        lure.city = areas;
+        lure.areas = areas;
         lure.location = location || null;
         const result = lure.save();
         if (result) {

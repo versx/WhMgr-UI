@@ -108,12 +108,12 @@ Invasion.init({
             return parseJsonColumn(data);
         },
     },
-    city: {
+    areas: {
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            var data = this.getDataValue('city');
+            var data = this.getDataValue('areas');
             return parseJsonColumn(data);
         },
     },

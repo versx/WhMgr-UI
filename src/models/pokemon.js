@@ -24,14 +24,14 @@ class Pokemon extends Model {
         });
     }
 
-    static getByPokemon(guildId, userId, pokemon, form, iv, ivList, minLevel, maxLevel, gender, size) {
+    static getByPokemon(guildId, userId, pokemon, forms, iv, ivList, minLevel, maxLevel, gender, size) {
         return Pokemon.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
                 pokemonId: pokemon,
-                form: {
-                    [Op.or]: [null, form],
+                forms: {
+                    [Op.or]: [null, forms],
                 },
                 minIv: iv,
                 ivList: ivList,
@@ -97,10 +97,14 @@ Pokemon.init({
         }
         */
     },
-    form: {
+    forms: {
         type: DataTypes.TEXT,
         allowNull: true,
         defaultValue: null,
+        get() {
+            var data = this.getDataValue('forms');
+            return parseJsonColumn(data);
+        },
     },
     minCp: {
         type: DataTypes.INTEGER(11),
@@ -145,12 +149,12 @@ Pokemon.init({
         }
         */
     },
-    city: {
+    areas: {
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            var data = this.getDataValue('city');
+            var data = this.getDataValue('areas');
             return parseJsonColumn(data);
         },
         /*

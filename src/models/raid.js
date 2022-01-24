@@ -102,21 +102,25 @@ Raid.init({
         }
         */
     },
-    form: {
+    forms: {
         type: DataTypes.TEXT,
         allowNull: true,
         defaultValue: null,
+        get() {
+            var data = this.getDataValue('forms');
+            return parseJsonColumn(data);
+        },
     },
     exEligible: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
-    city: {
+    areas: {
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            var data = this.getDataValue('city');
+            var data = this.getDataValue('areas');
             return parseJsonColumn(data);
         },
     },

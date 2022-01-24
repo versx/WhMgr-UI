@@ -105,12 +105,12 @@ Quest.init({
         type: DataTypes.TEXT,
         allowNull: true,
     },
-    city: {
+    areas: {
         type: DataTypes.JSON,
         allowNull: false,
         defaultValue: '[]',
         get() {
-            const data = this.getDataValue('city');
+            const data = this.getDataValue('areas');
             return parseJsonColumn(data);
         }
     },
