@@ -23,6 +23,7 @@ const {
     formatPokemonSize,
     showError,
     showErrorJson,
+    toNumbers,
 } = require('../services/utils.js');
 const Metadata = require('../models/metadata');
 
@@ -1151,7 +1152,7 @@ router.post('/lures/new', async (req, res) => {
         await updateLastModified();
         console.log('Lure subscription for type', lureTypes, 'with pokestop', pokestop_name, 'created successfully.');
     } else {
-        showError(res, 'lures', `Failed to create Lure subscription for type ${lureType} with pokestop ${pokestop_name}`);
+        showError(res, 'lures', `Failed to create Lure subscription for type ${lureTypes} with pokestop ${pokestop_name}`);
         return;
     }
     res.redirect('/lures');
