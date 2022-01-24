@@ -16,7 +16,14 @@ const Location = require('../models/location.js');
 const { Subscription, NotificationStatusType, } = require('../models/subscription.js');
 const DiscordClient = require('../services/discord.js');
 const Localizer = require('../services/locale.js');
-const { getAreas, arrayUnique, formatAreas, } = require('../services/utils.js');
+const {
+    getAreas,
+    arrayUnique,
+    formatAreas,
+    formatPokemonSize,
+    showError,
+    showErrorJson,
+} = require('../services/utils.js');
 const Metadata = require('../models/metadata');
 
 /* eslint-disable no-case-declarations */
@@ -27,7 +34,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
     switch (type) {
         case 'subscriptions':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { subscriptions: { pokemon: 0, pvp: 0, raids: 0, gyms: 0, quests: 0, invasions: 0 }, clients_online: 0 });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { subscriptions: { pokemon: 0, pvp: 0, raids: 0, gyms: 0, quests: 0, invasions: 0 }, clients_online: 0 });
                 return;
             }
             const subscriptions = {
@@ -50,7 +57,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'pokemon':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { pokemon: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { pokemon: [] });
                 return;
             }
             const pokemon = await Pokemon.getAll(guild_id, user_id);
@@ -77,8 +84,8 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                             ? 'Male Only'
                             : 'Female Only';
                     pkmn.genderName = pkmn.gender === '*' ? 'All' : pkmn.gender;
-                    pkmn.size = utils.formatPokemonSize(pkmn.size);
-                    pkmn.city = utils.formatAreas(guild_id, pkmn.areas);
+                    pkmn.size = formatPokemonSize(pkmn.size);
+                    pkmn.city = formatAreas(guild_id, pkmn.areas);
                     pkmn.buttons = `
                     <a href='/pokemon/edit/${pkmn.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -91,7 +98,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'pvp':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { pvp: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { pvp: [] });
                 return;
             }
             const pvp = await PVP.getAll(guild_id, user_id);
@@ -105,7 +112,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         sort: ids,
                     };
                     pvpSub.form = pvpSub.forms;
-                    pvpSub.city = utils.formatAreas(guild_id, pvpSub.areas);
+                    pvpSub.city = formatAreas(guild_id, pvpSub.areas);
                     pvpSub.buttons = `
                     <a href='/pvp/edit/${pvpSub.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -118,7 +125,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'raids':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { raids: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { raids: [] });
                 return;
             }
             const raids = await Raid.getAll(guild_id, user_id);
@@ -133,7 +140,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                     };
                     raid.form = raid.forms;
                     raid.exEligible = raid.exEligible ? 'Yes' : 'No',
-                    raid.city = utils.formatAreas(guild_id, raid.areas);
+                    raid.city = formatAreas(guild_id, raid.areas);
                     raid.buttons = `
                     <a href='/raid/edit/${raid.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -146,7 +153,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'gyms':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { gyms: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { gyms: [] });
                 return;
             }
             const gyms = await Gym.getAll(guild_id, user_id);
@@ -172,7 +179,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'quests':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { quests: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { quests: [] });
                 return;
             }
             const quests = await Quest.getAll(guild_id, user_id);
@@ -181,7 +188,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                 for (let quest of quests) {
                     quest = quest.toJSON();
                     quest.pokestop_name = quest.pokestopName;
-                    quest.city = utils.formatAreas(guild_id, quest.areas);
+                    quest.city = formatAreas(guild_id, quest.areas);
                     quest.buttons = `
                     <a href='/quest/edit/${quest.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -194,7 +201,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'invasions':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { invasions: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { invasions: [] });
                 return;
             }
             const invasions = await Invasion.getAll(guild_id, user_id);
@@ -213,7 +220,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         formatted: gruntNames.join(', '),
                         sort: gruntNames,
                     };
-                    invasion.city = utils.formatAreas(guild_id, invasion.areas);
+                    invasion.city = formatAreas(guild_id, invasion.areas);
                     invasion.buttons = `
                     <a href='/invasion/edit/${invasion.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -226,7 +233,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'lures':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { lures: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { lures: [] });
                 return;
             }
             const lures = await Lure.getAll(guild_id, user_id);
@@ -240,7 +247,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
                         formatted: icons.join(' '),
                         sort: ids,
                     };
-                    lure.city = utils.formatAreas(guild_id, lure.areas);
+                    lure.city = formatAreas(guild_id, lure.areas);
                     lure.buttons = `
                     <a href='/lure/edit/${lure.id}'><button type='button'class='btn btn-sm btn-primary'>Edit</button></a>
                     &nbsp;
@@ -253,12 +260,12 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'locations':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { lures: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { lures: [] });
                 return;
             }
             const subscription = await Subscription.getSubscription(guild_id, user_id);
             if (!subscription) {
-                utils.showErrorJson(res, guild_id, 'No subscription found');
+                showErrorJson(res, guild_id, 'No subscription found');
                 return;
             }
             const locations = await Location.getAll(guild_id, user_id);
@@ -282,7 +289,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'roles':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { invasions: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { invasions: [] });
                 return;
             }
             const roleIds = await DiscordClient.getAllRoles(guild_id, user_id);
@@ -305,7 +312,7 @@ router.post('/server/:guild_id/user/:user_id', async (req, res) => {
             break;
         case 'settings':
             if (!guild_id || guild_id === null || guild_id === 'null') {
-                utils.showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { settings: [] });
+                showErrorJson(res, guild_id, 'Select a server from the dropdown menu before creating/editing/deleting any subscriptions!', { settings: [] });
                 return;
             }
             const sub = await Subscription.getSubscription(guild_id, user_id);
@@ -399,7 +406,7 @@ router.post('/pokemon/new', async (req, res) => {
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
-        utils.showError(res, 'pokemon/new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
+        showError(res, 'pokemon/new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     const minIv = iv || 0;
@@ -427,7 +434,7 @@ router.post('/pokemon/new', async (req, res) => {
             pokemonId: pokemonIDs,
             forms: (form || '').split(','),
             minCp: 0,
-            minIv: /*utils.isUltraRarePokemon(pokemonId) ? 0 :*/ iv || 0,
+            minIv: /*isUltraRarePokemon(pokemonId) ? 0 :*/ iv || 0,
             ivList: ivList,
             minLvl: min_lvl || 0,
             maxLvl: max_lvl || 35,
@@ -442,7 +449,7 @@ router.post('/pokemon/new', async (req, res) => {
         await updateLastModified();
     } catch (err) {
         console.error(err);
-        utils.showError(res, 'pokemon/new', `Failed to create Pokemon ${pokemon} subscriptions for guild: ${guild_id} user: ${user_id}`);
+        showError(res, 'pokemon/new', `Failed to create Pokemon ${pokemon} subscriptions for guild: ${guild_id} user: ${user_id}`);
         return;
     }
     res.redirect('/pokemon');
@@ -470,10 +477,10 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         const ivList = iv_list ? iv_list.replace('\r', '').split('\n') : [];
         const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
         pkmn.pokemonId = pokemonIDs;
-        pkmn.forms = form || '').split(',');
+        pkmn.forms = (form || '').split(',');
         pkmn.minCp = 0;
         // If pokemon is rare (Unown, Azelf, etc), set IV value to 0
-        pkmn.minIv = /*utils.isUltraRarePokemon(pkmn.pokemonId) ? 0 :*/ iv || 0;
+        pkmn.minIv = /*isUltraRarePokemon(pkmn.pokemonId) ? 0 :*/ iv || 0;
         pkmn.ivList = ivList;
         pkmn.minLvl = min_lvl || 0;
         pkmn.maxLvl = max_lvl || 35;
@@ -487,7 +494,7 @@ router.post('/pokemon/edit/:id', async (req, res) => {
             await updateLastModified();
             console.log('Pokemon subscription', id, 'updated successfully.');
         } else {
-            utils.showError(res, 'pokemon/edit', `Failed to update Pokemon subscription ${id}`);
+            showError(res, 'pokemon/edit', `Failed to update Pokemon subscription ${id}`);
             return;
         }
     }
@@ -504,12 +511,12 @@ router.post('/pokemon/delete/:id', async (req, res) => {
             await updateLastModified();
             console.log('Pokemon subscription', id, 'deleted successfully.');
         } else {
-            utils.showError(res, 'pokemon/delete', `Failed to delete Pokemon subscription ${id}`);
+            showError(res, 'pokemon/delete', `Failed to delete Pokemon subscription ${id}`);
             return;
         }
     } else {
         // Does not exist
-        utils.showError(res, 'pokemon/delete', `Failed to find Pokemon subscription ${id}`);
+        showError(res, 'pokemon/delete', `Failed to find Pokemon subscription ${id}`);
         return;
     }
     res.redirect('/pokemon');
@@ -525,11 +532,11 @@ router.post('/pokemon/delete_all', async (req, res) => {
             await updateLastModified();
             console.log('All Pokemon subscriptions deleted for guild:', guild_id, 'user:', user_id);
         } else {
-            utils.showError(res, 'pokemon/delete-all', `Failed to delete all Pokemon subscriptions for guild: ${guild_id} user: ${user_id}`);
+            showError(res, 'pokemon/delete-all', `Failed to delete all Pokemon subscriptions for guild: ${guild_id} user: ${user_id}`);
             return;
         }
     } else {
-        utils.showError(res, 'pokemon/delete-all', 'Guild ID or User ID not set, failed to delete all pokemon subscriptions for user.');
+        showError(res, 'pokemon/delete-all', 'Guild ID or User ID not set, failed to delete all pokemon subscriptions for user.');
         return;
     }
     res.redirect('/pokemon');
@@ -548,11 +555,11 @@ router.post('/pvp/new', async (req, res) => {
         city,
         location,
     } = req.body;
-    const pokemon = utils.toNumbers(req.body.pokemon);
+    const pokemon = toNumbers(req.body.pokemon);
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
-        utils.showError(res, 'pvp/new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
+        showError(res, 'pvp/new', `Failed to get user subscription for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
@@ -596,7 +603,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
         city,
         location,
     } = req.body;
-    const pokemon = utils.toNumbers(req.body.pokemon);
+    const pokemon = toNumbers(req.body.pokemon);
     //const user_id = req.session.user_id;
     const exists = await PVP.getById(id);
     if (exists) {
@@ -615,7 +622,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
             await updateLastModified();
             console.log('PVP subscription', id, 'updated successfully.');
         } else {
-            utils.showError(res, 'pvp/edit', `Failed to update PvP subscription ${id}`);
+            showError(res, 'pvp/edit', `Failed to update PvP subscription ${id}`);
             return;
         }
     }
@@ -632,12 +639,12 @@ router.post('/pvp/delete/:id', async (req, res) => {
             await updateLastModified();
             console.log('PVP subscription with id', id, 'deleted successfully.');
         } else {
-            utils.showError(res, 'pvp/delete', `Failed to delete PvP subscription ${id}`);
+            showError(res, 'pvp/delete', `Failed to delete PvP subscription ${id}`);
             return;
         }
     } else {
         // Does not exist
-        utils.showError(res, 'pvp/delete', `Failed to find Pokemon subscription ${id}`);
+        showError(res, 'pvp/delete', `Failed to find Pokemon subscription ${id}`);
         return;
     }
     res.redirect('/pokemon#pvp');
@@ -653,11 +660,11 @@ router.post('/pvp/delete_all', async (req, res) => {
             await updateLastModified();
             console.log('All PVP subscriptions deleted for guild:', guild_id, 'user:', user_id);
         } else {
-            utils.showError(res, 'pvp/delete-all', `Failed to delete all PvP subscriptions for guild: ${guild_id} user: ${user_id}`);
+            showError(res, 'pvp/delete-all', `Failed to delete all PvP subscriptions for guild: ${guild_id} user: ${user_id}`);
             return;
         }
     } else {
-        utils.showError(res, 'pvp/delete-all', 'Guild ID or User ID not set, failed to delete all PVP subscriptions for user.');
+        showError(res, 'pvp/delete-all', 'Guild ID or User ID not set, failed to delete all PVP subscriptions for user.');
         return;
     }
     res.redirect('/pokemon#pvp');
@@ -670,7 +677,7 @@ router.post('/raids/new', async (req, res) => {
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
-        utils.showError(res, 'raids/new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
+        showError(res, 'raids/new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
@@ -726,7 +733,7 @@ router.post('/raids/edit/:id', async (req, res) => {
             await updateLastModified();
             console.log('Raid subscription', id, 'updated successfully.');
         } else {
-            utils.showError(res, 'raids/edit', `Failed to update Raid subscription ${id}`);
+            showError(res, 'raids/edit', `Failed to update Raid subscription ${id}`);
             return;
         }
     }
@@ -744,12 +751,12 @@ router.post('/raids/delete/:id', async (req, res) => {
             console.log('Raid subscription with id', id, 'deleted successfully.');
         } else {
             console.error('Failed to delete Raid subscription', id);
-            utils.showError(res, 'raids/delete', `Failed to delete Raid subscription ${id}`);
+            showError(res, 'raids/delete', `Failed to delete Raid subscription ${id}`);
             return;
         }
     } else {
         // Does not exist
-        utils.showError(res, 'raids/delete', `Failed to find Raid subscription ${id}`);
+        showError(res, 'raids/delete', `Failed to find Raid subscription ${id}`);
         return;
     }
     res.redirect('/raids');
@@ -766,7 +773,7 @@ router.post('/raids/delete_all', async (req, res) => {
             console.log('All raid subscriptions deleted for guild:', guild_id, 'user:', user_id);
         }
     } else {
-        utils.showError(res, 'raids/delete-all', 'Guild ID or User ID not set, failed to delete all raid subscriptions for user.');
+        showError(res, 'raids/delete-all', 'Guild ID or User ID not set, failed to delete all raid subscriptions for user.');
         return;
     }
     res.redirect('/raids');
@@ -779,7 +786,7 @@ router.post('/gyms/new', async (req, res) => {
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
-        utils.showError(res, 'gyms/new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
+        showError(res, 'gyms/new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     // TODO: Validate gym name exists in scanner database
@@ -787,7 +794,7 @@ router.post('/gyms/new', async (req, res) => {
     if (exists) {
         // Already exists
         console.log('Gym subscription with name', name, 'already exists');
-        utils.showError(res, 'gyms/new', `Gym subscription with name ${name} already exists`);
+        showError(res, 'gyms/new', `Gym subscription with name ${name} already exists`);
     } else {
         const gym = Gym.build({
             id: 0,
@@ -807,7 +814,7 @@ router.post('/gyms/new', async (req, res) => {
             await updateLastModified();
             console.log('Gym subscription for gym', name, 'created successfully.');
         } else {
-            utils.showError(res, 'gyms/new', `Failed to create Gym subscription ${name}`);
+            showError(res, 'gyms/new', `Failed to create Gym subscription ${name}`);
             return;
         }
     }
@@ -819,7 +826,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
-        utils.showError(res, 'gyms/edit', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
+        showError(res, 'gyms/edit', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     // TODO: Validate gym name exists in scanner database
@@ -827,7 +834,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
     if (!exists) {
         // Does not exist
         console.log('Gym subscription with name', name, 'does not exist');
-        utils.showError(res, 'gyms/edit', `Gym subscription with name ${name} does not exist`);
+        showError(res, 'gyms/edit', `Gym subscription with name ${name} does not exist`);
     } else {
         exists.minLevel = min_level;
         exists.maxLevel = max_level;
@@ -840,7 +847,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
             await updateLastModified();
             console.log('Gym subscription for gym', name, 'updated successfully.');
         } else {
-            utils.showError(res, 'gyms/edit', `Failed to update Gym subscription ${name}`);
+            showError(res, 'gyms/edit', `Failed to update Gym subscription ${name}`);
             return;
         }
     }
@@ -857,12 +864,12 @@ router.post('/gyms/delete/:id', async (req, res) => {
             await updateLastModified();
             console.log('Gym subscription with id', id, 'deleted successfully.');
         } else {
-            utils.showError(res, 'gyms/delete', `Failed to delete Gym subscription ${id}`);
+            showError(res, 'gyms/delete', `Failed to delete Gym subscription ${id}`);
             return;
         }
     } else {
         // Does not exist
-        utils.showError(res, 'gyms/delete', `Failed to delete Gym subscription ${id}`);
+        showError(res, 'gyms/delete', `Failed to delete Gym subscription ${id}`);
         return;
     }
     res.redirect('/raids#gyms');
@@ -878,12 +885,12 @@ router.post('/gyms/delete_all', async (req, res) => {
             await updateLastModified();
             console.log('All Gym subscriptions deleted for guild:', guild_id, 'user:', user_id);
         } else {
-            utils.showError(res, 'gyms/delete-all', `Failed to delete all Gym subscriptions for guild: ${guild_id} and user: ${user_id}`);
+            showError(res, 'gyms/delete-all', `Failed to delete all Gym subscriptions for guild: ${guild_id} and user: ${user_id}`);
             return;
         }
     } else {
         console.error('Guild ID or User ID are not set, failed to delete all gym subscriptions for user.');
-        utils.showError(res, 'gyms/delete-all', 'Guild ID or User ID are not set, failed to delete all gym subscriptions for user.');
+        showError(res, 'gyms/delete-all', 'Guild ID or User ID are not set, failed to delete all gym subscriptions for user.');
         return;
     }
     res.redirect('/raids#gyms');
@@ -896,7 +903,7 @@ router.post('/quests/new', async (req, res) => {
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
-        utils.showError(res, 'quests/new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
+        showError(res, 'quests/new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
@@ -922,7 +929,7 @@ router.post('/quests/new', async (req, res) => {
         await updateLastModified();
         console.log('Quest subscription for reward', reward, 'at pokestop', pokestop_name, 'created successfully.');
     } else {
-        utils.showError(res, 'quest-new', `Failed to create or update Quest subscription reward ${reward} and pokestop ${pokestop_name}`);
+        showError(res, 'quest-new', `Failed to create or update Quest subscription reward ${reward} and pokestop ${pokestop_name}`);
         return;
     }
     res.redirect('/quests');
@@ -945,7 +952,7 @@ router.post('/quests/edit/:id', async (req, res) => {
             await updateLastModified();
             console.log('Quest subscription', id, 'updated successfully.');
         } else {
-            utils.showError(res, 'quests/edit', `Failed to update Quest subscription ${id}`);
+            showError(res, 'quests/edit', `Failed to update Quest subscription ${id}`);
             return;
         }
     }
@@ -962,12 +969,12 @@ router.post('/quests/delete/:id', async (req, res) => {
             await updateLastModified();
             console.log('Quest subscription with id', id, 'deleted successfully.');
         } else {
-            utils.showError(res, 'quests/delete', `Failed to delete Quest subscription ${id}`);
+            showError(res, 'quests/delete', `Failed to delete Quest subscription ${id}`);
             return;
         }
     } else {
         // Does not exist
-        utils.showError(res, 'quests/delete', `Failed to find Quest subscription ${id}`);
+        showError(res, 'quests/delete', `Failed to find Quest subscription ${id}`);
         return;
     }
     res.redirect('/quests');
@@ -983,11 +990,11 @@ router.post('/quests/delete_all', async (req, res) => {
             await updateLastModified();
             console.log('All quest subscriptions deleted for guild:', guild_id, 'user:', user_id);
         } else {
-            utils.showError(res, 'quests/delete-all', `Failed to delete all Quest subscriptions for guild: ${guild_id} user: ${user_id}`);
+            showError(res, 'quests/delete-all', `Failed to delete all Quest subscriptions for guild: ${guild_id} user: ${user_id}`);
             return;
         }
     } else {
-        utils.showError(res, 'quests/delete-all', 'Guild ID or User ID not set, failed to delete all quest subscriptions for user.');
+        showError(res, 'quests/delete-all', 'Guild ID or User ID not set, failed to delete all quest subscriptions for user.');
         return;
     }
     res.redirect('/quests');
@@ -1000,7 +1007,7 @@ router.post('/invasion/new', async (req, res) => {
     const user_id = req.session.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
-        utils.showError(res, 'invasions', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
+        showError(res, 'invasions', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
         return;
     }
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
@@ -1032,7 +1039,7 @@ router.post('/invasion/new', async (req, res) => {
         await updateLastModified();
         console.log('Invasion subscription for reward', pokemon, 'created successfully.');
     } else {
-        utils.showError(res, 'invasions/invasions', `Failed to create Invasion subscription for reward ${pokemon}`);
+        showError(res, 'invasions/invasions', `Failed to create Invasion subscription for reward ${pokemon}`);
         return;
     }
     res.redirect('/invasions');
@@ -1058,7 +1065,7 @@ router.post('/invasions/edit/:id', async (req, res) => {
             await updateLastModified();
             console.log('Invasion subscription', id, 'updated successfully.');
         } else {
-            utils.showError(res, 'invasions/invasions', `Failed to update Invasion subscription ${id}`);
+            showError(res, 'invasions/invasions', `Failed to update Invasion subscription ${id}`);
         }
     }
     res.redirect('/invasions');
@@ -1074,12 +1081,12 @@ router.post('/invasions/delete/:id', async (req, res) => {
             await updateLastModified();
             console.log('Invasion subscription with id', id, 'deleted successfully.');
         } else {
-            utils.showError(res, 'invasions/invasions', `Failed to delete Invasion subscription ${id}`);
+            showError(res, 'invasions/invasions', `Failed to delete Invasion subscription ${id}`);
             return;
         }
     } else {
         // Does not exist
-        utils.showError(res, 'invasions/invasions', `Failed to find Invasion subscription ${id}`);
+        showError(res, 'invasions/invasions', `Failed to find Invasion subscription ${id}`);
         return;
     }
     res.redirect('/invasions');
@@ -1098,7 +1105,7 @@ router.post('/invasions/delete_all', async (req, res) => {
             console.error('Failed to delete all Invasion subscriptions for guild:', guild_id, 'user_id:', user_id);
         }
     } else {
-        utils.showError(res, 'invasions/invasions', 'Guild ID or User ID not set, failed to delete all invasion subscriptions.');
+        showError(res, 'invasions/invasions', 'Guild ID or User ID not set, failed to delete all invasion subscriptions.');
         return;
     }
     res.redirect('/invasions');
@@ -1112,7 +1119,7 @@ router.post('/lures/new', async (req, res) => {
     const user_id = defaultData.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
-        utils.showError(res, 'invasions/invasions', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
+        showError(res, 'invasions/invasions', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
         return;
     }
     if (!Array.isArray(lureTypes)) {
@@ -1172,7 +1179,7 @@ router.post('/lures/edit/:id', async (req, res) => {
             await updateLastModified();
             console.log('Lure subscription', id, 'updated successfully.');
         } else {
-            utils.showError(res, 'lures/lures', `Failed to update Lure subscription ${id}`);
+            showError(res, 'lures/lures', `Failed to update Lure subscription ${id}`);
         }
     }
     res.redirect('/lures');
@@ -1188,12 +1195,12 @@ router.post('/lures/delete/:id', async (req, res) => {
             await updateLastModified();
             console.log('Lure subscription with id', id, 'deleted successfully.');
         } else {
-            utils.showError(res, 'lures/lures', `Failed to delete Lure subscription ${id}`);
+            showError(res, 'lures/lures', `Failed to delete Lure subscription ${id}`);
             return;
         }
     } else {
         // Does not exist
-        utils.showError(res, 'lures/lures', `Failed to find Lure subscription ${id}`);
+        showError(res, 'lures/lures', `Failed to find Lure subscription ${id}`);
         return;
     }
     res.redirect('/lures');
@@ -1212,7 +1219,7 @@ router.post('/lures/delete_all', async (req, res) => {
             console.error('Failed to delete all Lure subscriptions for guild:', guild_id, 'user_id:', user_id);
         }
     } else {
-        utils.showError(res, 'lures/lures', 'Guild ID or User ID not set, failed to delete all lure subscriptions.');
+        showError(res, 'lures/lures', 'Guild ID or User ID not set, failed to delete all lure subscriptions.');
         return;
     }
     res.redirect('/lures');
@@ -1225,7 +1232,7 @@ router.post('/location/new', async (req, res) => {
     const user_id = defaultData.user_id;
     const subscription = await Subscription.getSubscription(guild_id, user_id);
     if (!subscription) {
-        utils.showError(res, 'locations/locations', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
+        showError(res, 'locations/locations', `Failed to get user subscription ID for GuildId: ${guild_id} user: ${user_id}`);
         return;
     }
     let exists = await Location.getByName(guild_id, user_id, name);
@@ -1252,7 +1259,7 @@ router.post('/location/new', async (req, res) => {
         await updateLastModified();
         console.log('Location ', name, ' with distance', distance, 'and location', location, 'created successfully.');
     } else {
-        utils.showError(res, 'locations/locations', `Failed to create Location subscription for ${name}`);
+        showError(res, 'locations/locations', `Failed to create Location subscription for ${name}`);
         return;
     }
     res.redirect('/locations');
@@ -1278,7 +1285,7 @@ router.post('/location/edit/:id', async (req, res) => {
             await updateLastModified();
             console.log('Location subscription', id, 'updated successfully.');
         } else {
-            utils.showError(res, 'locations/locations', `Failed to update Location subscription ${id}`);
+            showError(res, 'locations/locations', `Failed to update Location subscription ${id}`);
         }
     }
     res.redirect('/locations');
@@ -1294,12 +1301,12 @@ router.post('/locations/delete/:id', async (req, res) => {
             await updateLastModified();
             console.log('Location with name', exists.name, 'deleted successfully.');
         } else {
-            utils.showError(res, 'locations/locations', `Failed to delete location ${exists.name}`);
+            showError(res, 'locations/locations', `Failed to delete location ${exists.name}`);
             return;
         }
     } else {
         // Does not exist
-        utils.showError(res, 'locations/locations', `Failed to find location ${id}`);
+        showError(res, 'locations/locations', `Failed to find location ${id}`);
         return;
     }
     res.redirect('/locations');
@@ -1318,7 +1325,7 @@ router.post('/locations/delete_all', async (req, res) => {
             console.error('Failed to delete all locations for guild:', guild_id, 'user_id:', user_id);
         }
     } else {
-        utils.showError(res, 'locations/locations', 'Guild ID or User ID not set, failed to delete all locations.');
+        showError(res, 'locations/locations', 'Guild ID or User ID not set, failed to delete all locations.');
         return;
     }
     res.redirect('/locations');
@@ -1340,7 +1347,7 @@ if (config.enableGeofenceRoles) {
             }
         }
         if (error) {
-            utils.showError(res, 'role-add', `Failed to assign city role(s) to guild ${guild_id} user ${user_id}`);
+            showError(res, 'role-add', `Failed to assign city role(s) to guild ${guild_id} user ${user_id}`);
             return;
         }
         res.redirect('/roles');
@@ -1352,7 +1359,7 @@ if (config.enableGeofenceRoles) {
         const result = await DiscordClient.removeRole(guild_id, userId, id);
         if (!result) {
             // Failed to remove city role
-            utils.showError(res, 'role-remove', `Failed to remove city role with id ${id} from guild ${guild_id} user ${userId}`);
+            showError(res, 'role-remove', `Failed to remove city role with id ${id} from guild ${guild_id} user ${userId}`);
             return;
         }
         res.redirect('/roles');
@@ -1364,14 +1371,14 @@ if (config.enableGeofenceRoles) {
         const guild = config.discord.guilds.find(x => x.id === guild_id);
         if (!guild) {
             // Failed to find guild
-            utils.showError(res, 'roles-remove-all', `Failed to find guild ${guild_id} to remove all city roles for user ${userId}`);
+            showError(res, 'roles-remove-all', `Failed to find guild ${guild_id} to remove all city roles for user ${userId}`);
             return;
         }
         const roles = guild.geofences;
         const result = await DiscordClient.removeAllRoles(guild_id, userId, roles);
         if (!result) {
             // Failed to remove all city roles
-            utils.showError(res, 'roles-remove-all', `Failed to remove all city roles from guild ${guild_id} user ${userId}`);
+            showError(res, 'roles-remove-all', `Failed to remove all city roles from guild ${guild_id} user ${userId}`);
             return;
         }
         res.redirect('/roles');
@@ -1439,7 +1446,7 @@ router.post('/settings', async (req, res) => {
         await updateLastModified();
         console.log('Successfully updated subscription settings for', userId, 'in guild', guild_id);
     } else {
-        utils.showError(res, 'settings', 'Failed to update settings.');
+        showError(res, 'settings', 'Failed to update settings.');
         return;
     }
     res.redirect('/settings');
@@ -1514,37 +1521,6 @@ const groupLuresIconUrls = (lureTypes) => {
         }
     }
     return { icons, ids, };
-};
-
-const getAreas = (guildId, city) => {
-    let areas;
-    if (city === 'All' || (Array.isArray(city) && city.includes('All'))) {
-        config.discord.guilds.map(x => {
-            if (x.id === guildId) {
-                areas = x.geofences;
-            }
-        });
-    } else if (city === 'None') {
-        // No areas specified
-        areas = [];
-    } else if (!Array.isArray(city)) {
-        // Only one area specified, make array
-        areas = [city];
-    } else {
-        // If all and none are both specified, all supersedes none or individual areas
-        // or if all is specified, none is not, set all areas and disregard individual
-        // areas that might be included
-        if ((city.includes('All') && city.includes('None')) ||
-            (city.includes('All') && !city.includes('None'))) {
-            return getAreas(guildId, 'All');
-        } else if (city.includes('None') && city.length > 1) {
-            city = city.splice(city.indexOf('None'), 1);
-        } else {
-            // Only individual areas are provided
-            areas = city;
-        }
-    }
-    return areas || [];
 };
 
 module.exports = router;
