@@ -98,9 +98,8 @@ Pokemon.init({
         */
     },
     forms: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-        defaultValue: null,
+        type: DataTypes.JSON,
+        allowNull: false,
         get() {
             var data = this.getDataValue('forms');
             return parseJsonColumn(data);
