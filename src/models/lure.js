@@ -98,11 +98,11 @@ Lure.init({
     },
     pokestopName: {
         type: DataTypes.STRING(255),
-        allowNull: false,
+        allowNull: true,
     },
     lureType: {
         type: DataTypes.JSON,
-        defaultValue: null,
+        allowNull: false,
         get() {
             var data = this.getDataValue('lureType');
             return parseJsonColumn(data);

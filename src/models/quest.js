@@ -103,7 +103,7 @@ Quest.init({
     },
     reward: {
         type: DataTypes.TEXT,
-        allowNull: true,
+        allowNull: false,
     },
     areas: {
         type: DataTypes.JSON,

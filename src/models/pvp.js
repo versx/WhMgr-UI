@@ -109,7 +109,7 @@ PVP.init({
     },
     forms: {
         type: DataTypes.JSON,
-        allowNull: false,
+        allowNull: true,
         get() {
             var data = this.getDataValue('forms');
             return parseJsonColumn(data);
