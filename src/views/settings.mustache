@@ -185,7 +185,7 @@
                     );
                 } else {
                     for (const location of locations) {
-                        const selected = location.name === location;
+                        const selected = location.name === result.data.settings.location;
                         $('#location').append(new Option(
                             location.name,
                             location.name,
