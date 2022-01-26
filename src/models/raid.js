@@ -28,26 +28,26 @@ class Raid extends Model {
         return Raid.findByPk(id);
     }
 
-    static getByPokemon(guildId, userId, pokemonId, form) {
+    static getByPokemon(guildId, userId, pokemonId, forms) {
         return Raid.findOne({
             where: {
                 guildId: guildId,
                 userId: userId,
                 pokemonId: pokemonId,
-                form: {
-                    [Op.or]: [null, form],
+                forms: {
+                    [Op.or]: [null, forms],
                 },
             }
         });
     }
 
-    static delete(guildId, userId, pokemonId, form) {
+    static delete(guildId, userId, pokemonId, forms) {
         return Raid.destroy({
             where: {
                 guildId: guildId,
                 userId: userId,
                 pokemonId: pokemonId,
-                form: form,
+                forms: forms,
             }
         });
     }

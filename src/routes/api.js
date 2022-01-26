@@ -687,7 +687,7 @@ router.post('/raids/new', async (req, res) => {
     if (exists) {
         // Raid subscription already exists
         exists.pokemonId = pokemonIDs;
-        exists.form = (form || '').split(',');
+        exists.forms = (form || '').split(',');
         exists.exEligible = ex_eligible;
         exists.location = location;
         exists.areas = arrayUnique(exists.areas.concat(areas));
@@ -698,7 +698,7 @@ router.post('/raids/new', async (req, res) => {
             guildId: guild_id,
             userId: user_id,
             pokemonId: pokemonIDs,
-            form: (form || '').split(','),
+            forms: (form || '').split(','),
             exEligible: ex_eligible === 'on',
             areas: areas,
             location: location || null,
@@ -724,7 +724,7 @@ router.post('/raids/edit/:id', async (req, res) => {
         const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
         exists.pokemonId = pokemonIDs;
-        exists.form = (form || '').split(',');
+        exists.forms = (form || '').split(',');
         exists.exEligible = ex_eligible === 'on',
         exists.areas = areas;
         exists.location = location || null;
