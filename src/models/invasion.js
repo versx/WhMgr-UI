@@ -34,8 +34,8 @@ class Invasion extends Model {
                 guildId: guildId,
                 userId: userId,
                 pokestopName: pokestopName,
-                gruntType: gruntType,
-                rewardPokemonId: rewardPokemonIds,
+                gruntType: gruntType || null,
+                rewardPokemonId: rewardPokemonIds || [],
             }
         });
     }

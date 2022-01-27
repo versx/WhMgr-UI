@@ -1014,7 +1014,7 @@ router.post('/invasion/new', async (req, res) => {
     const areas = city ? getAreas(guild_id, city.split(',')) : [];
     let exists = await Invasion.getBy(guild_id, user_id, name, grunt_type, pokemon);
     const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
-    const gruntTypeIds = grunt_type ? grunt_type.map(x => +x) : [];
+    const gruntTypeIds = grunt_type ? stringToArray(grunt_type.map(x => +x)) : [];
     if (exists) {
         // Already exists
         exists.pokestopName = name || null;
@@ -1053,7 +1053,7 @@ router.post('/invasions/edit/:id', async (req, res) => {
     const invasion = await Invasion.getById(id);
     if (invasion) {
         const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
-        const gruntTypeIds = grunt_type ? grunt_type.map(x => +x) : [];
+        const gruntTypeIds = grunt_type ? stringToArray(grunt_type).map(x => +x) : [];
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
         invasion.name = name;
         invasion.rewardPokemonId = pokemonIDs;
@@ -1522,6 +1522,16 @@ const groupLuresIconUrls = (lureTypes) => {
         }
     }
     return { icons, ids, };
+};
+
+const stringToArray = (text) => {
+    if (!text) {
+        return [];
+    }
+    if (typeof text === 'string') {
+        return text.split(',');
+    }
+    return text;
 };
 
 module.exports = router;
