@@ -790,6 +790,7 @@ router.post('/gyms/new', async (req, res) => {
         showError(res, 'gyms/new', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
+    const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
     // TODO: Validate gym name exists in scanner database
     const exists = await Gym.getByName(guild_id, user_id, name);
     if (exists) {
@@ -805,7 +806,7 @@ router.post('/gyms/new', async (req, res) => {
             name: name,
             minLevel: min_level,
             maxLevel: max_level,
-            pokemonIds: (pokemon || '').split(','),
+            pokemonIds: pokemonIDs,
             exEligible: ex_eligible === 'on',
             location: location || null,
         });
@@ -830,6 +831,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
         showError(res, 'gyms/edit', `Failed to get user subscription ID for GuildId: ${guild_id} and UserId: ${user_id}`);
         return;
     }
+    const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
     // TODO: Validate gym name exists in scanner database
     const exists = await Gym.getByName(guild_id, user_id, name);
     if (!exists) {
@@ -839,7 +841,7 @@ router.post('/gyms/edit/:id', async (req, res) => {
     } else {
         exists.minLevel = min_level;
         exists.maxLevel = max_level;
-        exists.pokemonIds = (pokemon || '').split(',');
+        exists.pokemonIds = pokemonIDs;
         exists.exEligible = ex_eligible === 'on',
         exists.location = location || null;
         const result = await exists.save();
