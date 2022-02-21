@@ -89,8 +89,12 @@ $('#select_raid5star').on('click', function() {
     });
 });
 $('#select_invert').on('click', function() {
+    const value = $('#pokemon').val() || '';
+    const oldPokemon = value.split(',')
+                            .map(Number);
     $.each($('.item'), function(index, item) {
-        if (!item.classList.value.includes('active')) {
+        const isPokemonSelected = item.classList.value.includes('active');
+        if (!isPokemonSelected && !oldPokemon.includes(item.id)) {
             selectItem(item);
         } else {
             unselectItem(item);
@@ -153,20 +157,23 @@ function unselectItem(element) {
 
 function appendId(id) {
     const value = $('#pokemon').val();
-    if (value === '') {
-        $('#pokemon').val(id);
+    let newValue = value;
+    if (!value || value === '') {
+        newValue = id;
     } else {
-        if (!(value || '').split(',').includes(id)) {
-            if (value.endsWith(',')) {
-                $('#pokemon').val(value + id);
-            } else {
-                $('#pokemon').val(value + ',' + id);
-            }
+        if (value.endsWith(',')) {
+            newValue = value + id;
+        } else {
+            newValue = value + ',' + id;
         }
     }
+    $('#pokemon').val(newValue);
 }
 
 function removeId(id) {
     const value = $('#pokemon').val();
-    $('#pokemon').val(value.replace(id + ',', '').replace(id, ''));
+    const list = (value || '').split(',').map(Number);
+    const newList = list.filter(x => x !== parseInt(id));
+    const newValue = newList.join(',');
+    $('#pokemon').val(newValue);
 }

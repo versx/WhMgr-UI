@@ -129,7 +129,7 @@ class Localizer {
                     for (const genderSuffix of genderSuffixes) {
                         for (const shinySuffix of shinySuffixes) {
                             const result = `${pokemonId}${evolutionSuffix}${formSuffix}${costumeSuffix}${genderSuffix}${shinySuffix}`;
-                            if (lookup.has(result)) return result;
+                            if (lookup.has(result + '.png')) return result;
                         }
                     }
                 }

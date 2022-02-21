@@ -608,7 +608,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
     //const user_id = req.session.user_id;
     const exists = await PVP.getById(id);
     if (exists) {
-        const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => +x) : [];
+        const pokemonIDs = pokemon ? pokemon.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',').map(x => parseInt(x)) : [];
         const areas = city ? getAreas(guild_id, city.split(',')) : [];
         exists.pokemonId = pokemonIDs;
         exists.form = (form || '').split(',');
