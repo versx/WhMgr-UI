@@ -78,7 +78,8 @@
     },
     "urls": {
         "images": {
-            "pokemon": "https://mygod.github.io/pokicons/v2"
+            "pokemon": "https://raw.githubusercontent.com/WatWowMap/wwm-uicons/main/pokemon",
+            "eggs": "https://raw.githubusercontent.com/WatWowMap/wwm-uicons/main/raid/egg"
         },
         "map": "",
         "paypal": ""
