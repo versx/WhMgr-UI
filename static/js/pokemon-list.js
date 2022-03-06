@@ -67,6 +67,20 @@ $('#select_gen6').on('click', function() {
         }
     });
 });
+$('#select_gen7').on('click', function() {
+    $.each($('.item'), function(index, item) {
+        if (item.id > 721 && item.id < 810) {
+            selectItem(item);
+        }
+    });
+});
+$('#select_gen8').on('click', function() {
+    $.each($('.item'), function(index, item) {
+        if (item.id > 809 && item.id < 899) {
+            selectItem(item);
+        }
+    });
+});
 $('#select_rare').on('click', function() {
     $.each($('.item'), function(index, item) {
         if (!pokemonRarity.common.includes(parseInt(item.id))) {
@@ -84,6 +98,13 @@ $('#select_ultra').on('click', function() {
 $('#select_raid5star').on('click', function() {
     $.each($('.item'), function(index, item) {
         if (pokemonRarity.raid5star.includes(parseInt(item.id))) {
+            selectItem(item);
+        }
+    });
+});
+$('#select_raid6star').on('click', function() {
+    $.each($('.item'), function(index, item) {
+        if ((pokemonRarity.raid6star || []).includes(parseInt(item.id))) {
             selectItem(item);
         }
     });
