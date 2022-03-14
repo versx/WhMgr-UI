@@ -551,6 +551,7 @@ router.post('/pvp/new', async (req, res) => {
         //pokemon,
         form,
         league,
+        gender,
         min_rank,
         min_percent,
         city,
@@ -567,6 +568,7 @@ router.post('/pvp/new', async (req, res) => {
     let exists = await PVP.getPokemonByLeague(guild_id, user_id, pokemon, form, league);
     if (exists) {
         // Already exists
+        exists.gender = gender;
         exists.minRank = min_rank || 5;
         exists.minPercent = min_percent || 99;
         exists.areas = arrayUnique(exists.areas.concat(areas));
@@ -581,6 +583,7 @@ router.post('/pvp/new', async (req, res) => {
             pokemonId: pokemonIDs,
             form: (form || '').split(','),
             league: league,
+            gender: gender,
             minRank: min_rank || 5,
             minPercent: min_percent || 99,
             areas: areas,
@@ -599,6 +602,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
         //pokemon,
         form,
         league,
+        gender,
         min_rank,
         min_percent,
         city,
@@ -613,6 +617,7 @@ router.post('/pvp/edit/:id', async (req, res) => {
         exists.pokemonId = pokemonIDs;
         exists.form = (form || '').split(',');
         exists.league = league;
+        exists.gender = gender;
         exists.minRank = min_rank || 25;
         exists.minPercent = min_percent || 98;
         exists.areas = areas;
