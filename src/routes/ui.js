@@ -80,7 +80,7 @@ router.get('/pokemon/edit/:id', async (req, res) => {
     data.min_lvl = pokemon.minLvl;
     data.max_lvl = pokemon.maxLvl;
     data.genders.forEach(gender => {
-        data.selected = gender.id === pokemon.gender;
+        gender.selected = gender.id === pokemon.gender;
     });
     data.sizes.forEach(size => {
         size.selected = size.value === pokemon.size;
@@ -143,6 +143,9 @@ router.get('/pvp/edit/:id', async (req, res) => {
     data.form = pvp.forms;
     data.leagues.forEach(league => {
         league.selected = league.name === pvp.league;
+    });
+    data.genders.forEach(gender => {
+        gender.selected = gender.id === pvp.gender;
     });
     data.min_rank = pvp.minRank;
     data.min_percent = pvp.minPercent;

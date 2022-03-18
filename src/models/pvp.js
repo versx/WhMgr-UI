@@ -115,6 +115,11 @@ PVP.init({
             return parseJsonColumn(data);
         },
     },
+    gender: {
+        type: DataTypes.STRING(1),
+        allowNull: false,
+        defaultValue: '*',
+    },
     minRank: {
         type: DataTypes.INTEGER(11),
         allowNull: false,
