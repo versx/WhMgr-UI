@@ -110,6 +110,11 @@ Pokemon.init({
         allowNull: false,
         defaultValue: 0,
     },
+    maxCp: {
+        type: DataTypes.INTEGER(11),
+        allowNull: false,
+        defaultValue: 2147483647,
+    },
     minIv: {
         type: DataTypes.INTEGER(11),
         allowNull: false,

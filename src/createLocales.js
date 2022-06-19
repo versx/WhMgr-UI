@@ -4,9 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 
-const appLocalesFolder = path.resolve(__dirname, '../static/locales');
+const baseRemoteRepositoryUrl = `https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/static/locales`;
 
-module.exports.locales = async function locales() {
+(async () => {
+    const appLocalesFolder = path.resolve(__dirname, '../static/locales');
     const localTranslations = await fs.promises.readdir(appLocalesFolder);
     const englishRef = fs.readFileSync(path.resolve(appLocalesFolder, '_en.json'), { encoding: 'utf8', flag: 'r' });
 
@@ -15,10 +16,10 @@ module.exports.locales = async function locales() {
             const mapJsTranslations = fs.readFileSync(path.resolve(appLocalesFolder, locale), { encoding: 'utf8', flag: 'r' });
             const baseName = locale.replace('.json', '').replace('_', '');
             const trimmedRemoteFiles = {};
-
+    
             try {
-                const { data } = await axios.get(`https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/static/locales/${baseName}.json`);
-
+                const { data } = await axios.get(`${baseRemoteRepositoryUrl}/${baseName}.json`);
+    
                 Object.keys(data).forEach(key => {
                     if (!key.startsWith('desc_') && !key.startsWith('pokemon_category_')) {
                         trimmedRemoteFiles[key] = data[key];
@@ -27,7 +28,7 @@ module.exports.locales = async function locales() {
             } catch (e) {
                 console.warn(e, '\n', locale);
             }
-
+    
             const finalTranslations = {
                 ...JSON.parse(englishRef),
                 ...JSON.parse(mapJsTranslations),
@@ -39,7 +40,7 @@ module.exports.locales = async function locales() {
                 'utf8',
                 () => { },
             );
-            console.log('localeFile', 'file saved.');
+            console.log('locale file', baseName + '.json', 'saved.');
         }
     }));
-};
+})();

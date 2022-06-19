@@ -396,6 +396,8 @@ router.post('/pokemon/new', async (req, res) => {
         form,
         iv,
         iv_list,
+        min_cp,
+        max_cp,
         min_lvl,
         max_lvl,
         gender,
@@ -412,6 +414,8 @@ router.post('/pokemon/new', async (req, res) => {
     }
     const minIv = iv || 0;
     const ivList = iv_list ? iv_list.replace(/\r\n/g, ',').replace(/\n/g, ',').split(',') : [];
+    const minCp = min_cp || 0;
+    const maxCp = max_cp || 2147483647;
     const minLevel = min_lvl || 0;
     const maxLevel = max_lvl || 35;
     let exists = await Pokemon.getByPokemon(guild_id, user_id, pokemon, form, minIv, ivList, minLevel, maxLevel, gender, size);
@@ -419,6 +423,8 @@ router.post('/pokemon/new', async (req, res) => {
         exists.minCp = 0;
         exists.minIv = minIv;
         exists.ivList = ivList;
+        exists.minCp = minCp,
+        exists.maxCp = maxCp,
         exists.minLvl = minLevel;
         exists.maxLvl = maxLevel;
         exists.gender = gender;
@@ -437,8 +443,10 @@ router.post('/pokemon/new', async (req, res) => {
             minCp: 0,
             minIv: /*isUltraRarePokemon(pokemonId) ? 0 :*/ iv || 0,
             ivList: ivList,
-            minLvl: min_lvl || 0,
-            maxLvl: max_lvl || 35,
+            minCp: minCp,
+            maxCp: maxCp,
+            minLvl: minLevel,
+            maxLvl: maxLevel,
             gender: gender || '*',
             size: size || 0,
             areas: areas,
@@ -464,6 +472,8 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         form,
         iv,
         iv_list,
+        min_cp,
+        max_cp,
         min_lvl,
         max_lvl,
         gender,
@@ -483,6 +493,8 @@ router.post('/pokemon/edit/:id', async (req, res) => {
         // If pokemon is rare (Unown, Azelf, etc), set IV value to 0
         pkmn.minIv = /*isUltraRarePokemon(pkmn.pokemonId) ? 0 :*/ iv || 0;
         pkmn.ivList = ivList;
+        pkmn.minCp = min_cp || 0;
+        pkmn.maxCp = max_cp || 2147483647;
         pkmn.minLvl = min_lvl || 0;
         pkmn.maxLvl = max_lvl || 35;
         pkmn.gender = gender || '*';
