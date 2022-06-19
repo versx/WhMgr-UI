@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 
-const baseRemoteRepositoryUrl = `https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/static/locales`;
+const baseRemoteRepositoryUrl = 'https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/static/locales';
 
 (async () => {
     const appLocalesFolder = path.resolve(__dirname, '../static/locales');

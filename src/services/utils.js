@@ -148,9 +148,10 @@ const getAreas = (guildId, city) => {
 };
 
 const toNumbers = (array) => {
-    const pokemonIds = (array || '').replace(' ,', ',')
-                                    .replace(', ', ',')
-                                    .split(',');
+    const pokemonIds = (array || '')
+        .replace(' ,', ',')
+        .replace(', ', ',')
+        .split(',');
     const ids = (pokemonIds || []).map(Number);
     return ids.join(',');
 };

@@ -440,7 +440,6 @@ router.post('/pokemon/new', async (req, res) => {
             userId: user_id,
             pokemonId: pokemonIDs,
             forms: (form || '').split(','),
-            minCp: 0,
             minIv: /*isUltraRarePokemon(pokemonId) ? 0 :*/ iv || 0,
             ivList: ivList,
             minCp: minCp,
