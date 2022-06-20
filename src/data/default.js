@@ -14,11 +14,9 @@ data.genders = [
     { 'id': 'm', 'name': 'Male' },
     { 'id': 'f', 'name': 'Female', }
 ];
-data.leagues = [
-    { 'id': 'great', 'name': 'Great' },
-    { 'id': 'ultra', 'name': 'Ultra' },
-    //{ 'id': 'master', 'name': 'Master' },
-];
+data.leagues = config.pvp.leagues.map(league => {
+    return { 'name': league };
+});
 data.icon_styles = config.iconStyles;
 data.enable_geofence_roles = config.enableGeofenceRoles;
 data.hide_phone_number = config.hidePhoneNumber;

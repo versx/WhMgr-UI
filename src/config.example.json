@@ -83,5 +83,12 @@
         },
         "map": "",
         "paypal": ""
+    },
+    "pvp": {
+        "leagues": [
+            "Little",
+            "Great",
+            "Ultra"
+        ]
     }
 }
