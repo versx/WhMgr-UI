@@ -77,6 +77,22 @@
         <div class="row">
             <div class="col">
                 <div class="form-group">
+                    <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Minimum CP the interested Pokemon should be."></i>
+                    {{Minimum CP}}
+                    <input type="number" class="form-control" name="min_cp" value="0" min=0 max=2147483647 placeholder="i.e. 0">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Maximum CP the interested Pokemon should be."></i>
+                    {{Maximum CP}}
+                    <input type="number" class="form-control" name="max_cp" value="2147483647" min=0 max=2147483647 placeholder="i.e. 1000">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
                     <i class="fa fa-question-circle float-right" aria-hidden="true" data-toggle="tooltip" data-html="true" title="Minimum level the interested Pokemon should be."></i>
                     {{Minimum Level}}
                     <input type="number" class="form-control" name="min_lvl" value="" min=0 max=35 placeholder="i.e. 0">

@@ -111,13 +111,17 @@ const parseJsonColumn = (data) => {
 
 const getAreas = (guildId, city) => {
     let areas;
-    if (city === 'All' || (Array.isArray(city) && city.includes('All'))) {
-        config.discord.guilds.map(x => {
-            if (x.id === guildId) {
-                areas = x.geofences;
+    const All = 'All';
+    const None = 'None';
+    if (city === All || (Array.isArray(city) && city.includes(All))) {
+        // If 'All' specified set areas to all guild geofences
+        for (const guild of config.discord.guilds) {
+            if (guild.id !== guildId) {
+                continue;
             }
-        });
-    } else if (city === 'None') {
+            areas = guild.geofences;
+        }
+    } else if (city === None || !city) {
         // No areas specified
         areas = [];
     } else if (!Array.isArray(city)) {
@@ -125,13 +129,16 @@ const getAreas = (guildId, city) => {
         areas = [city];
     } else {
         // If all and none are both specified, all supersedes none or individual areas
-        // or if all is specified, none is not, set all areas and disregard individual
-        // areas that might be included
-        if ((city.includes('All') && city.includes('None')) ||
-            (city.includes('All') && !city.includes('None'))) {
-            return getAreas(guildId, 'All');
-        } else if (city.includes('None') && city.length > 1) {
-            city = city.splice(city.indexOf('None'), 1);
+        // or if all is specified and none is not, set all available areas and disregard
+        // individual areas that might be included.
+        if ((city.includes(All) && city.includes(None)) ||
+            (city.includes(All) && !city.includes(None))) {
+            return getAreas(guildId, All);
+        } else if (city.includes(None) && city.length > 1) {
+            // None is specified but other areas are as well,
+            // get the index of the None string and remove it
+            // from the list.
+            areas = city.splice(city.indexOf(None), 1);
         } else {
             // Only individual areas are provided
             areas = city;
@@ -141,7 +148,10 @@ const getAreas = (guildId, city) => {
 };
 
 const toNumbers = (array) => {
-    const pokemonIds = (array || '').split(',');
+    const pokemonIds = (array || '')
+        .replace(' ,', ',')
+        .replace(', ', ',')
+        .split(',');
     const ids = (pokemonIds || []).map(Number);
     return ids.join(',');
 };
