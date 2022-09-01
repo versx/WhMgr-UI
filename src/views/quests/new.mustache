@@ -39,6 +39,164 @@
             </select>
             -->
         </div>
+        <div class="card bg-dark">
+            <div class="card-header bg-dark text-light text-center"><b>Reward Filtering Type</b></div>
+            <div class="card-body">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="filter_type" id="filter_pokemon" value="filter_pokemon" checked>
+                    <label class="form-check-label" for="filter_pokemon">Pokemon</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="filter_type" id="filter_item" value="filter_item">
+                    <label class="form-check-label" for="filter_item">Item</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="filter_type" id="filter_stardust" value="filter_stardust">
+                    <label class="form-check-label" for="filter_stardust">Stardust</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="filter_type" id="filter_candy" value="filter_candy">
+                    <label class="form-check-label" for="filter_candy">Rare Candy</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="filter_type" id="filter_mega" value="filter_mega">
+                    <label class="form-check-label" for="filter_mega">Mega Pokemon Candy</label>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-dark filter_pokemon">
+            <div class="card-header bg-dark text-light text-center"><b>Pokemon</b></div>
+            <div class="card-body">
+                <div class="form-group">
+                    Pokemon
+                    <select name="pokemon" class="custom-select">
+                        {{#pokemon}}
+                        <option value="{{id}}">{{name}}</option>
+                        {{/pokemon}}
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            Form
+                            <select name="form" class="custom-select">
+                                {{#forms}}
+                                <option value="{{.}}">{{.}}</option>
+                                {{/forms}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            Costume
+                            <select name="costume" class="custom-select">
+                                {{#costumes}}
+                                <option value="{{.}}">{{.}}</option>
+                                {{/costumes}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    Gender
+                    <select name="pokemon" class="custom-select">
+                        {{#genders}}
+                        <option value="{{id}}">{{name}}</option>
+                        {{/genders}}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="shiny" id="shiny" value="shiny">
+                        <label class="form-check-label" for="shiny">Is Shiny Pokemon</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-dark filter_item">
+            <div class="card-header bg-dark text-light text-center"><b>Item</b></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        Item
+                        <select name="item" class="custom-select" disabled>
+                            {{#items}}
+                            <option value="{{id}}">{{name}}</option>
+                            {{/items}}
+                        </select>
+                    </div>
+                    <div class="col">
+                        Amount
+                        <input type="number" class="form-control" name="item_amount" id="item_amount" min=0 max=10 value=0 disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-dark filter_stardust" disabled>
+            <div class="card-header bg-dark text-light text-center"><b>Stardust</b></div>
+            <div class="card-body">
+                <div class="form-group">
+                    Amount
+                    <select name="stardust_amount" class="custom-select" disabled>
+                        {{#stardust}}
+                        <option value="{{.}}">{{.}}</option>
+                        {{/stardust}}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-dark filter_candy" disabled>
+            <div class="card-header bg-dark text-light text-center"><b>Candy</b></div>
+            <div class="card-body">
+                <div class="form-group">
+                    Amount
+                    <input type="number" class="form-control" name="candy_amount" id="candy_amount" min=0 max=10 value=0 disabled/>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-dark filter_mega" disabled>
+            <div class="card-header bg-dark text-light text-center"><b>Mega Pokemon Candy</b></div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        Pokemon
+                        <select name="mega_pokemon" class="custom-select" disabled>
+                            {{#pokemon}}
+                            <option value="{{id}}">{{name}}</option>
+                            {{/pokemon}}
+                        </select>
+                    </div>
+                    <div class="col">
+                        Amount
+                        <input type="number" class="form-control" name="mega_candy_amount" id="mega_candy_amount" min=0 max=1000 value=0 disabled />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+        <!--
+          Rewards
+          - Form Id
+          - Costume Id
+          - GenderId
+          - Ditto
+          - Shiny
+          - Raid Levels
+          - Sticker Id
+        -->
+        <!--
+          Conditions
+          - Pokemon IDs
+          - Category Name
+          - Pokemon Type IDs
+          - Throw Type Id
+          - Hit
+          - Raid Levels
+          - Alignment IDs
+          - Character Category IDs
+          - Raid Pokemon Evolutions
+        -->
+        </div>
         <div class="form-group">
             {{City}}
             <br>
@@ -106,5 +264,19 @@
         for (const location of result.data.locations) {
             $('#location').append(new Option(location.name, location.name));
         }
+    });
+
+    $('#filter_pokemon, #filter_item, #filter_stardust, #filter_candy, #filter_mega').on('change', function() {
+        const keys = [
+            'filter_pokemon',
+            'filter_item',
+            'filter_stardust',
+            'filter_candy',
+            'filter_mega',
+        ];
+        for (const key of keys) {
+            const isSelected = this.value === key;
+            $('.' + key).find('*').attr('disabled', !isSelected);
+        }        
     });
 </script>

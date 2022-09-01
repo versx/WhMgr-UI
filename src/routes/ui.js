@@ -309,7 +309,11 @@ router.get('/quest/new', async (req, res) => {
     data.servers = validateRoles(req, res);
     const pokestopNames = await PokestopQuest.getPokestopNames();
     data.pokestops = [...new Set(pokestopNames)];
-    data.rewards = await map.getQuestRewards();
+    data.pokemon = await map.getPokemonNameIdsList();
+    data.forms = Localizer.getFormNames();
+    data.costumes = Localizer.getCostumeNames();
+    data.rewards = await map.getQuestRewardKeywords();
+    data.items = await map.getQuestRewardItems();
     data.cities = map.buildCityList(req.session.guilds);
     data.locations = await map.buildLocationsList(req.session.guilds, req.session.user_id);
     res.render('quests/new', data);
@@ -328,6 +332,8 @@ router.get('/quest/edit/:id', async (req, res) => {
     const pokestopNames = await PokestopQuest.getPokestopNames();
     data.pokestops = [...new Set(pokestopNames)];
     data.pokestop_name = quest.pokestopName;
+    data.pokemon = await map.getPokemonNameIdsList();
+    data.forms = Localizer.getFormNames();
     data.reward = quest.reward;
     const cities = getSelectedAreas(
         // Currently subscribed areas list

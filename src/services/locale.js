@@ -82,6 +82,18 @@ class Localizer {
         return forms;
     }
 
+    getCostumeNames() {
+        const locales = i18n.getCatalog(config.locale);
+        const costumes = [];
+        for (const locale in locales) {
+            const costumeName = locales[locale];
+            if (costumeName && locale.includes('costume_') && !costumes.includes(costumeName)) {
+                costumes.push(costumeName);
+            }
+        }
+        return costumes;
+    }
+
     getQuestReward(reward) {
         // TODO: Use format method
         switch (reward.type) {
