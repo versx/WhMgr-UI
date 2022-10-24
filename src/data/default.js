@@ -14,6 +14,34 @@ data.genders = [
     { 'id': 'm', 'name': 'Male' },
     { 'id': 'f', 'name': 'Female', }
 ];
+data.stardust = [
+    0,
+    100,
+    150,
+    200,
+    250,
+    300,
+    350,
+    400,
+    450,
+    500,
+    600,
+    700,
+    750,
+    800,
+    900,
+    1000,
+    1100,
+    1200,
+    1250,
+    1300,
+    1400,
+    1500,
+    2000,
+    2500,
+    3000,
+    3500,
+];
 data.leagues = config.pvp.leagues.map(league => {
     return { 'name': league };
 });

@@ -1,9 +1,13 @@
 'use strict';
 
+//const fs = require('fs');
+//const path = require('path');
+
 const Localizer = require('../services/locale.js');
 const Location = require('../models/location.js');
 const MapPokestop = require('../models/map/pokestop.js');
 const config = require('../config.json');
+const masterfile = require('../../static/data/masterfile.json');
 
 const getPokemonNameIdsList = async () => {
     const pokemon = [];
@@ -55,14 +59,40 @@ const getQuestRewards = async () => {
     for (const quest of quests) {
         const questRewards = JSON.parse(quest.questRewards);
         if (questRewards.length > 0) {
-            const reward = Localizer.getQuestReward(questRewards[0]);
-            if (reward && !rewards.includes(reward)) {
-                rewards.push(reward);
+            const questReward = questRewards[0];
+            if (questReward && !rewards.includes(questReward)) {
+                rewards.push(questReward);
             }
         }
     }
     rewards.sort();
     return rewards;
+};
+
+const getQuestRewardKeywords = async () => {
+    const rewards = await getQuestRewards();
+    const keywords = [];
+    for (const reward of rewards) {
+        const keyword = Localizer.getQuestReward(reward);
+        if (keyword && !rewards.includes(keyword)) {
+            rewards.push(keyword);
+        }
+    }
+    return keywords;
+};
+
+const getQuestRewardItems = async () => {
+    const items = masterfile.items;
+    const list = [];
+    const keys = Object.keys(items);
+    for (const itemId of keys) {
+        const item = items[itemId];
+        list.push({
+            ...item,
+            id: itemId,
+        });
+    }
+    return list;
 };
 
 const getInvasionTypes = () => {
@@ -89,6 +119,8 @@ module.exports = {
     buildCityList,
     buildLocationsList,
     getQuestRewards,
+    getQuestRewardKeywords,
+    getQuestRewardItems,
     getInvasionTypes,
     getLureTypes,
 };
